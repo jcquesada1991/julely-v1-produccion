@@ -1,0 +1,547 @@
+/* Flyer Design - Premium Travel */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap');
+
+.voucherContainer {
+    min-height: 100vh;
+    background: #F8FAFC;
+    padding: 2rem;
+    display: flex;
+    justify-content: center;
+    font-family: 'Outfit', sans-serif;
+    color: #1E293B;
+}
+
+.voucherPage {
+    width: 210mm;
+    /* A4 Width */
+    min-height: 297mm;
+    /* A4 Height */
+    background: white;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header Section */
+.header {
+    height: 530px;
+    /* Increased height +10px */
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-items: center;
+    justify-content: center;
+    /* Professional S-Wave Inverted (Starts Down) */
+    clip-path: path('M0,0 L794,0 L794,440 C550,380 250,540 0,460 Z');
+    background: #0F172A;
+    /* Fallback */
+}
+
+.headerImg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(15, 23, 42, 0.3) 0%, rgba(15, 23, 42, 0.4) 50%, rgba(15, 23, 42, 0.8) 100%);
+}
+
+.brandLogo {
+    position: absolute;
+    top: 2.5rem;
+    left: 2.5rem;
+    z-index: 10;
+    color: white;
+    font-weight: 800;
+    font-size: 1.1rem;
+    /* Reduced from 1.4rem */
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    letter-spacing: 0.05em;
+}
+
+.bestSellerBadge {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    background: #EF4444;
+    /* Red */
+    color: white;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transform: rotate(15deg);
+    border: 3px solid white;
+    box-shadow: 0 10px 25px rgba(220, 38, 38, 0.4);
+    z-index: 10;
+}
+
+.bestSellerBadge span:first-child {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.bestSellerBadge span:last-child {
+    font-size: 1rem;
+    font-weight: 900;
+    line-height: 0.9;
+    text-transform: uppercase;
+}
+
+.mainTitle {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    width: 90%;
+    margin-top: 1rem;
+}
+
+.tagline {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 3.5rem;
+    /* Increased for screen impact */
+    color: white;
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    margin-bottom: 0.5rem;
+}
+
+.destinationName {
+    font-size: 6rem;
+    /* Huge for screen impact */
+    font-weight: 900;
+    color: #0EA5E9;
+    /* Primary Color: Sky 500 */
+    text-transform: uppercase;
+    line-height: 0.9;
+    letter-spacing: -2px;
+    text-shadow:
+        3px 3px 0px #0F172A,
+        0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Price Strip */
+.priceStrip {
+    position: relative;
+    margin-top: -65px;
+    /* Increased neg margin to overlap with wave */
+    /* Overlap with clip-path header */
+    z-index: 20;
+    background: #0EA5E9;
+    width: fit-content;
+    padding: 0.8rem 3rem 0.8rem 4rem;
+    border-radius: 0 50px 50px 0;
+    box-shadow: 10px 10px 30px rgba(14, 165, 233, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.priceStrip::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: -10px;
+    width: 25px;
+    height: 10px;
+    background: #0369A1;
+}
+
+.priceText {
+    font-weight: 800;
+    font-size: 1.6rem;
+    /* Reduced from 2rem */
+    color: white;
+    line-height: 1;
+}
+
+/* Grid Layout */
+.grid {
+    display: grid;
+    grid-template-columns: 1.3fr 0.7fr;
+    gap: 2.5rem;
+    padding: 1.5rem 3rem 1rem 3rem;
+    flex: 1;
+    /* Allow expansion */
+}
+
+/* Content Columns */
+.leftCol {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.rightCol {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: center;
+    padding-top: 0.5rem;
+}
+
+/* Section Headers */
+.sectionHeader {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    color: #0F172A;
+}
+
+.sectionHeaderIcon {
+    color: #059669 !important;
+    /* Elegant Green Requested */
+}
+
+.sectionHeader h3 {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #0F172A;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Includes List with Green Checks */
+.includesList {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.includesList li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    color: #334155;
+    background: #F8FAFC;
+    padding: 0.4rem 0.75rem;
+    border-radius: 10px;
+}
+
+/* Elegant Green Check Icon */
+.checkIcon {
+    color: #059669;
+    /* Emerald 600 */
+    min-width: 16px;
+    margin-top: 2px;
+    font-weight: 800;
+}
+
+/* Timeline/Itinerary */
+.timeline {
+    position: relative;
+    padding-left: 1.5rem;
+    border-left: 2px solid #E2E8F0;
+    margin-top: 0.5rem;
+}
+
+.timelineItem {
+    position: relative;
+    margin-bottom: 1.25rem;
+}
+
+.timelineDot {
+    position: absolute;
+    left: -1.9rem;
+    top: 0.25rem;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #0EA5E9;
+    border: 2px solid white;
+    box-shadow: 0 0 0 2px #0EA5E9;
+}
+
+.timelineContent h4 {
+    margin: 0 0 0.25rem 0;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #1E293B;
+}
+
+.timelineContent p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #64748B;
+    line-height: 1.4;
+}
+
+/* Circular Image */
+.circleImg {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    border: 6px solid white;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    object-fit: cover;
+    object-position: center;
+    background: #E2E8F0;
+}
+
+/* Why Box (Primary Gradient + White Text) */
+.whyBox {
+    width: 100%;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%);
+    border-radius: 20px;
+    padding: 1.5rem;
+    color: white;
+    border: 2px solid #38BDF8;
+    box-shadow: 0 10px 25px rgba(14, 165, 233, 0.3);
+}
+
+.whyHeader {
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: white;
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+    text-align: center;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.whyText {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.95);
+    line-height: 1.6;
+    text-align: center;
+    font-weight: 500;
+}
+
+/* Extras Box */
+.extrasBox {
+    background: #F0FDFA;
+    border: 1px solid #CCFBF1;
+    padding: 1.25rem;
+    border-radius: 16px;
+    width: 100%;
+}
+
+.extrasHeader {
+    font-weight: 700;
+    color: #0D9488;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+}
+
+.extrasList {
+    list-style: none;
+    padding: 0;
+    font-size: 0.85rem;
+    color: #134E4A;
+}
+
+.extrasList li {
+    margin-bottom: 0.3rem;
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Footer */
+.footer {
+    margin-top: auto;
+    background: #0F172A;
+    color: white;
+    padding: 3rem 3rem 1.5rem 3rem;
+    /* Reduced bottom padding */
+    position: relative;
+    /* Professional Wave Inverted (Starts Down) */
+    clip-path: path('M0,60 C250,140 600,-20 794,40 L794,500 L0,500 Z');
+}
+
+.agencyInfo {
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.agencyLabel {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    opacity: 0.7;
+    margin-bottom: 0.5rem;
+}
+
+.agencyNameFooter {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    /* Slightly smaller for footer row */
+    font-weight: 700;
+    font-style: italic;
+    color: white;
+    line-height: 1;
+}
+
+.agencyName {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    font-style: italic;
+    color: white;
+    /* Changed to White */
+}
+
+.contactGrid {
+    display: flex;
+    justify-content: center;
+    gap: 4rem;
+    align-items: center;
+    /* Helper alignment */
+    /* Spacing between items */
+    /* border-top removed */
+    padding-top: 1.5rem;
+}
+
+.contactItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.contactLabel {
+    color: #94A3B8;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.25rem;
+}
+
+.contactVal {
+    font-weight: 600;
+    font-size: 1rem;
+    color: white;
+}
+
+
+.sectionHeaderIcon {
+    color: #059669;
+    /* Default to Green (for Includes) */
+}
+
+.sectionHeaderIconPrimary {
+    color: #0EA5E9 !important;
+    /* Force Primary for Itinerary */
+}
+
+.actions {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    display: flex;
+    gap: 1rem;
+    z-index: 100;
+}
+
+/* Print Styles - FIXED for Full Page */
+@media print {
+    @page {
+        size: A4;
+        margin: 0;
+    }
+
+    /* Global print reset moved to component styled-jsx to avoid pure selector error */
+
+    .voucherContainer {
+        padding: 0;
+        background: white;
+        display: block;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+    }
+
+    .voucherPage {
+        width: 210mm;
+        min-height: 297mm;
+        height: 297mm;
+        /* Force full height */
+        box-shadow: none;
+        margin: 0;
+        border-radius: 0;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Adjust Footer to stick to bottom of A4 */
+    .footer {
+        margin-top: auto;
+        padding-bottom: 2rem;
+    }
+
+    /* Hide browser elements if any */
+    .actions {
+        display: none !important;
+    }
+
+    /* Print-Specific Re-Sizing to Prevent Header Collisions */
+    .brandLogo {
+        font-size: 1.1rem !important;
+        top: 1.5rem !important;
+        left: 1.5rem !important;
+    }
+
+    .bestSellerBadge {
+        width: 70px !important;
+        height: 70px !important;
+        top: 1.5rem !important;
+        right: 1.5rem !important;
+    }
+
+    .bestSellerBadge span:first-child {
+        font-size: 0.6rem !important;
+    }
+
+    .bestSellerBadge span:last-child {
+        font-size: 0.8rem !important;
+    }
+
+    .tagline {
+        font-size: 1.8rem !important;
+        margin-bottom: 0.2rem !important;
+    }
+
+    .destinationName {
+        font-size: 3.5rem !important;
+        letter-spacing: -1px !important;
+    }
+
+    .priceText {
+        font-size: 1.5rem !important;
+    }
+
+    .priceStrip {
+        padding: 0.5rem 2rem 0.5rem 3rem !important;
+        margin-top: -30px !important;
+    }
+
+    .subtitle {
+        font-size: 0.9rem !important;
+    }
+}

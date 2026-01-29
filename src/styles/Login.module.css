@@ -1,0 +1,186 @@
+/* Container covering the full viewport */
+.container {
+    height: 100vh;
+    width: 100vw;
+    position: relative;
+    background-image: url('/images/login_bg_v2.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: center;
+    /* Center Horizontally */
+    align-items: center;
+    /* Center Vertically */
+    font-family: 'Inter', sans-serif;
+    color: white;
+    overflow: hidden;
+}
+
+/* Semi-transparent overlay */
+.container::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+/* Glassmorphism Card */
+.loginCard {
+    width: 400px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+}
+
+.cardHeader {
+    display: flex;
+    align-items: center;
+    padding: 1.5rem 1.5rem 0.5rem 1.5rem;
+}
+
+.brandIcon {
+    margin-right: 0.5rem;
+    color: white;
+}
+
+.brandName {
+    font-weight: 700;
+    letter-spacing: 1px;
+    font-size: 1.1rem;
+}
+
+.welcomeText {
+    padding: 0 1.5rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.form {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.inputGroup label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.inputGroup input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    color: white;
+    font-weight: 500;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+}
+
+.inputGroup input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.inputGroup input:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.4);
+    border-color: white;
+}
+
+.passwordWrapper {
+    position: relative;
+    width: 100%;
+}
+
+.eyeBtn {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.eyeBtn:hover {
+    color: white;
+}
+
+.loginBtn {
+    width: 100%;
+    padding: 1rem;
+    background: #2563eb;
+    /* Primary Blue */
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-weight: 700;
+    font-size: 0.9rem;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+    transition: transform 0.2s, background 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 1rem;
+}
+
+.loginBtn:hover {
+    background: #1d4ed8;
+    transform: translateY(-2px);
+}
+
+.errorMessage {
+    background: rgba(220, 38, 38, 0.6);
+    backdrop-filter: blur(4px);
+    color: white;
+    padding: 0.75rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .container {
+        padding: 0;
+    }
+
+    .loginCard {
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+        justify-content: center;
+        border: none;
+    }
+}
