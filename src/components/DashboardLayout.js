@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import styles from '@/styles/DashboardV2.module.css';
-import { LogOut, User } from 'lucide-react';
+import { LogOut, LayoutGrid, Briefcase, Calendar, Users, Map, User } from 'lucide-react';
 
 export default function DashboardLayout({ children, title }) {
     const router = useRouter();
@@ -32,6 +32,15 @@ export default function DashboardLayout({ children, title }) {
         role: 'Administrador'
     };
 
+    const menuItems = [
+        { icon: LayoutGrid, label: 'Dashboard', path: '/dashboard' },
+        { icon: User, label: 'Clientes', path: '/dashboard/clientes' },
+        { icon: Briefcase, label: 'Destinos', path: '/dashboard/destinos' },
+        { icon: Map, label: 'Puntos de Interés', path: '/dashboard/itinerarios' },
+        { icon: Calendar, label: 'Ventas', path: '/dashboard/ventas' },
+        { icon: Users, label: 'Usuarios', path: '/dashboard/usuarios' },
+    ];
+
     return (
         <div className={styles.dashboardContainer}>
             {/* Top Navigation Bar */}
@@ -49,18 +58,15 @@ export default function DashboardLayout({ children, title }) {
                 </div>
 
                 <div className={styles.navLinks}>
-                    <Link href="/dashboard" className={`${styles.navItem} ${isActive('/dashboard')}`}>
-                        Dashboard
-                    </Link>
-                    <Link href="/dashboard/destinos" className={`${styles.navItem} ${isActive('/dashboard/destinos')}`}>
-                        Destinos
-                    </Link>
-                    <Link href="/dashboard/ventas" className={`${styles.navItem} ${isActive('/dashboard/ventas')}`}>
-                        Ventas
-                    </Link>
-                    <Link href="/dashboard/usuarios" className={`${styles.navItem} ${isActive('/dashboard/usuarios')}`}>
-                        Usuarios
-                    </Link>
+                    {menuItems.map((item) => {
+                        const Icon = item.icon;
+                        return (
+                            <Link key={item.path} href={item.path} className={`${styles.navItem} ${isActive(item.path)}`}>
+                                <Icon size={18} />
+                                {item.label}
+                            </Link>
+                        );
+                    })}
                 </div>
 
                 <div className={styles.actions}>

@@ -2,29 +2,8 @@ import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { useApp } from '@/context/AppContext';
 import styles from '@/styles/Voucher.module.css';
-import { Download, ChevronLeft, Globe, CheckCircle, Clock, PlusCircle } from 'lucide-react';
+import { Download, ChevronLeft, Globe, Calendar, CheckSquare, FileText, MapPin } from 'lucide-react';
 import { useEffect, useState } from 'react';
-
-// Helper to parse newline separated strings into arrays
-const parseList = (content) => {
-    if (!content) return [];
-    if (Array.isArray(content)) return content;
-    return content.split(/\r?\n/).filter(item => item.trim().length > 0);
-};
-
-// Helper to parse itinerary content
-const parseItinerary = (itineraryData) => {
-    if (Array.isArray(itineraryData)) return itineraryData;
-    if (typeof itineraryData !== 'string') return [];
-
-    const blocks = itineraryData.split(/\r?\n\r?\n/);
-    return blocks.map(block => {
-        const lines = block.split(/\r?\n/);
-        const title = lines[0];
-        const description = lines.slice(1).join(' ');
-        return { title, description };
-    });
-};
 
 export default function Voucher() {
     const router = useRouter();
@@ -42,202 +21,207 @@ export default function Voucher() {
     if (!data) return <div style={{ padding: '2rem', textAlign: 'center', color: '#1E293B' }}>Cargando Voucher...</div>;
     if (!data.destination) return <div style={{ padding: '2rem', textAlign: 'center', color: '#1E293B' }}>Destino no encontrado</div>;
 
-    const { destination: dest, voucher_code } = data;
+    const { destination: dest, voucher_code, client_name, total_amount, date, custom_itinerary } = data;
 
-    // Use parse helpers
-    const includes = parseList(dest.includes || dest.includes_content);
-    const extras = parseList(dest.extras || dest.extras_content);
-    const itinerary = (dest.itinerary && Array.isArray(dest.itinerary))
-        ? dest.itinerary
-        : parseItinerary(dest.itinerary_content);
+    // Default Checklist Content
+    const checklistItems = (dest.includes && dest.includes.length > 0) ? dest.includes : [
+        "Aéreos internacionales ida y vuelta",
+        "Aéreo interno ida",
+        "Tren",
+        "Traslados aeropuerto /hotel /aeropuerto",
+        "1 Personal ítem",
+        "1 Carry on",
+        "Alojamiento",
+        "Excursiones descritas en el itinerario",
+        "Entradas Turísticas",
+        "Visita Villa de Papá Noel",
+        "Guía de habla hispana",
+        "Desayunos",
+        "1 Almuerzo",
+        "1 Cena",
+        "Impuestos",
+        "Acompañante desde PR"
+    ];
 
-    // Robust Fallback for Feature Image (Beach/Palms)
-    // Using a direct, high-quality static URL that is reliable
-    const featureImage = 'https://images.unsplash.com/photo-1542259681-d4cd716f7267?q=80&w=600&fit=crop';
+    // Default Terms Content
+    const termsContent = `Términos y Condiciones:
+Imay LLC H/N/C Julely actúa solamente como intermediario entre los clientes y proveedores de servicio, líneas aéreas, hoteles, transportistas,
+guías, entre otros. Por tanto, no se hace responsable en caso de accidentes, pérdidas, demoras, daños, heridas, cambios de itinerario,
+cancelaciones de vuelos, enfermedad, actos de guerra, huelgas, actos de la naturaleza, robos, cuarentenas, accidentes, pandemias, epidemias
+y/u otros fuera de su control, antes, durante y después de su viaje o relacionadas al mismo. Cualquier reclamación por accidente, robos u
+otros incidentes sufridos deberá ser sometido a la compañía que efectúa dicho servicio y será tramitada por este de acuerdo con la legislación
+que esté vigente en el país donde recibe el servicio.
+Los operadores y Julely se reservan el derecho, de ser necesario, de alterar u omitir cualquier porción del itinerario, sin previo aviso, por
+cualquier razón causada de fuerza mayor. Los servicios no prestados por causa de fuerza mayor no tienen derecho a reembolso. Julely no se
+responsabiliza por la operación, acto, omisión, robo, accidentes, pandemias, epidemias o sucesos que ocurran antes, durante y después de su
+viaje. Los términos y condiciones de cancelación se encuentran disponibles 24/7 en www.julely.com. Estos pueden ser descargados en
+cualquier momento para su expediente. CLIENTE acepta y reconoce que al enviar el depósito para la reservación acepta los términos y
+condiciones. RECOMENDAMOS que compre un seguro de viajes para su protección, desde el momento de su depósito.`;
 
-    // Agency name logic - Specific request override
-    const displayAgencyName = "Travel Agency";
+    // Itinerary Source (Custom or Default)
+    const itineraryList = custom_itinerary && custom_itinerary.length > 0
+        ? custom_itinerary
+        : (dest.itinerary || []);
 
-    // Destination Name Logic: Use "destination_name" (e.g. Tailandia) preferentially, then Title.
-    // If destination_name is missing, try to extract from title or default to "DESTINO"
-    let destName = dest.destination_name;
-    if (!destName && dest.title) {
-        // Simple heuristic: Take first word or try to find known destination names? 
-        // Better to just use title if name is missing, but user asked for "TOKIO" style.
-        destName = dest.title.split(' ')[0].toUpperCase();
-        if (destName.length < 3) destName = "DESTINO";
-    }
-    if (!destName) destName = "DESTINO";
+    const formattedDate = new Date(date || Date.now()).toLocaleDateString('es-ES', {
+        day: '2-digit', month: '2-digit', year: 'numeric'
+    });
 
     return (
         <>
             <Head>
-                <title>Voucher {voucher_code} - {destName}</title>
+                <title>Voucher {voucher_code}</title>
             </Head>
 
             <div className={styles.voucherContainer}>
                 <div className={styles.voucherPage}>
 
-                    {/* Header */}
+                    {/* 1. Header with Destination */}
                     <div className={styles.header}>
+                        <div className={styles.headerOverlay}></div>
                         <img
                             src={dest.hero_image_url}
                             className={styles.headerImg}
                             alt={dest.title}
                             onError={(e) => e.target.src = 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=2670&auto=format&fit=crop'}
                         />
-                        <div className={styles.overlay}></div>
-
-                        <div className={styles.brandLogo}>
-                            <Globe size={24} />
-                            <span>{displayAgencyName.toUpperCase()}</span>
-                        </div>
-
-                        <div className={styles.bestSellerBadge}>
-                            <span>Venta</span>
-                            <span>Top</span>
-                        </div>
-
-                        <div className={styles.mainTitle}>
-                            <div className={styles.tagline}>¡Tu Próxima Aventura!</div>
-                            {/* Showing the specific destination name here in BIG text */}
-                            <div className={styles.destinationName}>{destName.toUpperCase()}</div>
-                            {/* Removed the subtitle below as requested since it was often redundant or incorrect */}
+                        <div className={styles.headerContent}>
+                            <div className={styles.logoRow}>
+                                <Globe size={28} />
+                                <span>TRAVEL AGENDY</span>
+                            </div>
+                            <h1 className={styles.destinationTitle}>{dest.title.toUpperCase()}</h1>
+                            <div className={styles.voucherCode}>{voucher_code}</div>
                         </div>
                     </div>
 
-                    {/* Price Strip */}
-                    <div className={styles.priceStrip}>
-                        <div className={styles.priceText}>
-                            {dest.currency || '$'} {dest.price ? dest.price.toLocaleString() : 'CONSULTAR'}
+                    {/* 2. Key Info (Client, Price, Date) */}
+                    <div className={styles.infoSection}>
+                        <div className={styles.infoCard}>
+                            <div className={styles.infoLabel}>VIAJERO PRINCIPAL</div>
+                            <div className={styles.infoValue}>{client_name}</div>
+                        </div>
+                        <div className={styles.infoCard}>
+                            <div className={styles.infoLabel}>PRECIO TOTAL</div>
+                            <div className={styles.infoValue}>${total_amount ? total_amount.toLocaleString() : '0'} USD</div>
+                        </div>
+                        <div className={styles.infoCard}>
+                            <div className={styles.infoLabel}>FECHA EMISIÓN</div>
+                            <div className={styles.infoValue}>{formattedDate}</div>
                         </div>
                     </div>
 
-                    {/* Grid Layout */}
-                    <div className={styles.grid}>
+                    <div className={styles.mainContent}>
 
-                        {/* Left Col: Includes & Itinerary */}
-                        <div className={styles.leftCol}>
-
-                            {/* Includes */}
-                            <div>
-                                <div className={styles.sectionHeader}>
-                                    <CheckCircle size={24} className={styles.sectionHeaderIcon} />
-                                    <h3>¿Qué incluye este viaje?</h3>
-                                </div>
-                                <ul className={styles.includesList}>
-                                    {includes.map((inc, i) => (
-                                        <li key={i}>
-                                            <div className={styles.checkIcon}>✓</div>
-                                            {inc}
-                                        </li>
-                                    ))}
-                                </ul>
+                        {/* 3. Checklist */}
+                        <div className={styles.sectionBlock}>
+                            <h3 className={styles.sectionTitle}>
+                                <CheckSquare size={20} />
+                                INCLUYE
+                            </h3>
+                            <div className={styles.checklistGrid}>
+                                {checklistItems.map((item, idx) => (
+                                    <div key={idx} className={styles.checkItem}>
+                                        <div className={styles.customCheck}>✓</div>
+                                        <span>{item}</span>
+                                    </div>
+                                ))}
                             </div>
 
-                            {/* Itinerary */}
-                            {itinerary.length > 0 && (
-                                <div>
-                                    <div className={styles.sectionHeader}>
-                                        <Clock size={24} className={`${styles.sectionHeaderIcon} ${styles.sectionHeaderIconPrimary}`} />
-                                        <h3>Itinerario</h3>
-                                    </div>
-                                    <div className={styles.timeline}>
-                                        {itinerary.map((item, idx) => (
-                                            <div key={idx} className={styles.timelineItem}>
-                                                <div className={styles.timelineDot}></div>
-                                                <div className={styles.timelineContent}>
-                                                    <h4>{item.title}</h4>
-                                                    {item.description && <p>{item.description}</p>}
+                            {/* Prepared By Section */}
+                            <div className={styles.preparedByBox}>
+                                <div className={styles.preparedByLabel}>PREPARADO POR:</div>
+                                <div className={styles.preparedByName}>Alberto Flores</div>
+                            </div>
+                        </div>
+
+                        {/* 4. Terms */}
+                        <div className={styles.sectionBlock}>
+                            <h3 className={styles.sectionTitle}>
+                                <FileText size={20} />
+                                TÉRMINOS Y CONDICIONES
+                            </h3>
+                            <div className={styles.termsText}>
+                                {termsContent.split('relacionadas al mismo.')[0]}relacionadas al mismo.
+                            </div>
+
+                            {/* Force Page Break */}
+                            <div className={styles.pageBreak}></div>
+
+                            <div className={styles.termsText} style={{ marginTop: '2rem' }}>
+                                {termsContent.split('relacionadas al mismo.')[1]}
+                            </div>
+                        </div>
+
+                        {/* 5. Dest Description */}
+                        <div className={styles.sectionBlock}>
+                            <h3 className={styles.sectionTitle}>
+                                <MapPin size={20} />
+                                SOBRE TU DESTINO
+                            </h3>
+                            <div className={styles.descriptionText}>
+                                {dest.description_long || dest.subtitle}
+                            </div>
+                        </div>
+
+                        {/* 6. Detailed Itinerary - Allow breaking */}
+                        <div className={styles.sectionBlock} style={{ breakInside: 'auto' }}>
+                            <h3 className={styles.sectionTitle}>
+                                <Calendar size={20} />
+                                ITINERARIO DETALLADO
+                            </h3>
+                            <div className={styles.itineraryList}>
+                                {itineraryList.map((item, idx) => (
+                                    <div key={idx} className={styles.itineraryItem}>
+                                        <div className={styles.dayBadge}>DÍA {item.day || idx + 1}</div>
+                                        <div className={styles.itineraryContent}>
+                                            <h4 className={styles.itineraryTitle}>{item.name || item.title}</h4>
+                                            <p className={styles.itineraryDesc}>{item.description}</p>
+                                            {item.image && (
+                                                <div className={styles.itineraryImageWrapper}>
+                                                    <img src={item.image} alt={item.name || item.title} />
                                                 </div>
-                                            </div>
-                                        ))}
+                                            )}
+                                        </div>
                                     </div>
-                                </div>
-                            )}
-
-                        </div>
-
-                        {/* Right Col: Why -> Image -> Extras */}
-                        <div className={styles.rightCol}>
-
-                            {/* 1. Why This Destination */}
-                            <div className={styles.whyBox}>
-                                <div className={styles.whyHeader}>
-                                    ¿Por qué {destName}?
-                                </div>
-                                <div className={styles.whyText}>
-                                    {dest.target_content || dest.description_long || "Una experiencia inolvidable te espera."}
-                                </div>
+                                ))}
                             </div>
-
-                            {/* 2. Circular Image REMOVED */}{/*  */}
-
-                            {/* 3. Extras */}
-                            {extras.length > 0 && (
-                                <div className={styles.extrasBox}>
-                                    <div className={styles.extrasHeader}>
-                                        <PlusCircle size={16} style={{ display: 'inline', marginRight: '4px', marginBottom: '-2px' }} />
-                                        Extras Opcionales
-                                    </div>
-                                    <ul className={styles.extrasList}>
-                                        {extras.map((ext, i) => (
-                                            <li key={i}><span>•</span>{ext}</li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            )}
-
                         </div>
 
                     </div>
 
-                    {/* Footer */}
+                    {/* 7. Footer (WEB VIEW ONLY) */}
                     <div className={styles.footer}>
-                        <div className={styles.contactGrid}>
-                            <div className={styles.contactItem}>
-                                {/* Spacer for Alignment */}
-                                <div className={styles.contactLabel}>&nbsp;</div>
-                                <div className={styles.agencyNameFooter}>{displayAgencyName}</div>
-                            </div>
-                            <div className={styles.contactItem}>
-                                <div className={styles.contactLabel}>Teléfono</div>
-                                <div className={styles.contactVal}>+1 (787) 555-0123</div>
-                            </div>
-                            <div className={styles.contactItem}>
-                                <div className={styles.contactLabel}>Código Reserva</div>
-                                <div className={styles.contactVal} style={{ fontFamily: 'monospace' }}>{voucher_code}</div>
-                            </div>
+                        <div className={styles.footerContent}>
+                            <span>Travel Agendy</span>
+                            <span>+1 (787) 555-0123</span>
+                            <span>www.travelagendy.com</span>
                         </div>
                     </div>
+                </div>
 
+            </div>
+
+            {/* Print Only Footer (Duplicate for Fixed Position on Every Page) */}
+            <div className={styles.printFooter}>
+                <div className={styles.footerContent}>
+                    <span>Travel Agendy</span>
+                    <span>+1 (787) 555-0123</span>
+                    <span>www.travelagendy.com</span>
                 </div>
             </div>
 
+
             <div className={styles.actions}>
-                <button className="btn-outline" style={{ background: 'white', border: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem 1.5rem', borderRadius: '50px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', cursor: 'pointer', fontWeight: 600, color: '#0F172A' }} onClick={() => router.back()}>
+                <button className={styles.btnBack} onClick={() => router.back()}>
                     <ChevronLeft size={20} /> Volver
                 </button>
-                <button className="btn-white" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem 1.5rem', borderRadius: '50px', background: '#0EA5E9', border: 'none', color: 'white', cursor: 'pointer', fontWeight: 800, boxShadow: '0 4px 12px rgba(14, 165, 233, 0.4)' }} onClick={() => window.print()}>
+                <button className={styles.btnDownload} onClick={() => window.print()}>
                     <Download size={20} /> Descargar PDF
                 </button>
             </div>
 
-            <style jsx global>{`
-                @media print {
-                    @page {
-                        size: A4;
-                        margin: 0;
-                    }
-                    html, body {
-                        width: 100%;
-                        height: 100%;
-                        margin: 0 !important;
-                        padding: 0 !important;
-                        overflow: hidden;
-                    }
-                }
-            `}</style>
+
         </>
     );
 }

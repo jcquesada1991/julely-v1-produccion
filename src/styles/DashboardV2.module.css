@@ -53,6 +53,11 @@
     font-weight: 600;
     font-size: 0.95rem;
     transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    /* Requested gap */
+    line-height: 1;
 }
 
 .navItem:hover {
@@ -162,14 +167,6 @@
     box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
 }
 
-.avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 12px;
-    object-fit: cover;
-}
-
-
 /* --- Main Content --- */
 .mainContent {
     flex: 1;
@@ -234,43 +231,9 @@
     overflow: hidden;
 }
 
-.statCard::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(135deg, rgba(14, 165, 233, 0.05) 0%, rgba(30, 41, 59, 0.05) 100%);
-    opacity: 0;
-    transition: opacity 0.4s ease;
-    pointer-events: none;
-}
-
-.statCard::after {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(14, 165, 233, 0.1) 0%, transparent 70%);
-    opacity: 0;
-    transition: opacity 0.4s ease;
-    pointer-events: none;
-}
-
 .statCard:hover {
     transform: translateY(-6px) scale(1.02);
     box-shadow: 0 12px 32px rgba(14, 165, 233, 0.15), 0 0 0 1px rgba(14, 165, 233, 0.1);
-}
-
-.statCard:hover::before {
-    opacity: 1;
-}
-
-.statCard:hover::after {
-    opacity: 1;
 }
 
 .statLabel {
@@ -299,14 +262,29 @@
 }
 
 /* --- Destination Cards Grid --- */
+.paramountCard {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+    border: 1px solid #E2E8F0;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.paramountCard:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+}
+
 .gridContainer {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 2rem;
+    grid-template-columns: repeat(5, 1fr);
+    /* 5 cols for large screens */
+    gap: 1.5rem;
     padding: 1rem 0;
 }
 
-/* --- Modern Card Design (Reference Image Style) --- */
+/* --- Modern Card Design --- */
 .card {
     position: relative;
     background: white;
@@ -315,7 +293,7 @@
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
-    height: 480px;
+    height: 380px;
     display: flex;
     flex-direction: column;
 }
@@ -325,17 +303,20 @@
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
 }
 
-/* Image Container */
 .cardImgWrap {
     position: relative;
     width: 100%;
     height: 100%;
     overflow: hidden;
-    transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 24px 24px 0 0;
 }
 
 .card:hover .cardImgWrap {
     height: 50%;
+    width: calc(100% - 8px);
+    margin: 4px;
+    border-radius: 20px;
 }
 
 .cardImg {
@@ -349,7 +330,6 @@
     transform: scale(1.05);
 }
 
-/* Gradient Overlay */
 .gradientOverlay {
     position: absolute;
     bottom: 0;
@@ -366,11 +346,17 @@
     opacity: 0;
 }
 
-/* Premium Badge */
-.premiumBadge {
+.badgeContainer {
     position: absolute;
     top: 16px;
     left: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 10;
+}
+
+.premiumBadge {
     background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
     color: #1A1C23;
     padding: 0.4rem 0.8rem;
@@ -381,124 +367,25 @@
     display: flex;
     align-items: center;
     gap: 0.3rem;
-    z-index: 10;
     box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
     transition: all 0.3s ease;
 }
 
-.card:hover .premiumBadge {
-    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
-    box-shadow: 0 6px 16px rgba(255, 215, 0, 0.5);
-}
-
-/* Favorite Icon */
-.favoriteIcon {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    width: 40px;
-    height: 40px;
-    background: rgba(255, 255, 255, 0.25);
-    backdrop-filter: blur(10px);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.favoriteBadge {
+    background: linear-gradient(135deg, #F43F5E 0%, #E11D48 100%);
     color: white;
-    z-index: 10;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.card:hover .favoriteIcon {
-    background: rgba(0, 0, 0, 0.1);
-    color: #1A1C23;
-}
-
-.favoriteIcon:hover {
-    transform: scale(1.1);
-}
-
-/* Price Tag Top Right - Replaces favorite icon */
-.priceTagTopRight {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: #1A1C23;
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    z-index: 10;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-}
-
-.card:hover .priceTagTopRight {
-    background: rgba(0, 0, 0, 0.9);
-    color: white;
-    transform: scale(1.05);
-}
-
-/* Price Tag */
-.priceTag {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: #1A1C23;
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    z-index: 10;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    transition: all 0.4s ease;
-}
-
-.card:hover .priceTag {
-    bottom: 50%;
-    transform: translateY(50%);
-    left: 20px;
-}
-
-/* Airport Code */
-.airportCode {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    background: rgba(255, 255, 255, 0.25);
-    backdrop-filter: blur(10px);
     padding: 0.4rem 0.8rem;
-    border-radius: 16px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: white;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
     display: flex;
     align-items: center;
     gap: 0.3rem;
-    z-index: 10;
-    transition: all 0.4s ease;
+    box-shadow: 0 4px 12px rgba(244, 63, 94, 0.4);
+    transition: all 0.3s ease;
 }
 
-.card:hover .airportCode {
-    bottom: 50%;
-    transform: translateY(50%);
-    right: 20px;
-    background: rgba(0, 0, 0, 0.1);
-    color: #1A1C23;
-}
-
-/* Text Overlay on Image */
 .cardOverlayContent {
     position: absolute;
     bottom: 80px;
@@ -514,21 +401,22 @@
     transform: translateY(10px);
 }
 
-.cardOverlayContent h3 {
-    font-size: 2rem;
+.cardOverlayTitle {
+    font-size: 2.2rem;
     font-weight: 800;
     margin-bottom: 0.3rem;
     line-height: 1.1;
     color: white;
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
-.cardOverlayContent p {
-    font-size: 0.9rem;
-    opacity: 0.95;
-    font-weight: 500;
+.cardOverlaySubtitle {
+    font-size: 1.1rem;
+    opacity: 1;
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-/* Card Body (Visible on Hover) */
 .cardBody {
     position: absolute;
     bottom: 0;
@@ -542,14 +430,22 @@
     pointer-events: none;
     height: 50%;
     display: flex;
+    display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-end;
+    /* Push content to bottom */
+    gap: 1rem;
 }
 
 .card:hover .cardBody {
     opacity: 1;
     transform: translateY(0);
     pointer-events: all;
+}
+
+/* Ensure title doesn't shift up when description is long. Content grows up from bottom. */
+.cardBody>div:first-child {
+    flex-shrink: 0;
 }
 
 .cardTitle {
@@ -567,7 +463,6 @@
     font-weight: 500;
 }
 
-/* Action Buttons Footer */
 .cardFooter {
     display: flex;
     gap: 0.75rem;
@@ -578,8 +473,8 @@
 
 .actionBtn {
     position: relative;
-    width: 44px;
-    height: 44px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     border: 2px solid #E2E8F0;
     background: white;
@@ -599,30 +494,9 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* Icon colors - white initially, black on card hover */
-.card .actionBtn {
-    color: white;
-    border-color: rgba(255, 255, 255, 0.3);
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
-}
-
-.card:hover .actionBtn {
-    color: #1A1C23;
-    border-color: #E2E8F0;
-    background: white;
-}
-
-.card:hover .actionBtn:hover {
-    color: white;
-    background: #1A1C23;
-    border-color: #1A1C23;
-}
-
 /* Specific Action Button Colors */
 .actionBtnPrimary {
     color: #0EA5E9 !important;
-    /* Sky 500 */
     border-color: #0EA5E9 !important;
 }
 
@@ -634,7 +508,6 @@
 
 .actionBtnDanger {
     color: #EF4444 !important;
-    /* Red 500 */
     border-color: #EF4444 !important;
 }
 
@@ -664,64 +537,10 @@
     z-index: 100;
 }
 
-.actionBtn::after {
-    content: '';
-    position: absolute;
-    bottom: calc(100% + 2px);
-    left: 50%;
-    transform: translateX(-50%);
-    border: 6px solid transparent;
-    border-top-color: #1A1C23;
-    opacity: 0;
-    pointer-events: none;
-    transition: all 0.2s ease;
-}
-
-.actionBtn:hover::before,
-.actionBtn:hover::after {
+.actionBtn:hover::before {
     opacity: 1;
     transform: translateX(-50%) scale(1);
 }
-
-/* Search Flight Button (Alternative to action buttons) */
-.searchButton {
-    width: 100%;
-    padding: 0.9rem;
-    background: white;
-    color: #1A1C23;
-    border: none;
-    border-radius: 16px;
-    font-weight: 700;
-    font-size: 0.95rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-top: auto;
-}
-
-.searchButton:hover {
-    background: #1A1C23;
-    color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .gridContainer {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-    }
-
-    .card {
-        height: 420px;
-    }
-
-    .cardOverlayContent h3 {
-        font-size: 1.6rem;
-    }
-}
-
-   
 
 /* Modern Table Styles */
 .table {
@@ -751,16 +570,6 @@
     transition: all 0.2s ease;
 }
 
-.table tbody tr:hover {
-    background: linear-gradient(135deg, #F8FAFC 0%, #FFFFFF 100%);
-    transform: translateX(4px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-}
-
-.table tbody tr:last-child {
-    border-bottom: none;
-}
-
 .table td {
     padding: 1.25rem 1.5rem;
     font-size: 0.9rem;
@@ -774,43 +583,25 @@
     justify-content: flex-end;
 }
 
-.table .actionBtn {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    border: 2px solid #E2E8F0;
-    background: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
+/* Responsive */
+@media (max-width: 1400px) {
+    .gridContainer {
+        grid-template-columns: repeat(4, 1fr);
+    }
 }
 
-.table .actionBtn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+@media (max-width: 1100px) {
+    .gridContainer {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }
 
-/* Status badges */
-.statusBadge {
-    padding: 0.4rem 1rem;
-    border-radius: 999px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3rem;
-}
+@media (max-width: 768px) {
+    .gridContainer {
+        grid-template-columns: 1fr;
+    }
 
-.statusConfirmed {
-    background: linear-gradient(135deg, #DCFCE7 0%, #BBF7D0 100%);
-    color: #166534;
-    border: 1px solid #BBF7D0;
-}
-
-.statusPending {
-    background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
-    color: #92400E;
-    border: 1px solid #FDE68A;
+    .card {
+        height: 420px;
+    }
 }

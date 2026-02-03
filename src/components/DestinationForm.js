@@ -76,174 +76,68 @@ export default function DestinationForm({ initialData = null, onSubmit, onCancel
     };
 
     return (
+
         <form onSubmit={handleSubmit}>
-            <div className={styles.modalBody}>
-                <div className={styles.formGrid}>
+            <div className={styles.modalBody} style={{ padding: '1.5rem', maxHeight: 'calc(80vh - 100px)' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                     <div className={styles.formGroup}>
-                        <label className={styles.formLabel}>Título del Destino</label>
+                        <label className={styles.formLabel}>Título</label>
                         <input
                             name="title"
                             value={formData.title}
                             onChange={handleChange}
                             className={styles.formInput}
                             required
-                            placeholder="Ej. Escapada a París"
+                            placeholder="Ej. París"
+                            style={{ padding: '0.6rem' }}
                         />
                     </div>
 
                     <div className={styles.formGroup}>
-                        <label className={styles.formLabel}>Precio</label>
-                        <input
-                            name="price"
-                            type="number"
-                            value={formData.price}
-                            onChange={handleChange}
-                            className={styles.formInput}
-                            required
-                        />
-                    </div>
-
-                    <div className={`${styles.formGroup} ${styles.formGridFull}`}>
-                        <label className={styles.formLabel}>Subtítulo (Slogan)</label>
+                        <label className={styles.formLabel}>Subtítulo</label>
                         <input
                             name="subtitle"
                             value={formData.subtitle}
                             onChange={handleChange}
                             className={styles.formInput}
-                            placeholder="Breve descripción atractiva"
+                            style={{ padding: '0.6rem' }}
                         />
                     </div>
+                </div>
 
-                    <div className={`${styles.formGroup} ${styles.formGridFull}`}>
-                        <label className={styles.formLabel}>URL Imagen Principal</label>
-                        <input
-                            name="hero_image_url"
-                            value={formData.hero_image_url}
-                            onChange={handleChange}
-                            className={styles.formInput}
-                            placeholder="https://..."
-                        />
-                        {formData.hero_image_url && (
-                            <img
-                                src={formData.hero_image_url}
-                                alt="Preview"
-                                style={{
-                                    width: '100%',
-                                    height: '150px',
-                                    objectFit: 'cover',
-                                    borderRadius: '12px',
-                                    marginTop: '0.75rem',
-                                    border: '2px solid #E2E8F0'
-                                }}
-                            />
-                        )}
-                    </div>
+                <div className={styles.formGroup} style={{ marginTop: '0.5rem' }}>
+                    <label className={styles.formLabel}>URL Imagen</label>
+                    <input
+                        name="hero_image_url"
+                        value={formData.hero_image_url}
+                        onChange={handleChange}
+                        className={styles.formInput}
+                        style={{ padding: '0.6rem' }}
+                    />
+                </div>
 
-                    <div className={`${styles.formGroup} ${styles.formGridFull}`}>
-                        <label className={styles.formLabel}>Descripción Larga</label>
-                        <textarea
-                            name="description_long"
-                            value={formData.description_long}
-                            onChange={handleChange}
-                            className={styles.formTextarea}
-                            required
-                        />
-                    </div>
-
-                    {/* Itinerario Section */}
-                    <div className={`${styles.formGroup} ${styles.formGridFull}`}>
-                        <label className={styles.formLabel}>Itinerario</label>
-                        <div style={{
-                            background: 'linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%)',
-                            padding: '1.5rem',
-                            borderRadius: '16px',
-                            border: '1px solid #E2E8F0'
-                        }}>
-                            {formData.itinerary.map((day, idx) => (
-                                <div key={idx} style={{
-                                    marginBottom: '1.5rem',
-                                    paddingBottom: '1.5rem',
-                                    borderBottom: idx < formData.itinerary.length - 1 ? '1px solid #E2E8F0' : 'none'
-                                }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
-                                        <span style={{
-                                            fontWeight: 700,
-                                            fontSize: '0.9rem',
-                                            color: '#6366F1',
-                                            textTransform: 'uppercase',
-                                            letterSpacing: '0.05em'
-                                        }}>
-                                            Día {day.day}
-                                        </span>
-                                        {formData.itinerary.length > 1 && (
-                                            <button
-                                                type="button"
-                                                onClick={() => removeDay(idx)}
-                                                style={{
-                                                    color: '#EF4444',
-                                                    border: 'none',
-                                                    background: 'transparent',
-                                                    cursor: 'pointer',
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    gap: '0.5rem'
-                                                }}
-                                            >
-                                                <Trash2 size={16} />
-                                            </button>
-                                        )}
-                                    </div>
-                                    <input
-                                        placeholder="Título del día (Ej. Llegada)"
-                                        value={day.title}
-                                        onChange={(e) => updateItinerary(idx, 'title', e.target.value)}
-                                        className={styles.formInput}
-                                        style={{ marginBottom: '0.75rem' }}
-                                    />
-                                    <textarea
-                                        placeholder="Actividades detalladas..."
-                                        value={day.description}
-                                        onChange={(e) => updateItinerary(idx, 'description', e.target.value)}
-                                        className={styles.formTextarea}
-                                        style={{ minHeight: '80px' }}
-                                    />
-                                </div>
-                            ))}
-                            <button
-                                type="button"
-                                onClick={addDay}
-                                style={{
-                                    background: 'linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%)',
-                                    color: '#1E40AF',
-                                    border: 'none',
-                                    padding: '0.75rem 1.25rem',
-                                    borderRadius: '12px',
-                                    cursor: 'pointer',
-                                    fontSize: '0.85rem',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '0.5rem',
-                                    fontWeight: 700,
-                                    transition: 'all 0.3s ease'
-                                }}
-                                onMouseEnter={(e) => e.target.style.transform = 'translateY(-2px)'}
-                                onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
-                            >
-                                <Plus size={16} /> Agregar Día
-                            </button>
-                        </div>
-                    </div>
+                <div className={styles.formGroup} style={{ marginTop: '0.5rem' }}>
+                    <label className={styles.formLabel}>Descripción</label>
+                    <textarea
+                        name="description_long"
+                        value={formData.description_long}
+                        onChange={handleChange}
+                        className={styles.formTextarea}
+                        required
+                        style={{ minHeight: '80px', padding: '0.6rem' }}
+                    />
                 </div>
             </div>
 
-            <div className={styles.modalFooter}>
+            <div className={styles.modalFooter} style={{ padding: '1rem' }}>
                 <button type="button" className={styles.btnSecondary} onClick={onCancel}>
                     Cancelar
                 </button>
                 <button type="submit" className={styles.btnPrimary}>
-                    {initialData ? 'Actualizar Destino' : 'Guardar Destino'}
+                    {initialData ? 'Actualizar' : 'Guardar'}
                 </button>
             </div>
         </form>
+
     );
 }

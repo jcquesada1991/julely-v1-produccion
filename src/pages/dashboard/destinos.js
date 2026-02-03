@@ -3,16 +3,19 @@ import { useState } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import Modal from '@/components/Modal';
 import DestinationForm from '@/components/DestinationForm';
-import DestinationDetailsModal from '@/components/DestinationDetailsModal';
 import { useApp } from '@/context/AppContext';
 import styles from '@/styles/DashboardV2.module.css';
-import { Plus, Edit2, Trash2, Eye, Medal } from 'lucide-react';
+import { Plus, Edit2, Trash2, Medal, Heart } from 'lucide-react';
 
 export default function Destinations() {
     const { destinations, addDestination, updateDestination, deleteDestination } = useApp();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingDest, setEditingDest] = useState(null);
-    const [detailsDest, setDetailsDest] = useState(null);
+
+    // Limit to 8 examples, filtering out "Nueva York"
+    const displayedDestinations = destinations
+        .filter(d => d.title !== "Nueva York")
+        .slice(0, 8);
 
     const handleOpenCreate = () => {
         setEditingDest(null);
@@ -46,7 +49,7 @@ export default function Destinations() {
             </div>
 
             <div className={styles.gridContainer}>
-                {destinations.map((dest) => (
+                {displayedDestinations.map((dest) => (
                     <div key={dest.id} className={`${styles.card} ${dest.isPremium ? styles.premiumCard : ''}`}>
                         {/* Image Container */}
                         <div className={styles.cardImgWrap}>
@@ -58,22 +61,26 @@ export default function Destinations() {
                             />
                             <div className={styles.gradientOverlay}></div>
 
-                            {/* Premium Badge */}
-                            {dest.isPremium && (
-                                <div className={styles.premiumBadge}>
-                                    <Medal size={14} /> PREMIUM
-                                </div>
-                            )}
+                            <div className={styles.badgeContainer}>
+                                {/* Premium Badge */}
+                                {dest.isPremium && (
+                                    <div className={styles.premiumBadge}>
+                                        <Medal size={14} /> PREMIUM
+                                    </div>
+                                )}
 
-                            {/* Price Tag - Moved to top right */}
-                            <div className={styles.priceTagTopRight}>
-                                {dest.currency} ${dest.price.toLocaleString()}
+                                {/* Favorite Badge */}
+                                {dest.isFavorite && (
+                                    <div className={styles.favoriteBadge}>
+                                        <Heart size={14} fill="white" /> FAVORITO
+                                    </div>
+                                )}
                             </div>
 
                             {/* Overlay Content (Visible when NOT hovered) */}
                             <div className={styles.cardOverlayContent}>
-                                <h3>{dest.title}</h3>
-                                <p>{dest.category}</p>
+                                <h3 className={styles.cardOverlayTitle}>{dest.title}</h3>
+                                <p className={styles.cardOverlaySubtitle}>{dest.subtitle || dest.category}</p>
                             </div>
                         </div>
 
@@ -81,32 +88,35 @@ export default function Destinations() {
                         <div className={styles.cardBody}>
                             <div>
                                 <h3 className={styles.cardTitle}>{dest.title}</h3>
-                                <p className={styles.cardSubtitle}>
-                                    {dest.subtitle}
+                                <p
+                                    className={styles.cardSubtitle}
+                                    title={dest.description_long}
+                                    style={{
+                                        display: '-webkit-box',
+                                        WebkitLineClamp: 3,
+                                        WebkitBoxOrient: 'vertical',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis'
+                                    }}
+                                >
+                                    {dest.description_long || dest.subtitle}
                                 </p>
                             </div>
 
                             <div className={styles.cardFooter}>
                                 <button
                                     className={`${styles.actionBtn} ${styles.actionBtnPrimary}`}
-                                    data-tooltip="Ver Detalles"
-                                    onClick={() => setDetailsDest(dest)}
-                                >
-                                    <Eye size={18} />
-                                </button>
-                                <button
-                                    className={`${styles.actionBtn} ${styles.actionBtnPrimary}`}
                                     data-tooltip="Editar"
                                     onClick={() => handleOpenEdit(dest)}
                                 >
-                                    <Edit2 size={18} />
+                                    <Edit2 size={16} />
                                 </button>
                                 <button
                                     className={`${styles.actionBtn} ${styles.actionBtnDanger}`}
                                     data-tooltip="Eliminar"
                                     onClick={() => deleteDestination(dest.id)}
                                 >
-                                    <Trash2 size={18} />
+                                    <Trash2 size={16} />
                                 </button>
                             </div>
                         </div>
@@ -125,12 +135,6 @@ export default function Destinations() {
                     onCancel={() => setIsModalOpen(false)}
                 />
             </Modal>
-
-            <DestinationDetailsModal
-                destination={detailsDest}
-                isOpen={!!detailsDest}
-                onClose={() => setDetailsDest(null)}
-            />
         </DashboardLayout>
     );
 }

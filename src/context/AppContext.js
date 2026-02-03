@@ -122,6 +122,44 @@ export function AppProvider({ children }) {
         showNotification('Usuario eliminado', 'info');
     };
 
+    // CLIENTES CRUD
+    const [clients, setClients] = useState(MOCK_DATA.clients);
+
+    const addClient = (newClient) => {
+        const id = Math.max(...clients.map(c => c.id), 0) + 1;
+        setClients([...clients, { ...newClient, id }]);
+        showNotification(`Cliente "${newClient.name}" creado correctamente`);
+    };
+
+    const updateClient = (id, updatedClient) => {
+        setClients(clients.map(c => c.id === id ? { ...updatedClient, id } : c));
+        showNotification(`Cliente actualizado correctamente`);
+    };
+
+    const deleteClient = (id) => {
+        setClients(clients.filter(c => c.id !== id));
+        showNotification('Cliente eliminado', 'info');
+    };
+
+    // ITINERARIOS (PUNTOS DE INTERES) CRUD
+    const [itineraries, setItineraries] = useState(MOCK_DATA.itineraries);
+
+    const addItinerary = (newItinerary) => {
+        const id = Math.max(...itineraries.map(i => i.id), 0) + 1;
+        setItineraries([...itineraries, { ...newItinerary, id }]);
+        showNotification(`Punto de interés creado correctamente`);
+    };
+
+    const updateItinerary = (id, updatedItinerary) => {
+        setItineraries(itineraries.map(i => i.id === id ? { ...updatedItinerary, id } : i));
+        showNotification(`Punto de interés actualizado correctamente`);
+    };
+
+    const deleteItinerary = (id) => {
+        setItineraries(itineraries.filter(i => i.id !== id));
+        showNotification('Punto de interés eliminado', 'info');
+    };
+
     return (
         <AppContext.Provider value={{
             destinations,
@@ -131,12 +169,19 @@ export function AppProvider({ children }) {
             sales,
             addSale,
             getSaleDetails,
-            getSaleDetails,
             stats,
             users,
             addUser,
             updateUser,
-            deleteUser
+            deleteUser,
+            clients,
+            addClient,
+            updateClient,
+            deleteClient,
+            itineraries,
+            addItinerary,
+            updateItinerary,
+            deleteItinerary
         }}>
             {children}
         </AppContext.Provider>

@@ -17,8 +17,9 @@ export const MOCK_DATA = {
             category: "Premium",
             airport_code: "JTR",
             isPremium: true,
+            isFavorite: true,
             hero_image_url: "https://images.unsplash.com/photo-1613395877344-13d4c79e4284?q=80&w=2668&auto=format&fit=crop",
-            description_long: "Disfruta de una experiencia inolvidable en una de las islas más hermosas del mundo. Santorini te ofrece atardeceres mágicos, gastronomía exquisita y playas de arena volcánica.",
+            description_long: "Disfruta de una experiencia inolvidable en una de las islas más hermosas del mundo. Santorini te ofrece atardeceres mágicos desde Oia, donde el sol se funde con el mar Egeo en un espectáculo de colores. Podrás degustar su gastronomía exquisita, famosa por sus tomates cherry, vinos volcánicos y pescado fresco. Las playas de arena volcánica negra y roja te invitan a relajarte bajo el sol mediterráneo. Explora los pueblos de casas encaladas colgados de los acantilados y sumérgete en la historia de la civilización minoica en Akrotiri.",
             itinerary: [
                 { day: 1, title: "Llegada y Bienvenida", description: "Transfer privado al hotel y cena de bienvenida con vista a la caldera." },
                 { day: 2, title: "Crucero en Catamarán", description: "Recorrido por las islas volcánicas, aguas termales y almuerzo a bordo." },
@@ -50,7 +51,7 @@ export const MOCK_DATA = {
             airport_code: "NRT",
             isPremium: false,
             hero_image_url: "https://images.unsplash.com/photo-1528360983277-13d9012356ee?q=80&w=2670&auto=format&fit=crop",
-            description_long: "Un viaje fascinante que recorre Tokio, Kioto y Osaka. Sumérgete en la cultura japonesa, desde la ceremonia del té hasta la tecnología más avanzada.",
+            description_long: "Un viaje fascinante que recorre Tokio, Kioto y Osaka, sumergiéndote en lo más profundo de la cultura japonesa. Desde la ceremonia del té en jardines zen hasta la tecnología más avanzada en Akihabara, Japón es un país de contrastes. Descubre templos milenarios escondidos entre rascacielos futuristas y disfruta de la hospitalidad inigualable (Omotenashi) de su gente. Viaja en tren bala a velocidades increíbles y prueba la auténtica cocina kaiseki. Cada rincón ofrece una sorpresa, desde moda vanguardista hasta festivales tradicionales llenos de color.",
             itinerary: [
                 { day: 1, title: "Llegada a Tokio", description: "Recepción en Narita y traslado al hotel en Shinjuku." },
                 { day: 2, title: "Tokio Moderno", description: "Visita a Shibuya, Akihabara y subida al Skytree." },
@@ -82,7 +83,7 @@ export const MOCK_DATA = {
             airport_code: "DXB",
             isPremium: false,
             hero_image_url: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=2670&auto=format&fit=crop",
-            description_long: "Experimenta el lujo extremo en la ciudad más moderna del mundo. Dubai combina rascacielos impresionantes, playas paradisíacas y el desierto árabe.",
+            description_long: "Experimenta el lujo extremo en la ciudad más moderna del mundo, donde lo imposible se hace realidad. Dubai combina rascacielos impresionantes como el Burj Khalifa con playas paradisíacas de aguas cálidas. Aventúrate en el desierto árabe para un safari en 4x4 y una cena bajo las estrellas en un campamento beduino. Disfruta de compras de clase mundial en centros comerciales gigantescos y zocos tradicionales de oro y especias. La arquitectura futurista y la hospitalidad árabe crean un ambiente único y sofisticado.",
             itinerary: [
                 { day: 1, title: "Llegada a Dubai", description: "Transfer al hotel Burj Al Arab y bienvenida VIP." },
                 { day: 2, title: "Safari en el Desierto", description: "Aventura en 4x4 y cena bajo las estrellas." },
@@ -114,7 +115,7 @@ export const MOCK_DATA = {
             airport_code: "MLE",
             isPremium: false,
             hero_image_url: "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?q=80&w=2665&auto=format&fit=crop",
-            description_long: "Relájate en un resort overwater de lujo rodeado de aguas cristalinas. Las Maldivas ofrecen privacidad absoluta y belleza natural incomparable.",
+            description_long: "Relájate en un resort overwater de lujo rodeado de aguas cristalinas color turquesa que parecen sacadas de un sueño. Las Maldivas ofrecen privacidad absoluta y belleza natural incomparable, ideales para desconectar del estrés diario. Explora los vibrantes arrecifes de coral haciendo snorkel o buceo junto a mantarrayas y tortugas marinas. Disfruta de cenas románticas a la luz de las velas en playas privadas de arena blanca. Cada atardecer es una obra maestra que pinta el cielo de naranjas y rosas.",
             itinerary: [
                 { day: 1, title: "Llegada en Hidroavión", description: "Transfer privado al resort en hidroavión." },
                 { day: 2, title: "Snorkel y Buceo", description: "Explora los arrecifes de coral más hermosos." },
@@ -145,8 +146,9 @@ export const MOCK_DATA = {
             category: "Economy",
             airport_code: "CDG",
             isPremium: false,
+            isFavorite: true,
             hero_image_url: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=2673&auto=format&fit=crop",
-            description_long: "Descubre la magia de París, desde la Torre Eiffel hasta los Campos Elíseos. Arte, gastronomía y romance en cada esquina.",
+            description_long: "Descubre la magia de París, la Ciudad de la Luz, desde la icónica Torre Eiffel hasta los paseos por los Campos Elíseos. Sumérgete en el arte visitando el Louvre o el Museo de Orsay y déjate llevar por el romanticismo de Montmartre. La gastronomía francesa te deleitará en cada bistró, pastelería y restaurante con estrellas Michelin. Pasea a orillas del Sena al atardecer y admira la arquitectura histórica que hace de esta ciudad un museo al aire libre. La moda, la cultura y la historia te envuelven en cada esquina de esta capital europea.",
             itinerary: [
                 { day: 1, title: "Llegada a París", description: "Check-in en hotel boutique en Le Marais." },
                 { day: 2, title: "Torre Eiffel y Louvre", description: "Visita a los iconos más famosos de París." },
@@ -178,7 +180,7 @@ export const MOCK_DATA = {
             airport_code: "JFK",
             isPremium: false,
             hero_image_url: "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?q=80&w=2670&auto=format&fit=crop",
-            description_long: "Vive la energía de Nueva York, desde Times Square hasta Central Park. Broadway, museos de clase mundial y la mejor gastronomía urbana.",
+            description_long: "Vive la energía vibrante de Nueva York, la ciudad que nunca duerme, desde las luces de Times Square hasta la tranquilidad de Central Park. Asiste a un show de Broadway de clase mundial y explora museos icónicos como el MoMA y el Met. Disfruta de la mejor gastronomía urbana, desde pizzas clásicas hasta alta cocina internacional en los mejores restaurantes. Sube al Empire State o al Top of the Rock para vistas panorámicas inolvidables del skyline. Cada barrio, desde SoHo hasta Brooklyn, tiene su propia personalidad y encanto por descubrir.",
             itinerary: [
                 { day: 1, title: "Llegada a Manhattan", description: "Check-in en hotel en Midtown." },
                 { day: 2, title: "Estatua de la Libertad", description: "Ferry a Ellis Island y Estatua de la Libertad." },
@@ -200,55 +202,73 @@ export const MOCK_DATA = {
                 content: "Para quienes aman la vida urbana, el arte y el entretenimiento."
             }
         },
-        {
-            id: 7,
-            currency: "USD",
-            price: 2200,
-            title: "Bali",
-            subtitle: "Isla de los dioses",
-            category: "Economy",
-            airport_code: "DPS",
-            isPremium: false,
-            hero_image_url: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=2638&auto=format&fit=crop",
-            description_long: "Descubre la espiritualidad y belleza natural de Bali. Templos antiguos, arrozales en terrazas, playas vírgenes y cultura única.",
-            itinerary: [
-                { day: 1, title: "Llegada a Ubud", description: "Transfer a resort en el corazón de Bali." },
-                { day: 2, title: "Templos y Arrozales", description: "Visita a Tanah Lot y terrazas de arroz." },
-                { day: 3, title: "Yoga y Spa", description: "Sesión de yoga y tratamiento balinés." },
-                { day: 4, title: "Playas de Seminyak", description: "Relax en las mejores playas de Bali." }
-            ],
-            includes: [
-                "Vuelos economy",
-                "Resort boutique",
-                "Desayunos y cenas",
-                "Clases de yoga"
-            ],
-            extras: [
-                "Ceremonia de purificación",
-                "Clase de cocina balinesa"
-            ],
-            target: {
-                title: "Espiritualidad y Naturaleza",
-                content: "Ideal para quienes buscan conexión espiritual y belleza natural."
-            }
-        }
+
     ],
-    sales: [
+    sales: [],
+    clients: [
         {
-            id: 101,
-            client_name: "Juan Pérez",
-            destination_id: 1,
-            date: "2023-10-25",
-            status: "Confirmada",
-            voucher_code: "VOU-SAN-001"
+            id: 1,
+            name: "Juan",
+            surname: "Pérez",
+            phone: "+1 555 0101"
         },
         {
-            id: 102,
-            client_name: "María García",
-            destination_id: 2,
-            date: "2023-11-02",
-            status: "Pendiente",
-            voucher_code: "VOU-JPN-002"
+            id: 2,
+            name: "María",
+            surname: "García",
+            phone: "+34 600 000 000"
+        }
+    ],
+    itineraries: [
+        {
+            id: 1,
+            destination_id: 2, // Tokio
+            name: "Visita al Templo Senso-ji",
+            description: "El templo budista más antiguo de Tokio, situado en Asakusa. Famoso por su gran linterna roja y la calle comercial Nakamise. Es un símbolo de renacimiento y paz para los japoneses.",
+            price: 50,
+            image: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=2694&auto=format&fit=crop"
+        },
+        {
+            id: 2,
+            destination_id: 2, // Tokio
+            name: "Cruce de Shibuya",
+            description: "El cruce peatonal más transitado del mundo, símbolo de la modernidad de Tokio. Rodeado de enormes pantallas de neón y gente fashionista, es una experiencia urbana imprescindible.",
+            price: 15,
+            image: "https://images.unsplash.com/photo-1542051841857-5f90071e7989?q=80&w=2670&auto=format&fit=crop"
+        },
+        {
+            id: 3,
+            destination_id: 2, // Tokio
+            name: "Jardines Imperiales de Shinjuku",
+            description: "Un oasis de tranquilidad en medio del bullicio de Tokio. Estos jardines ofrecen una mezcla armoniosa de estilos paisajísticos tradicionales japoneses, franceses e ingleses. En primavera, es uno de los lugares más espectaculares para ver los cerezos en flor, mientras que en otoño los arces tiñen el paisaje de rojo intenso.",
+            price: 12,
+            image: "https://images.unsplash.com/photo-1522547902298-51566e4fb383?q=80&w=2535&auto=format&fit=crop"
+        },
+
+        {
+            id: 6,
+            destination_id: 2, // Tokio
+            name: "Torre de Tokio (Tokyo Tower)",
+            description: "Inspirada en la Torre Eiffel, esta estructura icónica ofrece vistas panorámicas impresionantes de la ciudad. Es especialmente hermosa por la noche, cuando se ilumina con colores que cambian según la estación. Desde sus plataformas de observación, en días despejados, incluso se puede vislumbrar el Monte Fuji en el horizonte.",
+            price: 25,
+            image: "https://images.unsplash.com/photo-1504109586057-7a2ae83d1338?q=80&w=2533&auto=format&fit=crop"
+        },
+
+        {
+            id: 8,
+            destination_id: 1, // Santorini
+            name: "Tour Volcánico y Aguas Termales",
+            description: "Navega hacia las islas volcánicas de Nea Kameni y Palea Kameni. Camina por el cráter activo y báñate en las aguas termales sulfurosas.",
+            price: 65,
+            image: "https://images.unsplash.com/photo-1506929562872-bb421503ef21?q=80&w=2568&auto=format&fit=crop"
+        },
+        {
+            id: 9,
+            destination_id: 3, // Dubai
+            name: "Safari en el Desierto",
+            description: "Una aventura emocionante en 4x4 por las dunas rojas de Dubai. Incluye sandboarding, paseo en camello y una cena tradicional BBQ bajo las estrellas.",
+            price: 85,
+            image: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=2694&auto=format&fit=crop"
         }
     ],
     // Helper para obtener venta completa con datos de destino
