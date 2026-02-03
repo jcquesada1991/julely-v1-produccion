@@ -682,4 +682,29 @@
         grid-template-columns: 1fr !important;
         gap: 1rem !important;
     }
+
+    /* Stack Itinerary Builder on Mobile */
+    .itineraryBuilderGrid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* --- Responsive Utilities --- */
+.tableResponsiveWrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 20px;
+}
+
+.tableResponsiveWrapper table {
+    min-width: 1000px;
+    /* Force table to be wide enough to show all columns */
+}
+
+/* Itinerary Builder Grid Default (Desktop) */
+.itineraryBuilderGrid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    min-height: 400px;
 }

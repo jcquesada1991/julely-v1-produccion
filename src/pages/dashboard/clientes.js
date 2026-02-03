@@ -4,7 +4,7 @@ import DashboardLayout from '@/components/DashboardLayout';
 import Modal from '@/components/Modal';
 import { useApp } from '@/context/AppContext';
 import styles from '@/styles/DashboardV2.module.css';
-import { Plus, User, Phone, Edit2, Trash2 } from 'lucide-react';
+import { Plus, User, Phone, Edit, Trash2 } from 'lucide-react';
 
 export default function Clients() {
     const { clients, addClient, updateClient, deleteClient } = useApp();
@@ -65,73 +65,75 @@ export default function Clients() {
             </div>
 
             <div className={styles.paramountCard}>
-                <table className={styles.table}>
-                    <thead>
-                        <tr>
-                            <th className={styles.tableHeader}>Cliente</th>
-                            <th className={styles.tableHeader}>Teléfono</th>
-                            <th className={styles.tableHeader} style={{ textAlign: 'center' }}>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {clients.map((client) => (
-                            <tr key={client.id}>
-                                <td>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                        <div style={{
-                                            width: '40px',
-                                            height: '40px',
-                                            borderRadius: '50%',
-                                            backgroundColor: getAvatarColor(client.name),
-                                            color: 'white',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            fontWeight: 700,
-                                            fontSize: '0.85rem'
-                                        }}>
-                                            {getInitials(client.name, client.surname)}
-                                        </div>
-                                        <div style={{ fontWeight: 700, color: '#1E293B' }}>
-                                            {client.name} {client.surname}
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#64748B' }}>
-                                        <Phone size={16} />
-                                        {client.phone}
-                                    </div>
-                                </td>
-                                <td>
-                                    <div className={styles.actions} style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
-                                        <button
-                                            className={`${styles.actionBtn} ${styles.actionBtnPrimary}`}
-                                            data-tooltip="Editar"
-                                            onClick={() => handleEdit(client)}
-                                        >
-                                            <Edit2 size={16} />
-                                        </button>
-                                        <button
-                                            className={`${styles.actionBtn} ${styles.actionBtnDanger}`}
-                                            data-tooltip="Eliminar"
-                                            onClick={() => handleDelete(client.id)}
-                                        >
-                                            <Trash2 size={16} />
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
-                        {clients.length === 0 && (
+                <div className={styles.tableResponsiveWrapper}>
+                    <table className={styles.table}>
+                        <thead>
                             <tr>
-                                <td colSpan="3" style={{ textAlign: 'center', padding: '3rem', color: '#94A3B8' }}>
-                                    No hay clientes registrados.
-                                </td>
+                                <th className={styles.tableHeader}>Cliente</th>
+                                <th className={styles.tableHeader}>Teléfono</th>
+                                <th className={styles.tableHeader} style={{ textAlign: 'center' }}>Acciones</th>
                             </tr>
-                        )}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {clients.map((client) => (
+                                <tr key={client.id}>
+                                    <td>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                            <div style={{
+                                                width: '40px',
+                                                height: '40px',
+                                                borderRadius: '50%',
+                                                backgroundColor: getAvatarColor(client.name),
+                                                color: 'white',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                fontWeight: 700,
+                                                fontSize: '0.85rem'
+                                            }}>
+                                                {getInitials(client.name, client.surname)}
+                                            </div>
+                                            <div style={{ fontWeight: 700, color: '#1E293B' }}>
+                                                {client.name} {client.surname}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#64748B' }}>
+                                            <Phone size={16} />
+                                            {client.phone}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div className={styles.actions} style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
+                                            <button
+                                                className={`${styles.actionBtn} ${styles.actionBtnPrimary}`}
+                                                data-tooltip="Editar"
+                                                onClick={() => handleEdit(client)}
+                                            >
+                                                <Edit size={16} />
+                                            </button>
+                                            <button
+                                                className={`${styles.actionBtn} ${styles.actionBtnDanger}`}
+                                                data-tooltip="Eliminar"
+                                                onClick={() => handleDelete(client.id)}
+                                            >
+                                                <Trash2 size={16} />
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                            {clients.length === 0 && (
+                                <tr>
+                                    <td colSpan="3" style={{ textAlign: 'center', padding: '3rem', color: '#94A3B8' }}>
+                                        No hay clientes registrados.
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <Modal

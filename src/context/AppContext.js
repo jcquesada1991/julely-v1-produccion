@@ -85,6 +85,11 @@ export function AppProvider({ children }) {
         showNotification('Venta registrada exitosamente');
     };
 
+    const deleteSale = (id) => {
+        setSales(sales.filter(s => s.id !== id));
+        showNotification('Venta eliminada', 'info');
+    };
+
     // Helper para Voucher
     const getSaleDetails = (saleId) => {
         const sale = sales.find(s => s.id === parseInt(saleId));
@@ -168,6 +173,7 @@ export function AppProvider({ children }) {
             deleteDestination,
             sales,
             addSale,
+            deleteSale,
             getSaleDetails,
             stats,
             users,

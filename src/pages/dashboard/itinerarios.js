@@ -50,87 +50,89 @@ export default function Itineraries() {
             </div>
 
             <div className={styles.paramountCard}>
-                <table className={styles.table}>
-                    <thead>
-                        <tr>
-                            <th className={styles.tableHeader}>Imagen</th>
-                            <th className={styles.tableHeader}>Nombre</th>
-                            <th className={styles.tableHeader}>Descripción</th>
-                            <th className={styles.tableHeader}>Destino</th>
-                            <th className={styles.tableHeader}>Precio</th>
-                            <th className={styles.tableHeader} style={{ textAlign: 'center' }}>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {itineraries.map(item => (
-                            <tr key={item.id}>
-                                <td>
-                                    <div className={styles.imgThumbnail} style={{ width: '50px', height: '50px', borderRadius: '8px', overflow: 'hidden' }}>
-                                        <img
-                                            src={item.image || 'https://images.unsplash.com/photo-1530789253388-582c481c54b0?q=80&w=2670&auto=format&fit=crop'}
-                                            alt={item.name}
-                                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                                        />
-                                    </div>
-                                </td>
-                                <td>
-                                    <div style={{ fontWeight: 700, color: '#1E293B' }}>{item.name}</div>
-                                </td>
-                                <td>
-                                    <div style={{ fontSize: '0.8rem', color: '#64748B', maxWidth: '300px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                        {item.description}
-                                    </div>
-                                </td>
-                                <td>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#64748B' }}>
-                                        <MapPin size={16} />
-                                        {getDestName(item.destination_id)}
-                                    </div>
-                                </td>
-                                <td>
-                                    <span style={{
-                                        fontWeight: 800,
-                                        color: '#059669',
-                                        background: '#ECFDF5',
-                                        padding: '0.25rem 0.6rem',
-                                        borderRadius: '6px',
-                                        fontSize: '0.8rem',
-                                        display: 'inline-flex',
-                                        alignItems: 'center',
-                                        gap: '2px'
-                                    }}>
-                                        $ {item.price ? Number(item.price).toLocaleString() : '0'} USD
-                                    </span>
-                                </td>
-                                <td>
-                                    <div className={styles.actions} style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
-                                        <button
-                                            className={`${styles.actionBtn} ${styles.actionBtnPrimary}`}
-                                            data-tooltip="Editar"
-                                            onClick={() => handleEdit(item)}
-                                        >
-                                            <Edit size={16} />
-                                        </button>
-                                        <button
-                                            className={`${styles.actionBtn} ${styles.actionBtnDanger}`}
-                                            data-tooltip="Eliminar"
-                                            onClick={() => handleDelete(item.id)}
-                                        >
-                                            <Trash2 size={16} />
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
-                        {itineraries.length === 0 && (
+                <div className={styles.tableResponsiveWrapper}>
+                    <table className={styles.table}>
+                        <thead>
                             <tr>
-                                <td colSpan="5" style={{ textAlign: 'center', padding: '3rem', color: '#94A3B8' }}>
-                                    No hay puntos de interés registrados.
-                                </td>
+                                <th className={styles.tableHeader}>Imagen</th>
+                                <th className={styles.tableHeader}>Nombre</th>
+                                <th className={styles.tableHeader}>Descripción</th>
+                                <th className={styles.tableHeader}>Destino</th>
+                                <th className={styles.tableHeader}>Precio</th>
+                                <th className={styles.tableHeader} style={{ textAlign: 'center' }}>Acciones</th>
                             </tr>
-                        )}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {itineraries.map(item => (
+                                <tr key={item.id}>
+                                    <td>
+                                        <div className={styles.imgThumbnail} style={{ width: '50px', height: '50px', borderRadius: '8px', overflow: 'hidden' }}>
+                                            <img
+                                                src={item.image || 'https://images.unsplash.com/photo-1530789253388-582c481c54b0?q=80&w=2670&auto=format&fit=crop'}
+                                                alt={item.name}
+                                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                            />
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style={{ fontWeight: 700, color: '#1E293B' }}>{item.name}</div>
+                                    </td>
+                                    <td>
+                                        <div style={{ fontSize: '0.8rem', color: '#64748B', maxWidth: '300px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                            {item.description}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#64748B' }}>
+                                            <MapPin size={16} />
+                                            {getDestName(item.destination_id)}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span style={{
+                                            fontWeight: 800,
+                                            color: '#059669',
+                                            background: '#ECFDF5',
+                                            padding: '0.25rem 0.6rem',
+                                            borderRadius: '6px',
+                                            fontSize: '0.8rem',
+                                            display: 'inline-flex',
+                                            alignItems: 'center',
+                                            gap: '2px'
+                                        }}>
+                                            $ {item.price ? Number(item.price).toLocaleString() : '0'} USD
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div className={styles.actions} style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
+                                            <button
+                                                className={`${styles.actionBtn} ${styles.actionBtnPrimary}`}
+                                                data-tooltip="Editar"
+                                                onClick={() => handleEdit(item)}
+                                            >
+                                                <Edit size={16} />
+                                            </button>
+                                            <button
+                                                className={`${styles.actionBtn} ${styles.actionBtnDanger}`}
+                                                data-tooltip="Eliminar"
+                                                onClick={() => handleDelete(item.id)}
+                                            >
+                                                <Trash2 size={16} />
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                            {itineraries.length === 0 && (
+                                <tr>
+                                    <td colSpan="5" style={{ textAlign: 'center', padding: '3rem', color: '#94A3B8' }}>
+                                        No hay puntos de interés registrados.
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <Modal
@@ -206,7 +208,7 @@ function ItineraryForm({ initialData, destinations, onSubmit, onCancel }) {
 
             <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1rem' }}>
                 <div>
-                    <label style={labelStyle}>Nombre del Punto de Interés</label>
+                    <label style={labelStyle}>Nombre</label>
                     <input
                         required
                         style={inputStyle}

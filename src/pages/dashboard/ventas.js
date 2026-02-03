@@ -41,113 +41,115 @@ export default function Sales() {
             </div>
 
             <div className={styles.paramountCard}>
-                <table className={styles.table}>
-                    <thead>
-                        <tr>
-                            <th className={styles.tableHeader}>ID</th>
-                            <th className={styles.tableHeader}>Fecha</th>
-                            <th className={styles.tableHeader}>Cliente</th>
-                            <th className={styles.tableHeader}>Destino</th>
-                            <th className={styles.tableHeader}>Días</th>
-                            <th className={styles.tableHeader}>Total</th>
-                            <th className={styles.tableHeader}>Estado</th>
-                            <th className={styles.tableHeader} style={{ textAlign: 'center' }}>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {sales.map((sale) => (
-                            <tr key={sale.id}>
-                                <td style={{ fontWeight: 600 }}>#{sale.id}</td>
-                                <td style={{ fontSize: '0.9rem', color: '#64748B' }}>
-                                    {new Date(sale.date || Date.now()).toLocaleDateString('es-ES', {
-                                        day: '2-digit',
-                                        month: '2-digit',
-                                        year: 'numeric'
-                                    })}
-                                </td>
-                                <td><div style={{ fontWeight: 700, color: '#1E293B' }}>{sale.client_name}</div></td>
-                                <td>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#64748B' }}>
-                                        <MapPin size={16} />
-                                        {getDestinationName(sale.destination_id)}
-                                    </div>
-                                </td>
-                                <td>
-                                    <span style={{
-                                        fontWeight: 700,
-                                        color: '#3B82F6',
-                                        background: '#EFF6FF',
-                                        padding: '0.25rem 0.6rem',
-                                        borderRadius: '6px',
-                                        fontSize: '0.8rem'
-                                    }}>
-                                        {sale.custom_itinerary ? sale.custom_itinerary.length : 0} Días
-                                    </span>
-                                </td>
-                                <td>
-                                    <span style={{
-                                        fontWeight: 800,
-                                        color: '#059669',
-                                        background: '#ECFDF5',
-                                        padding: '0.25rem 0.6rem',
-                                        borderRadius: '6px',
-                                        fontSize: '0.8rem',
-                                        display: 'inline-flex',
-                                        alignItems: 'center',
-                                        gap: '2px'
-                                    }}>
-                                        $ {sale.total_amount ? sale.total_amount.toLocaleString() : '0'} USD
-                                    </span>
-                                </td>
-                                <td>
-                                    <span style={{
-                                        padding: '0.3rem 0.8rem',
-                                        borderRadius: '99px',
-                                        fontSize: '0.75rem',
-                                        fontWeight: 700,
-                                        background: sale.status === 'Confirmada' ? '#DCFCE7' : '#FEF3C7',
-                                        color: sale.status === 'Confirmada' ? '#166534' : '#92400E',
-                                        border: `1px solid ${sale.status === 'Confirmada' ? '#BBF7D0' : '#FDE68A'}`
-                                    }}>
-                                        {sale.status}
-                                    </span>
-                                </td>
-                                <td>
-                                    <div className={styles.actions} style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
-                                        <button
-                                            className={`${styles.actionBtn} ${styles.actionBtnPrimary}`}
-                                            data-tooltip="Ver Itinerario"
-                                            onClick={() => setViewingItinerary(sale)}
-                                        >
-                                            <Map size={16} />
-                                        </button>
-                                        <button
-                                            className={`${styles.actionBtn} ${styles.actionBtnPrimary}`}
-                                            data-tooltip="Ver Voucher"
-                                            onClick={() => router.push(`/voucher/${sale.id}`)}
-                                        >
-                                            <FileText size={16} />
-                                        </button>
-                                        <button
-                                            className={`${styles.actionBtn} ${styles.actionBtnDanger}`}
-                                            data-tooltip="Eliminar"
-                                            onClick={() => deleteSale(sale.id)}
-                                        >
-                                            <Trash2 size={16} />
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
-                        {sales.length === 0 && (
+                <div className={styles.tableResponsiveWrapper}>
+                    <table className={styles.table}>
+                        <thead>
                             <tr>
-                                <td colSpan="7" style={{ textAlign: 'center', padding: '3rem', color: '#94A3B8' }}>
-                                    No hay ventas registradas.
-                                </td>
+                                <th className={styles.tableHeader}>ID</th>
+                                <th className={styles.tableHeader}>Fecha</th>
+                                <th className={styles.tableHeader}>Cliente</th>
+                                <th className={styles.tableHeader}>Destino</th>
+                                <th className={styles.tableHeader}>Días</th>
+                                <th className={styles.tableHeader}>Total</th>
+                                <th className={styles.tableHeader}>Estado</th>
+                                <th className={styles.tableHeader} style={{ textAlign: 'center' }}>Acciones</th>
                             </tr>
-                        )}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {sales.map((sale) => (
+                                <tr key={sale.id}>
+                                    <td style={{ fontWeight: 600 }}>#{sale.id}</td>
+                                    <td style={{ fontSize: '0.9rem', color: '#64748B' }}>
+                                        {new Date(sale.date || Date.now()).toLocaleDateString('es-ES', {
+                                            day: '2-digit',
+                                            month: '2-digit',
+                                            year: 'numeric'
+                                        })}
+                                    </td>
+                                    <td><div style={{ fontWeight: 700, color: '#1E293B' }}>{sale.client_name}</div></td>
+                                    <td>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#64748B' }}>
+                                            <MapPin size={16} />
+                                            {getDestinationName(sale.destination_id)}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span style={{
+                                            fontWeight: 700,
+                                            color: '#3B82F6',
+                                            background: '#EFF6FF',
+                                            padding: '0.25rem 0.6rem',
+                                            borderRadius: '6px',
+                                            fontSize: '0.8rem'
+                                        }}>
+                                            {sale.custom_itinerary ? sale.custom_itinerary.length : 0} Días
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span style={{
+                                            fontWeight: 800,
+                                            color: '#059669',
+                                            background: '#ECFDF5',
+                                            padding: '0.25rem 0.6rem',
+                                            borderRadius: '6px',
+                                            fontSize: '0.8rem',
+                                            display: 'inline-flex',
+                                            alignItems: 'center',
+                                            gap: '2px'
+                                        }}>
+                                            $ {sale.total_amount ? sale.total_amount.toLocaleString() : '0'} USD
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span style={{
+                                            padding: '0.3rem 0.8rem',
+                                            borderRadius: '99px',
+                                            fontSize: '0.75rem',
+                                            fontWeight: 700,
+                                            background: sale.status === 'Confirmada' ? '#DCFCE7' : '#FEF3C7',
+                                            color: sale.status === 'Confirmada' ? '#166534' : '#92400E',
+                                            border: `1px solid ${sale.status === 'Confirmada' ? '#BBF7D0' : '#FDE68A'}`
+                                        }}>
+                                            {sale.status}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div className={styles.actions} style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
+                                            <button
+                                                className={`${styles.actionBtn} ${styles.actionBtnPrimary}`}
+                                                data-tooltip="Ver Itinerario"
+                                                onClick={() => setViewingItinerary(sale)}
+                                            >
+                                                <Map size={16} />
+                                            </button>
+                                            <button
+                                                className={`${styles.actionBtn} ${styles.actionBtnPrimary}`}
+                                                data-tooltip="Ver Voucher"
+                                                onClick={() => router.push(`/voucher/${sale.id}`)}
+                                            >
+                                                <FileText size={16} />
+                                            </button>
+                                            <button
+                                                className={`${styles.actionBtn} ${styles.actionBtnDanger}`}
+                                                data-tooltip="Eliminar"
+                                                onClick={() => deleteSale(sale.id)}
+                                            >
+                                                <Trash2 size={16} />
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                            {sales.length === 0 && (
+                                <tr>
+                                    <td colSpan="7" style={{ textAlign: 'center', padding: '3rem', color: '#94A3B8' }}>
+                                        No hay ventas registradas.
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <Modal

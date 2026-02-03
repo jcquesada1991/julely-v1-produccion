@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useApp } from '@/context/AppContext';
 import SearchableSelect from './SearchableSelect';
 import { Plus, X, ArrowUp, ArrowDown, MapPin, Calendar, CheckCircle } from 'lucide-react';
+import styles from '@/styles/DashboardV2.module.css';
 
 export default function SaleForm({ onSubmit, onCancel }) {
     const { destinations, clients, itineraries } = useApp();
@@ -179,7 +180,7 @@ export default function SaleForm({ onSubmit, onCancel }) {
                         </p>
                     </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr', minHeight: '400px' }}>
+                    <div className={styles.itineraryBuilderGrid}>
 
                         {/* LEFT: Available POIs */}
                         <div style={{ borderRight: '1px solid #E2E8F0', padding: '1rem', background: '#F8FAFC' }}>

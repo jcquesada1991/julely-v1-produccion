@@ -4,7 +4,9 @@ export const MOCK_DATA = {
             id: 1,
             email: "admin@travelagendy.com",
             password: "admin", // En un caso real esto estaría hasheado
-            name: "Administradora"
+            name: "Administradora",
+            surname: "Sistema",
+            role: "Administrador"
         }
     ],
     destinations: [
