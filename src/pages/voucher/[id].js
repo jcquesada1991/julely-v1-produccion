@@ -176,6 +176,9 @@ condiciones. RECOMENDAMOS que compre un seguro de viajes para su protección, de
                             </div>
                         </div>
 
+                        {/* Force Page Break before Terms */}
+                        <div className={styles.pageBreak}></div>
+
                         {/* 7. Terms & Conditions */}
                         <div className={styles.sectionBlock}>
                             <h3 className={styles.sectionTitle}>
@@ -199,17 +202,11 @@ condiciones. RECOMENDAMOS que compre un seguro de viajes para su protección, de
                     </div>
                 </div>
 
-            </div>
-
-            {/* Print Only Footer (Duplicate for Fixed Position on Every Page) */}
-            <div className={styles.printFooter}>
-                <div className={styles.footerContent}>
-                    <span>Travel Agendy</span>
-                    <span>+1 (787) 555-0123</span>
-                    <span>www.travelagendy.com</span>
+                {/* Signature fixed on bottom right for every page - MOVED OUTSIDE voucherPage */}
+                <div className={styles.printSignature}>
+                    <img src="/images/footer_signature_v2.jpg" alt="Signature" />
                 </div>
             </div>
-
 
             <div className={styles.actions}>
                 <button className={styles.btnBack} onClick={() => router.back()}>

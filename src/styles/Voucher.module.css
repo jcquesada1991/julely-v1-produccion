@@ -341,6 +341,11 @@
     text-align: center;
 }
 
+/* Hide Signature by default (only for print) */
+.printSignature {
+    display: none;
+}
+
 .footerContent {
     display: flex;
     justify-content: space-between;
@@ -409,17 +414,12 @@
     /* General Pages (2, 3, etc.) */
     @page {
         margin: 0;
-        margin-bottom: 25mm !important;
-        /* Force space for footer */
+        margin-bottom: 0mm !important;
         size: A4 portrait;
-        counter-increment: page;
+
     }
 
-    /* First Page Specifics (Full Bleed) */
-    @page :first {
-        margin-top: 0;
-        margin-bottom: 25mm;
-    }
+    /* REMOVED :first page override to ensure consistency */
 
     .voucherContainer {
         padding: 0;
@@ -432,7 +432,6 @@
         width: 100%;
         height: auto;
         min-height: 0;
-        /* Remove min-height to prevent extra blank page */
         box-shadow: none;
         margin: 0;
         display: block;
@@ -443,8 +442,8 @@
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
 
-        /* Global font size for print - set to 16px as requested */
-        font-size: 16px;
+        /* Global font size for print - set to 15px as requested */
+        font-size: 15px;
     }
 
     /* Standardized sizes */
@@ -520,25 +519,34 @@
         bottom: 0;
         left: 0;
         width: 100%;
-        height: auto;
-        padding: 1rem 0;
-        background: #0F172A !important;
-        color: white !important;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 1000;
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
+        background: transparent !important;
+        display: none !important;
+        /* Hide footer container entirely, using signature instead */
     }
 
-    .printFooter .footerContent {
-        width: 90%;
+    /* Fixed Signature on every page (Bottom Center) */
+    .printSignature {
+        position: fixed;
+        display: block !important;
+        bottom: 5mm;
+        left: 0;
+        right: 0;
         margin: 0 auto;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+        padding-bottom: 0;
+        width: 80px;
+        height: auto;
+        z-index: 99999;
+        opacity: 1;
+        break-inside: avoid;
     }
+
+    .printSignature img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+
 
     /* Page Number Pseudo-element (Best effort support) */
     .pageNumber::after {
