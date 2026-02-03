@@ -38,7 +38,7 @@ export default function DashboardLayout({ children, title }) {
         { icon: LayoutGrid, label: 'Dashboard', path: '/dashboard' },
         { icon: User, label: 'Clientes', path: '/dashboard/clientes' },
         { icon: Briefcase, label: 'Destinos', path: '/dashboard/destinos' },
-        { icon: Map, label: 'Puntos de Interés', path: '/dashboard/itinerarios' },
+        { icon: Map, label: 'Excursiones', path: '/dashboard/itinerarios' },
         { icon: Calendar, label: 'Ventas', path: '/dashboard/ventas' },
         { icon: Users, label: 'Usuarios', path: '/dashboard/usuarios' },
     ];

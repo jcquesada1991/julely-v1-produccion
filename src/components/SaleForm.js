@@ -54,7 +54,7 @@ export default function SaleForm({ onSubmit, onCancel }) {
 
         // VALIDATION: Check POIs
         if (availablePOIs.length === 0) {
-            alert("No se puede crear una venta para un destino que no tiene puntos de interés.");
+            alert("No se puede crear una venta para un destino que no tiene excursiones.");
             return;
         }
 

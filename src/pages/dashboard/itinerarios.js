@@ -4,7 +4,7 @@ import DashboardLayout from '@/components/DashboardLayout';
 import Modal from '@/components/Modal';
 import { useApp } from '@/context/AppContext';
 import styles from '@/styles/DashboardV2.module.css';
-import { Plus, MapPin, Edit, Trash2 } from 'lucide-react';
+import { Plus, MapPin, Edit, Trash2, CameraOff } from 'lucide-react';
 import SearchableSelect from '@/components/SearchableSelect';
 
 export default function Itineraries() {
@@ -23,7 +23,7 @@ export default function Itineraries() {
     };
 
     const handleDelete = (id) => {
-        if (confirm('¿Estás seguro de eliminar este punto de interés?')) {
+        if (confirm('¿Estás seguro de eliminar esta excursión?')) {
             deleteItinerary(id);
         }
     };
@@ -41,11 +41,11 @@ export default function Itineraries() {
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
                 <div>
-                    <h2 className={styles.pageTitle} style={{ fontSize: '2rem' }}>Puntos de Interés</h2>
-                    <p style={{ color: '#64748B' }}>Gestiona los puntos de interés para los itinerarios</p>
+                    <h2 className={styles.pageTitle} style={{ fontSize: '2rem' }}>Excursiones</h2>
+                    <p style={{ color: '#64748B' }}>Gestiona las excursiones para los itinerarios</p>
                 </div>
                 <button className="btn-primary" onClick={() => setIsModalOpen(true)}>
-                    <Plus size={20} /> Nuevo Punto
+                    <Plus size={20} /> Nueva Excursión
                 </button>
             </div>
 
@@ -66,12 +66,20 @@ export default function Itineraries() {
                             {itineraries.map(item => (
                                 <tr key={item.id}>
                                     <td>
-                                        <div className={styles.imgThumbnail} style={{ width: '50px', height: '50px', borderRadius: '8px', overflow: 'hidden' }}>
-                                            <img
-                                                src={item.image || 'https://images.unsplash.com/photo-1530789253388-582c481c54b0?q=80&w=2670&auto=format&fit=crop'}
-                                                alt={item.name}
-                                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                                            />
+                                        <div className={styles.imgThumbnail} style={{ width: '50px', height: '50px', borderRadius: '8px', overflow: 'hidden', background: '#F1F5F9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                            {item.image ? (
+                                                <img
+                                                    src={item.image}
+                                                    alt={item.name}
+                                                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                                    onError={(e) => {
+                                                        e.target.style.display = 'none';
+                                                        e.target.parentElement.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-camera-off"><line x1="1" x2="23" y1="1" y2="23"/><path d="M21 21H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3l2-2h7l2 2"/><path d="M7 13a4 4 0 0 1 4-4"/><path d="M15 13a4 4 0 0 0-4 4"/></svg>';
+                                                    }}
+                                                />
+                                            ) : (
+                                                <CameraOff size={20} color="#94A3B8" />
+                                            )}
                                         </div>
                                     </td>
                                     <td>
@@ -126,7 +134,7 @@ export default function Itineraries() {
                             {itineraries.length === 0 && (
                                 <tr>
                                     <td colSpan="5" style={{ textAlign: 'center', padding: '3rem', color: '#94A3B8' }}>
-                                        No hay puntos de interés registrados.
+                                        No hay excursiones registradas.
                                     </td>
                                 </tr>
                             )}
@@ -138,7 +146,7 @@ export default function Itineraries() {
             <Modal
                 isOpen={isModalOpen}
                 onClose={handleClose}
-                title={currentItinerary ? "Editar Punto de Interés" : "Nuevo Punto de Interés"}
+                title={currentItinerary ? "Editar Excursión" : "Nueva Excursión"}
             >
                 <ItineraryForm
                     initialData={currentItinerary}
@@ -234,11 +242,10 @@ function ItineraryForm({ initialData, destinations, onSubmit, onCancel }) {
             <label style={labelStyle}>URL de la Imagen</label>
             <input
                 type="url"
-                required
                 style={inputStyle}
                 value={formData.image}
                 onChange={e => setFormData({ ...formData, image: e.target.value })}
-                placeholder="https://images.unsplash.com/..."
+                placeholder="https://... (Dejar vacío si no tiene imagen)"
             />
 
             <label style={labelStyle}>Descripción</label>
