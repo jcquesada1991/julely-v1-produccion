@@ -443,8 +443,8 @@
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
 
-        /* Global font size for print */
-        font-size: 13px;
+        /* Global font size for print - set to 16px as requested */
+        font-size: 16px;
     }
 
     /* Standardized sizes */
@@ -454,10 +454,10 @@
     .infoValue,
     .preparedByName,
     .descriptionText {
-        font-size: 0.95em !important;
-        /* Slightly smaller text */
-        line-height: 1.4;
-        /* Tighter line height */
+        font-size: 1rem !important;
+        /* Use full size */
+        line-height: 1.5;
+        /* Standard line height */
     }
 
     .sectionTitle {
