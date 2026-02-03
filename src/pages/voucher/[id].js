@@ -148,6 +148,10 @@ condiciones. RECOMENDAMOS que compre un seguro de viajes para su protección, de
                             </div>
                         </div>
 
+
+                        {/* Force Page Break before Itinerary */}
+                        <div className={styles.pageBreak}></div>
+
                         {/* 6. Detailed Itinerary - Allow breaking */}
                         <div className={styles.sectionBlock} style={{ breakInside: 'auto' }}>
                             <h3 className={styles.sectionTitle}>
@@ -179,14 +183,7 @@ condiciones. RECOMENDAMOS que compre un seguro de viajes para su protección, de
                                 TÉRMINOS Y CONDICIONES
                             </h3>
                             <div className={styles.termsText}>
-                                {termsContent.split('relacionadas al mismo.')[0]}relacionadas al mismo.
-                            </div>
-
-                            {/* Force Page Break */}
-                            <div className={styles.pageBreak}></div>
-
-                            <div className={styles.termsText} style={{ marginTop: '2rem' }}>
-                                {termsContent.split('relacionadas al mismo.')[1]}
+                                {termsContent}
                             </div>
                         </div>
 
