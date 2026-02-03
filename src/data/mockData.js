@@ -204,7 +204,19 @@ export const MOCK_DATA = {
         },
 
     ],
-    sales: [],
+    sales: [
+        {
+            id: 1,
+            destination_id: 1, // Santorini
+            client_name: "Sofía Vergara",
+            client_email: "sofia@example.com",
+            amount: 2500,
+            status: "Confirmada",
+            date: "2024-02-01",
+            voucher_code: "VOU-SAN-001",
+            custom_itinerary: []
+        }
+    ],
     clients: [
         {
             id: 1,

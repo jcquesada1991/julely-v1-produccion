@@ -6,7 +6,7 @@ import { TrendingUp, DollarSign, MapPin, Users, Package, Clock, ArrowUpRight } f
 import { useState, useMemo } from 'react';
 
 export default function Dashboard() {
-    const { stats, destinations, sales } = useApp();
+    const { stats, destinations, sales, clients } = useApp();
 
     // Calcular estadísticas reales
     const dashboardStats = useMemo(() => {
@@ -30,8 +30,8 @@ export default function Dashboard() {
         );
         const mostSoldDest = destinations.find(d => d.id === parseInt(mostSoldDestId));
 
-        // Clientes únicos
-        const uniqueClients = new Set(sales.map(s => s.client_name)).size;
+        // Clientes Totales (registrados)
+        const totalClients = clients.length;
 
         return {
             totalSales,
@@ -39,11 +39,11 @@ export default function Dashboard() {
             pendingSales,
             totalRevenue,
             mostSoldDest,
-            uniqueClients,
+            totalClients, // Used for KPI
             totalDestinations: destinations.length,
             conversionRate: totalSales > 0 ? ((confirmedSales / totalSales) * 100).toFixed(1) : 0
         };
-    }, [sales, destinations]);
+    }, [sales, destinations, clients]);
 
     return (
         <DashboardLayout title="Dashboard">
@@ -117,9 +117,9 @@ export default function Dashboard() {
                         <div className={styles.statCard}>
                             <div>
                                 <div className={styles.statLabel}><Users size={16} /> Clientes</div>
-                                <div className={styles.statNumber}>{dashboardStats.uniqueClients}</div>
+                                <div className={styles.statNumber}>{dashboardStats.totalClients}</div>
                                 <div style={{ fontSize: '0.85rem', color: '#64748B', marginTop: '0.5rem' }}>
-                                    Clientes únicos registrados
+                                    Clientes registrados
                                 </div>
                             </div>
                         </div>
@@ -170,9 +170,9 @@ export default function Dashboard() {
                                     alignItems: 'center',
                                     gap: '1rem',
                                     padding: '1rem',
-                                    background: idx === 0 ? 'linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%)' : '#F8FAFC',
+                                    background: idx === 0 ? 'rgba(14, 165, 233, 0.05)' : '#F8FAFC',
                                     borderRadius: '16px',
-                                    border: idx === 0 ? '1px solid #BBF7D0' : '1px solid #E2E8F0',
+                                    border: idx === 0 ? '1px solid #BAE6FD' : '1px solid #E2E8F0',
                                     transition: 'all 0.3s ease'
                                 }}
                                     onMouseEnter={(e) => {
@@ -188,7 +188,7 @@ export default function Dashboard() {
                                         minWidth: '48px',
                                         height: '48px',
                                         borderRadius: '12px',
-                                        background: idx === 0 ? 'linear-gradient(135deg, #10B981 0%, #059669 100%)' : '#E2E8F0',
+                                        background: idx === 0 ? 'linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%)' : '#E2E8F0',
                                         display: 'flex',
                                         alignItems: 'center',
                                         justifyContent: 'center',
