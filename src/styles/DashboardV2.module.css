@@ -38,6 +38,27 @@
     gap: 0.5rem;
 }
 
+.navHeader {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.mobileMenuBtn {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: background 0.2s;
+}
+
+.mobileMenuBtn:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
 .navLinks {
     display: flex;
     align-items: center;
@@ -635,29 +656,108 @@
     .topNav {
         height: auto;
         flex-direction: column;
-        padding: 1rem;
-        gap: 1rem;
+        padding: 0;
+        gap: 0;
+        position: sticky;
+        background: var(--bg-main);
+    }
+
+    .navHeader {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 1.5rem;
+        background: var(--bg-main);
+        z-index: 101;
         position: relative;
     }
 
-    .navLinks {
-        margin: 0;
-        width: 100%;
-        overflow-x: auto;
-        padding-bottom: 0.5rem;
-        /* Hide scrollbar structure */
-        scrollbar-width: none;
-        -ms-overflow-style: none;
+    .mobileMenuBtn {
+        display: flex;
     }
 
-    .navLinks::-webkit-scrollbar {
-        display: none;
+    .navLinks {
+        width: 100%;
+        flex-direction: column;
+        align-items: flex-start;
+        margin: 0;
+        padding: 0;
+        gap: 0.5rem;
+        overflow: hidden;
+        max-height: 0;
+        opacity: 0;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        background: var(--bg-main);
+    }
+
+    .navLinks.showMenu {
+        max-height: 500px;
+        /* Adjust based on content */
+        opacity: 1;
+        padding: 0 1.5rem 1.5rem 1.5rem;
+        border-bottom: 1px solid #F1F5F9;
     }
 
     .navItem {
-        white-space: nowrap;
-        font-size: 0.85rem;
-        padding: 0.5rem 1rem;
+        width: 100%;
+        padding: 0.8rem 1rem;
+        border-radius: 12px;
+        font-size: 1rem;
+    }
+
+    /* Hide scrollbar removal code as we changed strategy */
+    /* .navLinks::-webkit-scrollbar { display: none; } */
+
+    .actions {
+        display: none;
+        /* Hide user actions in top nav for strictly mobile menu focus or keep them? */
+        /* Let's keep them below menu or integrate. 
+           For now, let's keep them visible at the bottom of the open menu or separately.
+           Given the design, let's put them inside the menu logic or keep them separate?
+           Actually, let's hide .actions by default and show them INSIDE .navLinks or 
+           just keep them below the menu. 
+           
+           Current design: .actions is a sibling.
+           Let's make .actions part of the collapsible area or keep it always visible?
+           If we keep it always visible at the bottom, it might take up too much space.
+           Let's hide .actions when menu is closed, show when open?
+           Or just put .actions in the collapsible flow.
+        */
+        width: 100%;
+        justify-content: space-between;
+        padding: 1rem 1.5rem;
+        border-top: 1px solid #F1F5F9;
+        background: var(--bg-main);
+
+        /* Make it collapsible too alongside navLinks? */
+        /* Or just keep it changing based on state */
+    }
+
+    /* We need to toggle actions visibility too or move it. 
+       Let's use the 'showMenu' class on a parent wrapper if we wanted both.
+       But .actions is outside .navLinks.
+       
+       Let's simplistic approach: 
+       Hide .actions normally, Show when menu is open?
+       But we can't easily target sibling .actions from .navLinks.showMenu CSS only usually (unless using generic sibling selector)
+       
+       Better: Since we didn't wrap them in a container in JS, 
+       we can use generic sibling selector if they are siblings.
+       .navLinks.showMenu ~ .actions
+    */
+
+    .actions {
+        display: none;
+    }
+
+    .navLinks.showMenu~.actions {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        padding-bottom: 1.5rem;
+        margin-top: 0;
+        border-top: none;
     }
 
     .brandLogo {
