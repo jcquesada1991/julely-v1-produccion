@@ -135,23 +135,7 @@ condiciones. RECOMENDAMOS que compre un seguro de viajes para su protección, de
                             </div>
                         </div>
 
-                        {/* 4. Terms */}
-                        <div className={styles.sectionBlock}>
-                            <h3 className={styles.sectionTitle}>
-                                <FileText size={20} />
-                                TÉRMINOS Y CONDICIONES
-                            </h3>
-                            <div className={styles.termsText}>
-                                {termsContent.split('relacionadas al mismo.')[0]}relacionadas al mismo.
-                            </div>
 
-                            {/* Force Page Break */}
-                            <div className={styles.pageBreak}></div>
-
-                            <div className={styles.termsText} style={{ marginTop: '2rem' }}>
-                                {termsContent.split('relacionadas al mismo.')[1]}
-                            </div>
-                        </div>
 
                         {/* 5. Dest Description */}
                         <div className={styles.sectionBlock}>
@@ -185,6 +169,24 @@ condiciones. RECOMENDAMOS que compre un seguro de viajes para su protección, de
                                         </div>
                                     </div>
                                 ))}
+                            </div>
+                        </div>
+
+                        {/* 7. Terms & Conditions */}
+                        <div className={styles.sectionBlock}>
+                            <h3 className={styles.sectionTitle}>
+                                <FileText size={20} />
+                                TÉRMINOS Y CONDICIONES
+                            </h3>
+                            <div className={styles.termsText}>
+                                {termsContent.split('relacionadas al mismo.')[0]}relacionadas al mismo.
+                            </div>
+
+                            {/* Force Page Break */}
+                            <div className={styles.pageBreak}></div>
+
+                            <div className={styles.termsText} style={{ marginTop: '2rem' }}>
+                                {termsContent.split('relacionadas al mismo.')[1]}
                             </div>
                         </div>
 
