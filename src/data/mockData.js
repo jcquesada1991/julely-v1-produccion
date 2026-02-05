@@ -13,135 +13,6 @@ export const MOCK_DATA = {
         {
             id: 1,
             currency: "USD",
-            price: 2500,
-            title: "Santorini",
-            subtitle: "La joya del Egeo te espera",
-            category: "Premium",
-            airport_code: "JTR",
-            isPremium: true,
-            isFavorite: true,
-            hero_image_url: "https://images.unsplash.com/photo-1613395877344-13d4c79e4284?q=80&w=2668&auto=format&fit=crop",
-            description_long: "Disfruta de una experiencia inolvidable en una de las islas más hermosas del mundo. Santorini te ofrece atardeceres mágicos desde Oia, donde el sol se funde con el mar Egeo en un espectáculo de colores. Podrás degustar su gastronomía exquisita, famosa por sus tomates cherry, vinos volcánicos y pescado fresco. Las playas de arena volcánica negra y roja te invitan a relajarte bajo el sol mediterráneo. Explora los pueblos de casas encaladas colgados de los acantilados y sumérgete en la historia de la civilización minoica en Akrotiri.",
-            itinerary: [
-                { day: 1, title: "Llegada y Bienvenida", description: "Transfer privado al hotel y cena de bienvenida con vista a la caldera." },
-                { day: 2, title: "Crucero en Catamarán", description: "Recorrido por las islas volcánicas, aguas termales y almuerzo a bordo." },
-                { day: 3, title: "Cata de Vinos", description: "Visita a las bodegas más exclusivas de la isla para degustar vinos locales." },
-                { day: 4, title: "Día Libre y Despedida", description: "Tiempo para compras en Oia y cena de despedida." }
-            ],
-            includes: [
-                "Vuelos clase ejecutiva",
-                "Alojamiento 5 estrellas",
-                "Desayunos y Cenas",
-                "Traslados privados"
-            ],
-            extras: [
-                "Seguro de viaje premium",
-                "Guía personal en español"
-            ],
-            target: {
-                title: "Parejas y Luna de Miel",
-                content: "Ideal para quienes buscan romance, privacidad y lujo absoluto."
-            }
-        },
-        {
-            id: 2,
-            currency: "USD",
-            price: 4200,
-            title: "Tokio",
-            subtitle: "Contrastes entre templos milenarios y neón",
-            category: "Business",
-            airport_code: "NRT",
-            isPremium: false,
-            hero_image_url: "https://images.unsplash.com/photo-1528360983277-13d9012356ee?q=80&w=2670&auto=format&fit=crop",
-            description_long: "Un viaje fascinante que recorre Tokio, Kioto y Osaka, sumergiéndote en lo más profundo de la cultura japonesa. Desde la ceremonia del té en jardines zen hasta la tecnología más avanzada en Akihabara, Japón es un país de contrastes. Descubre templos milenarios escondidos entre rascacielos futuristas y disfruta de la hospitalidad inigualable (Omotenashi) de su gente. Viaja en tren bala a velocidades increíbles y prueba la auténtica cocina kaiseki. Cada rincón ofrece una sorpresa, desde moda vanguardista hasta festivales tradicionales llenos de color.",
-            itinerary: [
-                { day: 1, title: "Llegada a Tokio", description: "Recepción en Narita y traslado al hotel en Shinjuku." },
-                { day: 2, title: "Tokio Moderno", description: "Visita a Shibuya, Akihabara y subida al Skytree." },
-                { day: 3, title: "Kioto Histórico", description: "Viaje en tren bala y visita al Pabellón Dorado." },
-                { day: 5, title: "Osaka Gastronómico", description: "Tour de comida callejera en Dotonbori." }
-            ],
-            includes: [
-                "JR Pass 7 días",
-                "Hoteles 4 y 5 estrellas",
-                "Guía bilingüe",
-                "Entradas a templos"
-            ],
-            extras: [
-                "Cena con Maiko",
-                "Entradas a Universal Studios"
-            ],
-            target: {
-                title: "Cultura y Aventura",
-                content: "Perfecto para amantes de la historia, la comida y la fotografía."
-            }
-        },
-        {
-            id: 3,
-            currency: "USD",
-            price: 3800,
-            title: "Dubai",
-            subtitle: "Lujo y modernidad en el desierto",
-            category: "First Class",
-            airport_code: "DXB",
-            isPremium: false,
-            hero_image_url: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=2670&auto=format&fit=crop",
-            description_long: "Experimenta el lujo extremo en la ciudad más moderna del mundo, donde lo imposible se hace realidad. Dubai combina rascacielos impresionantes como el Burj Khalifa con playas paradisíacas de aguas cálidas. Aventúrate en el desierto árabe para un safari en 4x4 y una cena bajo las estrellas en un campamento beduino. Disfruta de compras de clase mundial en centros comerciales gigantescos y zocos tradicionales de oro y especias. La arquitectura futurista y la hospitalidad árabe crean un ambiente único y sofisticado.",
-            itinerary: [
-                { day: 1, title: "Llegada a Dubai", description: "Transfer al hotel Burj Al Arab y bienvenida VIP." },
-                { day: 2, title: "Safari en el Desierto", description: "Aventura en 4x4 y cena bajo las estrellas." },
-                { day: 3, title: "Burj Khalifa", description: "Visita al edificio más alto del mundo." },
-                { day: 4, title: "Compras en Dubai Mall", description: "Shopping de lujo y espectáculo de fuentes." }
-            ],
-            includes: [
-                "Vuelos primera clase",
-                "Hotel 7 estrellas",
-                "Todas las comidas",
-                "Chofer privado 24/7"
-            ],
-            extras: [
-                "Vuelo en helicóptero",
-                "Cena en el Burj Khalifa"
-            ],
-            target: {
-                title: "Lujo Extremo",
-                content: "Para quienes buscan la experiencia más exclusiva y lujosa."
-            }
-        },
-        {
-            id: 4,
-            currency: "USD",
-            price: 5200,
-            title: "Maldivas",
-            subtitle: "Paraíso tropical exclusivo",
-            category: "Premium",
-            airport_code: "MLE",
-            isPremium: false,
-            hero_image_url: "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?q=80&w=2665&auto=format&fit=crop",
-            description_long: "Relájate en un resort overwater de lujo rodeado de aguas cristalinas color turquesa que parecen sacadas de un sueño. Las Maldivas ofrecen privacidad absoluta y belleza natural incomparable, ideales para desconectar del estrés diario. Explora los vibrantes arrecifes de coral haciendo snorkel o buceo junto a mantarrayas y tortugas marinas. Disfruta de cenas románticas a la luz de las velas en playas privadas de arena blanca. Cada atardecer es una obra maestra que pinta el cielo de naranjas y rosas.",
-            itinerary: [
-                { day: 1, title: "Llegada en Hidroavión", description: "Transfer privado al resort en hidroavión." },
-                { day: 2, title: "Snorkel y Buceo", description: "Explora los arrecifes de coral más hermosos." },
-                { day: 3, title: "Spa y Relax", description: "Tratamientos de spa con vista al océano." },
-                { day: 4, title: "Cena Romántica", description: "Cena privada en la playa bajo las estrellas." }
-            ],
-            includes: [
-                "Vuelos business class",
-                "Villa overwater privada",
-                "Todo incluido premium",
-                "Actividades acuáticas"
-            ],
-            extras: [
-                "Excursión de pesca",
-                "Masaje de parejas"
-            ],
-            target: {
-                title: "Romance y Desconexión",
-                content: "Ideal para lunas de miel y escapadas románticas."
-            }
-        },
-        {
-            id: 5,
-            currency: "USD",
             price: 2800,
             title: "París",
             subtitle: "La ciudad del amor y la cultura",
@@ -173,38 +44,69 @@ export const MOCK_DATA = {
             }
         },
         {
-            id: 6,
+            id: 2,
             currency: "USD",
-            price: 3200,
-            title: "Nueva York",
-            subtitle: "La ciudad que nunca duerme",
-            category: "Business",
-            airport_code: "JFK",
+            price: 5200,
+            title: "Maldivas",
+            subtitle: "Paraíso tropical exclusivo",
+            category: "Premium",
+            airport_code: "MLE",
             isPremium: false,
-            hero_image_url: "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?q=80&w=2670&auto=format&fit=crop",
-            description_long: "Vive la energía vibrante de Nueva York, la ciudad que nunca duerme, desde las luces de Times Square hasta la tranquilidad de Central Park. Asiste a un show de Broadway de clase mundial y explora museos icónicos como el MoMA y el Met. Disfruta de la mejor gastronomía urbana, desde pizzas clásicas hasta alta cocina internacional en los mejores restaurantes. Sube al Empire State o al Top of the Rock para vistas panorámicas inolvidables del skyline. Cada barrio, desde SoHo hasta Brooklyn, tiene su propia personalidad y encanto por descubrir.",
+            hero_image_url: "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?q=80&w=2665&auto=format&fit=crop",
+            description_long: "Relájate en un resort overwater de lujo rodeado de aguas cristalinas color turquesa que parecen sacadas de un sueño. Las Maldivas ofrecen privacidad absoluta y belleza natural incomparable, ideales para desconectar del estrés diario. Explora los vibrantes arrecifes de coral haciendo snorkel o buceo junto a mantarrayas y tortugas marinas. Disfruta de cenas románticas a la luz de las velas en playas privadas de arena blanca. Cada atardecer es una obra maestra que pinta el cielo de naranjas y rosas.",
             itinerary: [
-                { day: 1, title: "Llegada a Manhattan", description: "Check-in en hotel en Midtown." },
-                { day: 2, title: "Estatua de la Libertad", description: "Ferry a Ellis Island y Estatua de la Libertad." },
-                { day: 3, title: "Broadway y Times Square", description: "Show de Broadway y cena en Hell's Kitchen." },
-                { day: 4, title: "Central Park y MoMA", description: "Paseo por el parque y visita al museo." }
+                { day: 1, title: "Llegada en Hidroavión", description: "Transfer privado al resort en hidroavión." },
+                { day: 2, title: "Snorkel y Buceo", description: "Explora los arrecifes de coral más hermosos." },
+                { day: 3, title: "Spa y Relax", description: "Tratamientos de spa con vista al océano." },
+                { day: 4, title: "Cena Romántica", description: "Cena privada en la playa bajo las estrellas." }
             ],
             includes: [
-                "Vuelos business",
-                "Hotel 4 estrellas Manhattan",
-                "Desayunos",
-                "New York Pass"
+                "Vuelos business class",
+                "Villa overwater privada",
+                "Todo incluido premium",
+                "Actividades acuáticas"
             ],
             extras: [
-                "Tickets de Broadway premium",
-                "Tour en helicóptero"
+                "Excursión de pesca",
+                "Masaje de parejas"
             ],
             target: {
-                title: "Urbano y Dinámico",
-                content: "Para quienes aman la vida urbana, el arte y el entretenimiento."
+                title: "Romance y Desconexión",
+                content: "Ideal para lunas de miel y escapadas románticas."
             }
         },
-
+        {
+            id: 3,
+            currency: "USD",
+            price: 3800,
+            title: "Dubai",
+            subtitle: "Lujo y modernidad en el desierto",
+            category: "First Class",
+            airport_code: "DXB",
+            isPremium: true,
+            hero_image_url: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=2670&auto=format&fit=crop",
+            description_long: "Experimenta el lujo extremo en la ciudad más moderna del mundo, donde lo imposible se hace realidad. Dubai combina rascacielos impresionantes como el Burj Khalifa con playas paradisíacas de aguas cálidas. Aventúrate en el desierto árabe para un safari en 4x4 y una cena bajo las estrellas en un campamento beduino. Disfruta de compras de clase mundial en centros comerciales gigantescos y zocos tradicionales de oro y especias. La arquitectura futurista y la hospitalidad árabe crean un ambiente único y sofisticado.",
+            itinerary: [
+                { day: 1, title: "Llegada a Dubai", description: "Transfer al hotel Burj Al Arab y bienvenida VIP." },
+                { day: 2, title: "Safari en el Desierto", description: "Aventura en 4x4 y cena bajo las estrellas." },
+                { day: 3, title: "Burj Khalifa", description: "Visita al edificio más alto del mundo." },
+                { day: 4, title: "Compras en Dubai Mall", description: "Shopping de lujo y espectáculo de fuentes." }
+            ],
+            includes: [
+                "Vuelos primera clase",
+                "Hotel 7 estrellas",
+                "Todas las comidas",
+                "Chofer privado 24/7"
+            ],
+            extras: [
+                "Vuelo en helicóptero",
+                "Cena en el Burj Khalifa"
+            ],
+            target: {
+                title: "Lujo Extremo",
+                content: "Para quienes buscan la experiencia más exclusiva y lujosa."
+            }
+        }
     ],
     sales: [
         {

@@ -5,17 +5,15 @@ import Modal from '@/components/Modal';
 import DestinationForm from '@/components/DestinationForm';
 import { useApp } from '@/context/AppContext';
 import styles from '@/styles/DashboardV2.module.css';
-import { Plus, Edit2, Trash2, Medal, Heart } from 'lucide-react';
+import { Plus, Edit2, Trash2, Medal, Heart, CameraOff } from 'lucide-react';
 
 export default function Destinations() {
     const { destinations, addDestination, updateDestination, deleteDestination } = useApp();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingDest, setEditingDest] = useState(null);
 
-    // Limit to 8 examples, filtering out "Nueva York"
-    const displayedDestinations = destinations
-        .filter(d => d.title !== "Nueva York")
-        .slice(0, 8);
+    // Show all destinations, default order (newest at bottom)
+    const displayedDestinations = destinations;
 
     const handleOpenCreate = () => {
         setEditingDest(null);
@@ -53,12 +51,29 @@ export default function Destinations() {
                     <div key={dest.id} className={`${styles.card} ${dest.isPremium ? styles.premiumCard : ''}`}>
                         {/* Image Container */}
                         <div className={styles.cardImgWrap}>
-                            <img
-                                src={dest.hero_image_url || `https://source.unsplash.com/800x600/?travel,${dest.title}`}
-                                alt={dest.title}
-                                className={styles.cardImg}
-                                onError={(e) => e.target.src = 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=2670&auto=format&fit=crop'}
-                            />
+                            {dest.hero_image_url ? (
+                                <img
+                                    src={dest.hero_image_url}
+                                    alt={dest.title}
+                                    className={styles.cardImg}
+                                    onError={(e) => {
+                                        e.target.style.display = 'none';
+                                        // Fallback logic could go here or rely on the container to show icon if img is hidden
+                                    }}
+                                />
+                            ) : (
+                                <div style={{
+                                    width: '100%',
+                                    height: '100%',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    background: '#F1F5F9',
+                                    color: '#94A3B8'
+                                }}>
+                                    <CameraOff size={48} strokeWidth={1.5} />
+                                </div>
+                            )}
                             <div className={styles.gradientOverlay}></div>
 
                             <div className={styles.badgeContainer}>
