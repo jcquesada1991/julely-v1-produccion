@@ -1,16 +1,32 @@
 import Head from 'next/head';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import DashboardLayout from '@/components/DashboardLayout';
 import Modal from '@/components/Modal';
 import UserForm from '@/components/UserForm';
 import { useApp } from '@/context/AppContext';
+import { useAuth } from '@/context/AuthContext';
 import styles from '@/styles/DashboardV2.module.css';
 import { Plus, Edit, Trash2, Mail, Shield, MapPin } from 'lucide-react';
 
 export default function Usuarios() {
     const { users, addUser, updateUser, deleteUser } = useApp();
+    const { can, isLoading: authLoading } = useAuth();
+    const router = useRouter();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingUser, setEditingUser] = useState(null);
+
+    // Route guard: solo admin puede gestionar usuarios
+    useEffect(() => {
+        if (!authLoading && !can('canManageUsers')) {
+            router.replace('/dashboard');
+        }
+    }, [authLoading, can, router]);
+
+    // Mostrar nada mientras valida o si no tiene permisos
+    if (authLoading || !can('canManageUsers')) {
+        return null;
+    }
 
     const handleOpenCreate = () => {
         setEditingUser(null);

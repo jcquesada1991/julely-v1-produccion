@@ -1,0 +1,1 @@
+fix: Bugs encontrados en pruebas de roles

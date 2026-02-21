@@ -14,10 +14,9 @@ export default function Dashboard() {
         const confirmedSales = sales.filter(s => s.status === 'Confirmada').length;
         const pendingSales = sales.filter(s => s.status === 'Pendiente').length;
 
-        // Calcular ingresos totales
+        // Calcular ingresos totales (usando total_amount de cada venta)
         const totalRevenue = sales.reduce((acc, sale) => {
-            const dest = destinations.find(d => d.id === sale.destination_id);
-            return acc + (dest ? dest.price : 0);
+            return acc + (parseFloat(sale.total_amount) || 0);
         }, 0);
 
         // Destino más vendido
@@ -168,7 +167,7 @@ export default function Dashboard() {
                                             {dest.title}
                                         </div>
                                         <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                                            {dest.currency} ${dest.price.toLocaleString()}
+                                            {dest.currency || 'USD'} ${(dest.price_adult || dest.price || 0).toLocaleString()}
                                         </div>
                                     </div>
                                     {dest.isPremium && (
