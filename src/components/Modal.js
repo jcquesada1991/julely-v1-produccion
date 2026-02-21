@@ -20,15 +20,16 @@ export default function Modal({ isOpen, onClose, title, children }) {
             padding: '2rem'
         }} onClick={onClose}>
             <div style={{
-                background: 'white',
+                background: 'var(--bg-card)',
                 borderRadius: '20px',
                 width: '100%',
                 maxWidth: '700px',
                 maxHeight: '90vh',
                 overflowY: 'auto',
-                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
                 position: 'relative',
-                animation: 'modalUp 0.3s ease-out'
+                animation: 'modalUp 0.3s ease-out',
+                border: '1px solid var(--border-color)'
             }} onClick={e => e.stopPropagation()}>
 
                 <div style={{
@@ -36,16 +37,16 @@ export default function Modal({ isOpen, onClose, title, children }) {
                     justifyContent: 'space-between',
                     alignItems: 'center',
                     padding: '1.5rem 2rem',
-                    borderBottom: '1px solid #E2E8F0'
+                    borderBottom: '1px solid var(--border-color)'
                 }}>
                     <h3 style={{
-                        fontFamily: 'Playfair Display',
+                        fontFamily: "'Poppins', sans-serif",
                         fontSize: '1.5rem',
                         fontWeight: 700,
-                        color: '#0F172A'
+                        color: 'var(--text-primary)'
                     }}>{title}</h3>
                     <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }}>
-                        <X size={24} color="#64748B" />
+                        <X size={24} color="var(--text-secondary)" />
                     </button>
                 </div>
 

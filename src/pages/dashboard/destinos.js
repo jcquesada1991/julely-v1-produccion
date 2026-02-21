@@ -68,8 +68,8 @@ export default function Destinations() {
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
-                                    background: '#F1F5F9',
-                                    color: '#94A3B8'
+                                    background: 'var(--bg-card-hover)',
+                                    color: 'var(--text-light)'
                                 }}>
                                     <CameraOff size={48} strokeWidth={1.5} />
                                 </div>

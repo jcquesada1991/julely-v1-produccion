@@ -64,7 +64,7 @@ export default function Usuarios() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
                 <div>
                     <h2 className={styles.pageTitle} style={{ fontSize: '2rem' }}>Usuarios</h2>
-                    <p style={{ color: '#64748B' }}>Gestiona los usuarios y sus permisos</p>
+                    <p style={{ color: 'var(--text-secondary)' }}>Gestiona los usuarios y sus permisos</p>
                 </div>
                 <button className="btn-primary" onClick={handleOpenCreate}>
                     <Plus size={20} /> Nuevo Usuario
@@ -88,35 +88,58 @@ export default function Usuarios() {
                             {users.map((user) => (
                                 <tr key={user.id}>
                                     <td>
-                                        <div style={{
-                                            width: '40px',
-                                            height: '40px',
-                                            borderRadius: '50%',
-                                            background: `linear-gradient(135deg, ${user.role === 'Administrador' ? '#3B82F6' : '#10B981'} 0%, ${user.role === 'Administrador' ? '#1D4ED8' : '#047857'} 100%)`,
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            color: 'white',
-                                            fontWeight: 700,
-                                            fontSize: '0.9rem'
+
+                                        <div className={styles.avatarCircle} style={{
+                                            background: `linear-gradient(135deg, ${({
+                                                'Administrador': 'var(--primary-color)',
+                                                'Asesor de Ventas': '#3B82F6',
+                                                'Supervisor': '#F59E0B',
+                                                'Contabilidad': '#10B981',
+                                                'Operaciones': '#EC4899'
+                                            })[user.role] || 'var(--accent-color)'} 0%, ${({
+                                                'Administrador': 'var(--primary-dark)',
+                                                'Asesor de Ventas': '#1D4ED8',
+                                                'Supervisor': '#D97706',
+                                                'Contabilidad': '#065F46',
+                                                'Operaciones': '#BE185D'
+                                            })[user.role] || '#6FDA9A'} 100%)`
                                         }}>
-                                            {getInitials(user.name)}
+                                            <span className={styles.avatarInitials}>{getInitials(user.name)}</span>
                                         </div>
                                     </td>
                                     <td>
                                         <div>
-                                            <div style={{ fontWeight: 600, color: '#1E293B' }}>{user.name} {user.surname}</div>
+                                            <div className={styles.textPrimary} style={{ fontWeight: 600 }}>{user.name} {user.surname}</div>
                                         </div>
                                     </td>
-                                    <td style={{ color: '#64748B' }}>{user.email}</td>
+                                    <td className={styles.textSecondary}>{user.email}</td>
                                     <td>
                                         <span style={{
                                             fontWeight: 700,
                                             fontSize: '0.8rem',
-                                            color: user.role === 'Administrador' ? '#3B82F6' : '#10B981',
-                                            background: user.role === 'Administrador' ? '#EFF6FF' : '#ECFDF5',
+                                            color: ({
+                                                'Administrador': 'var(--primary-color)',
+                                                'Asesor de Ventas': '#3B82F6',
+                                                'Supervisor': '#F59E0B',
+                                                'Contabilidad': '#10B981',
+                                                'Operaciones': '#EC4899'
+                                            })[user.role] || 'var(--text-secondary)',
+                                            background: ({
+                                                'Administrador': 'rgba(157, 116, 200, 0.15)',
+                                                'Asesor de Ventas': 'rgba(59, 130, 246, 0.15)',
+                                                'Supervisor': 'rgba(245, 158, 11, 0.15)',
+                                                'Contabilidad': 'rgba(16, 185, 129, 0.15)',
+                                                'Operaciones': 'rgba(236, 72, 153, 0.15)'
+                                            })[user.role] || 'rgba(255,255,255,0.05)',
                                             padding: '0.25rem 0.75rem',
-                                            borderRadius: '99px'
+                                            borderRadius: '99px',
+                                            border: `1px solid ${({
+                                                'Administrador': 'rgba(157, 116, 200, 0.3)',
+                                                'Asesor de Ventas': 'rgba(59, 130, 246, 0.3)',
+                                                'Supervisor': 'rgba(245, 158, 11, 0.3)',
+                                                'Contabilidad': 'rgba(16, 185, 129, 0.3)',
+                                                'Operaciones': 'rgba(236, 72, 153, 0.3)'
+                                            })[user.role] || 'var(--border-color)'}`
                                         }}>
                                             {user.role}
                                         </span>
@@ -127,10 +150,11 @@ export default function Usuarios() {
                                             width: '8px',
                                             height: '8px',
                                             borderRadius: '50%',
-                                            background: '#10B981',
-                                            marginRight: '6px'
+                                            background: 'var(--accent-color)',
+                                            marginRight: '6px',
+                                            boxShadow: '0 0 6px rgba(153, 221, 181, 0.4)'
                                         }}></span>
-                                        <span style={{ fontSize: '0.85rem', color: '#64748B' }}>Activo</span>
+                                        <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Activo</span>
                                     </td>
                                     <td>
                                         <div className={styles.actions} style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
@@ -154,7 +178,7 @@ export default function Usuarios() {
                             ))}
                             {users.length === 0 && (
                                 <tr>
-                                    <td colSpan="6" style={{ textAlign: 'center', padding: '3rem', color: '#94A3B8' }}>
+                                    <td colSpan="6" style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-secondary)' }}>
                                         No hay usuarios registrados.
                                     </td>
                                 </tr>

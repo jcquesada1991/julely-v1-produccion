@@ -35,9 +35,9 @@ export default function Layout({ children, title }) {
                     <div className={styles.avatar}>A</div>
                     <div style={{ flex: 1 }}>
                         <div style={{ fontSize: '0.9rem', fontWeight: 600 }}>Admin</div>
-                        <div style={{ fontSize: '0.75rem', color: '#94A3B8', cursor: 'pointer' }} onClick={() => router.push('/login')}>Cerrar Sesión</div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', cursor: 'pointer' }} onClick={() => router.push('/login')}>Cerrar Sesión</div>
                     </div>
-                    <LogOut size={16} color="#94A3B8" style={{ cursor: 'pointer' }} onClick={() => router.push('/login')} />
+                    <LogOut size={16} color="var(--text-secondary)" style={{ cursor: 'pointer' }} onClick={() => router.push('/login')} />
                 </div>
             </aside>
 

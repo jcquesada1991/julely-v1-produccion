@@ -5,17 +5,24 @@ import DashboardLayout from '@/components/DashboardLayout';
 import Modal from '@/components/Modal';
 import SaleForm from '@/components/SaleForm';
 import { useApp } from '@/context/AppContext';
-import styles from '@/styles/DashboardV2.module.css'; // Using V2 styles for Table
-import { Plus, MapPin, Trash2, Map, FileText } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
+import styles from '@/styles/DashboardV2.module.css';
+import { Plus, MapPin, Trash2, Map, FileText, Pencil, Search } from 'lucide-react';
 
 export default function Sales() {
     const router = useRouter();
     const { sales, destinations, addSale, deleteSale } = useApp();
+    const { currentUser, can } = useAuth();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [viewingItinerary, setViewingItinerary] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
 
     const handleAddSale = (formData) => {
-        addSale(formData);
+        // Attach the creator's user ID to the sale
+        addSale({
+            ...formData,
+            created_by: currentUser?.id || null
+        });
         setIsModalOpen(false);
     };
 
@@ -24,20 +31,62 @@ export default function Sales() {
         return d ? d.title : 'Desconocido';
     };
 
+    // Filter sales based on role permissions
+    let displayedSales = sales;
+    if (!can('canViewAllSales') && currentUser) {
+        // Asesor de Ventas: only see their own sales
+        displayedSales = sales.filter(s => s.created_by === currentUser.id);
+    }
+
+    // Search filter
+    if (searchTerm) {
+        const term = searchTerm.toLowerCase();
+        displayedSales = displayedSales.filter(s =>
+            (s.client_name || '').toLowerCase().includes(term) ||
+            (s.voucher_code || '').toLowerCase().includes(term) ||
+            getDestinationName(s.destination_id).toLowerCase().includes(term)
+        );
+    }
+
     return (
         <DashboardLayout title="Registro de Ventas">
             <Head>
                 <title>Ventas | TravelAgendy</title>
             </Head>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
                 <div>
                     <h2 className={styles.pageTitle} style={{ fontSize: '2rem' }}>Ventas</h2>
-                    <p style={{ color: '#64748B' }}>Gestiona tus registros de venta e itinerarios</p>
+                    <p style={{ color: 'var(--text-secondary)' }}>
+                        {can('canViewAllSales')
+                            ? 'Gestiona todos los registros de venta'
+                            : 'Tus registros de venta'}
+                    </p>
                 </div>
-                <button className="btn-primary" onClick={() => setIsModalOpen(true)}>
-                    <Plus size={20} /> Nueva Venta
-                </button>
+                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                    <div style={{ position: 'relative' }}>
+                        <Search size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
+                        <input
+                            type="text"
+                            placeholder="Buscar venta..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            style={{
+                                padding: '0.6rem 0.75rem 0.6rem 2.25rem',
+                                border: '1px solid var(--border-color)',
+                                borderRadius: '8px',
+                                background: 'var(--bg-card)',
+                                color: 'var(--text-primary)',
+                                fontSize: '0.85rem',
+                                outline: 'none',
+                                width: '220px'
+                            }}
+                        />
+                    </div>
+                    <button className="btn-primary" onClick={() => setIsModalOpen(true)}>
+                        <Plus size={20} /> Nueva Venta
+                    </button>
+                </div>
             </div>
 
             <div className={styles.paramountCard}>
@@ -50,25 +99,27 @@ export default function Sales() {
                                 <th className={styles.tableHeader}>Cliente</th>
                                 <th className={styles.tableHeader}>Destino</th>
                                 <th className={styles.tableHeader}>Días</th>
-                                <th className={styles.tableHeader}>Total</th>
+                                {can('canViewFinancials') && (
+                                    <th className={styles.tableHeader}>Total</th>
+                                )}
                                 <th className={styles.tableHeader}>Estado</th>
                                 <th className={styles.tableHeader} style={{ textAlign: 'center' }}>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {sales.map((sale) => (
+                            {displayedSales.map((sale) => (
                                 <tr key={sale.id}>
                                     <td style={{ fontWeight: 600 }}>#{sale.id}</td>
-                                    <td style={{ fontSize: '0.9rem', color: '#64748B' }}>
+                                    <td style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
                                         {new Date(sale.date || Date.now()).toLocaleDateString('es-ES', {
                                             day: '2-digit',
                                             month: '2-digit',
                                             year: 'numeric'
                                         })}
                                     </td>
-                                    <td><div style={{ fontWeight: 700, color: '#1E293B' }}>{sale.client_name}</div></td>
+                                    <td><div style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{sale.client_name}</div></td>
                                     <td>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#64748B' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-secondary)' }}>
                                             <MapPin size={16} />
                                             {getDestinationName(sale.destination_id)}
                                         </div>
@@ -76,8 +127,8 @@ export default function Sales() {
                                     <td>
                                         <span style={{
                                             fontWeight: 700,
-                                            color: '#3B82F6',
-                                            background: '#EFF6FF',
+                                            color: 'white',
+                                            background: 'var(--primary-dark)',
                                             padding: '0.25rem 0.6rem',
                                             borderRadius: '6px',
                                             fontSize: '0.8rem'
@@ -85,30 +136,33 @@ export default function Sales() {
                                             {sale.custom_itinerary ? sale.custom_itinerary.length : 0} Días
                                         </span>
                                     </td>
-                                    <td>
-                                        <span style={{
-                                            fontWeight: 800,
-                                            color: '#059669',
-                                            background: '#ECFDF5',
-                                            padding: '0.25rem 0.6rem',
-                                            borderRadius: '6px',
-                                            fontSize: '0.8rem',
-                                            display: 'inline-flex',
-                                            alignItems: 'center',
-                                            gap: '2px'
-                                        }}>
-                                            $ {sale.total_amount ? sale.total_amount.toLocaleString() : '0'} USD
-                                        </span>
-                                    </td>
+                                    {can('canViewFinancials') && (
+                                        <td>
+                                            <span style={{
+                                                fontWeight: 800,
+                                                color: 'var(--accent-color)',
+                                                background: 'rgba(153, 221, 181, 0.1)',
+                                                padding: '0.25rem 0.6rem',
+                                                borderRadius: '6px',
+                                                fontSize: '0.8rem',
+                                                display: 'inline-flex',
+                                                alignItems: 'center',
+                                                gap: '2px',
+                                                border: '1px solid rgba(153, 221, 181, 0.2)'
+                                            }}>
+                                                $ {sale.total_amount ? sale.total_amount.toLocaleString() : '0'} USD
+                                            </span>
+                                        </td>
+                                    )}
                                     <td>
                                         <span style={{
                                             padding: '0.3rem 0.8rem',
                                             borderRadius: '99px',
                                             fontSize: '0.75rem',
                                             fontWeight: 700,
-                                            background: sale.status === 'Confirmada' ? '#DCFCE7' : '#FEF3C7',
-                                            color: sale.status === 'Confirmada' ? '#166534' : '#92400E',
-                                            border: `1px solid ${sale.status === 'Confirmada' ? '#BBF7D0' : '#FDE68A'}`
+                                            background: sale.status === 'Confirmada' ? 'rgba(153, 221, 181, 0.15)' : 'rgba(244, 166, 182, 0.15)',
+                                            color: sale.status === 'Confirmada' ? 'var(--accent-color)' : 'var(--secondary-color)',
+                                            border: `1px solid ${sale.status === 'Confirmada' ? 'rgba(153, 221, 181, 0.3)' : 'rgba(244, 166, 182, 0.3)'}`
                                         }}>
                                             {sale.status}
                                         </span>
@@ -130,9 +184,20 @@ export default function Sales() {
                                                 <FileText size={16} />
                                             </button>
                                             <button
+                                                className={`${styles.actionBtn} ${styles.actionBtnPrimary}`}
+                                                data-tooltip="Editar Voucher"
+                                                onClick={() => router.push(`/voucher/${sale.id}?edit=true`)}
+                                            >
+                                                <Pencil size={16} />
+                                            </button>
+                                            <button
                                                 className={`${styles.actionBtn} ${styles.actionBtnDanger}`}
                                                 data-tooltip="Eliminar"
-                                                onClick={() => deleteSale(sale.id)}
+                                                onClick={() => {
+                                                    if (confirm('¿Estás seguro de eliminar esta venta?')) {
+                                                        deleteSale(sale.id);
+                                                    }
+                                                }}
                                             >
                                                 <Trash2 size={16} />
                                             </button>
@@ -140,10 +205,10 @@ export default function Sales() {
                                     </td>
                                 </tr>
                             ))}
-                            {sales.length === 0 && (
+                            {displayedSales.length === 0 && (
                                 <tr>
-                                    <td colSpan="7" style={{ textAlign: 'center', padding: '3rem', color: '#94A3B8' }}>
-                                        No hay ventas registradas.
+                                    <td colSpan={can('canViewFinancials') ? 8 : 7} style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-secondary)' }}>
+                                        {searchTerm ? 'No se encontraron ventas con ese criterio.' : 'No hay ventas registradas.'}
                                     </td>
                                 </tr>
                             )}
@@ -172,12 +237,12 @@ export default function Sales() {
             >
                 {viewingItinerary && (
                     <div style={{ padding: '0 1rem' }}>
-                        <div style={{ marginBottom: '2rem', textAlign: 'center', paddingBottom: '1.5rem', borderBottom: '1px dashed #E2E8F0' }}>
-                            <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#1E293B', marginBottom: '0.5rem' }}>
+                        <div style={{ marginBottom: '2rem', textAlign: 'center', paddingBottom: '1.5rem', borderBottom: '1px dashed var(--border-color)' }}>
+                            <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'white', marginBottom: '0.5rem' }}>
                                 {getDestinationName(viewingItinerary.destination_id)}
                             </h2>
-                            <p style={{ color: '#64748B', fontSize: '0.95rem' }}>
-                                Viajero: <span style={{ fontWeight: 600, color: '#0F172A' }}>{viewingItinerary.client_name}</span>
+                            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}>
+                                Viajero: <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{viewingItinerary.client_name}</span>
                             </p>
                         </div>
 
@@ -189,7 +254,7 @@ export default function Sales() {
                                 top: '0',
                                 bottom: '0',
                                 width: '2px',
-                                background: '#E2E8F0'
+                                background: 'var(--border-color)'
                             }}></div>
 
                             {viewingItinerary.custom_itinerary && viewingItinerary.custom_itinerary.length > 0 ? (
@@ -203,68 +268,70 @@ export default function Sales() {
                                             width: '14px',
                                             height: '14px',
                                             borderRadius: '50%',
-                                            background: '#0EA5E9',
-                                            border: '3px solid white',
-                                            boxShadow: '0 0 0 2px #E0F2FE',
+                                            background: 'var(--primary-color)',
+                                            border: '3px solid var(--bg-card)',
+                                            boxShadow: '0 0 0 2px rgba(157, 116, 200, 0.3)',
                                             zIndex: 2
                                         }}></div>
 
                                         <div style={{
-                                            background: 'linear-gradient(135deg, #F8FAFC 0%, #FFFFFF 100%)',
+                                            background: 'var(--bg-card)',
                                             borderRadius: '16px',
                                             padding: '1.25rem',
-                                            border: '1px solid #F1F5F9',
-                                            boxShadow: '0 4px 6px -1px rgba(0,0,0,0.02)'
+                                            border: '1px solid var(--border-color)',
+                                            boxShadow: 'var(--shadow-card)'
                                         }}>
                                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
                                                 <span style={{
                                                     fontSize: '0.7rem',
                                                     fontWeight: 800,
-                                                    color: '#6366F1',
+                                                    color: 'var(--primary-color)',
                                                     textTransform: 'uppercase',
                                                     letterSpacing: '0.05em',
-                                                    background: '#EEF2FF',
+                                                    background: 'rgba(157, 116, 200, 0.15)',
                                                     padding: '0.25rem 0.75rem',
                                                     borderRadius: '50px'
                                                 }}>
                                                     DÍA {item.day}
                                                 </span>
-                                                <span style={{ fontWeight: 700, color: '#059669' }}>
-                                                    $ {item.price ? Number(item.price).toLocaleString() : '0'} USD
-                                                </span>
+                                                {can('canViewFinancials') && (
+                                                    <span style={{ fontWeight: 700, color: 'var(--accent-color)' }}>
+                                                        $ {item.price ? Number(item.price).toLocaleString() : '0'} USD
+                                                    </span>
+                                                )}
                                             </div>
-                                            <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '1.1rem', color: '#1E293B' }}>{item.name}</h4>
-                                            <p style={{ margin: 0, fontSize: '0.9rem', color: '#64748B', lineHeight: '1.5' }}>
+                                            <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '1.1rem', color: 'white' }}>{item.name}</h4>
+                                            <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: '1.5' }}>
                                                 {item.description}
                                             </p>
                                         </div>
                                     </div>
                                 ))
                             ) : (
-                                <div style={{ color: '#94A3B8', fontStyle: 'italic' }}>Sin itinerario personalizado.</div>
+                                <div style={{ color: 'var(--text-secondary)', fontStyle: 'italic' }}>Sin itinerario personalizado.</div>
                             )}
                         </div>
 
                         {/* Total Footer */}
-                        <div style={{
-                            background: '#0F172A',
-                            margin: '0 -2rem -2rem -2rem', // Bleed to edges
-                            padding: '1.5rem 2rem',
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            color: 'white'
-                        }}>
-                            <span style={{ fontSize: '1rem', fontWeight: 500, opacity: 0.8 }}>Total Venta</span>
-                            <span style={{ fontSize: '1.75rem', fontWeight: 800 }}>
-                                {(() => {
-                                    return `$ ${viewingItinerary.total_amount ? viewingItinerary.total_amount.toLocaleString() : '0'} USD`;
-                                })()}
-                            </span>
-                        </div>
+                        {can('canViewFinancials') && (
+                            <div style={{
+                                background: 'var(--bg-main)',
+                                margin: '0 -2rem -2rem -2rem',
+                                padding: '1.5rem 2rem',
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                color: 'white'
+                            }}>
+                                <span style={{ fontSize: '1rem', fontWeight: 500, opacity: 0.8 }}>Total Venta</span>
+                                <span style={{ fontSize: '1.75rem', fontWeight: 800 }}>
+                                    {`$ ${viewingItinerary.total_amount ? viewingItinerary.total_amount.toLocaleString() : '0'} USD`}
+                                </span>
+                            </div>
+                        )}
                     </div>
                 )}
             </Modal>
-        </DashboardLayout>
+        </DashboardLayout >
     );
 }

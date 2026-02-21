@@ -1,7 +1,7 @@
 .dashboardContainer {
     display: flex;
     min-height: 100vh;
-    background-color: #F8FAFC;
+    background-color: var(--bg-main);
 }
 
 /* Sidebar */
@@ -44,7 +44,7 @@
     align-items: center;
     gap: 1rem;
     padding: 1rem;
-    color: #94A3B8;
+    color: var(--text-secondary);
     text-decoration: none;
     border-radius: var(--radius-md);
     transition: all 0.3s ease;
@@ -111,11 +111,11 @@
 }
 
 .kpiCard {
-    background: white;
+    background: var(--bg-card);
     padding: 1.5rem;
     border-radius: var(--radius-lg);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
-    border: 1px solid #E2E8F0;
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--border-color);
     transition: transform 0.3s ease;
 }
 
@@ -126,7 +126,7 @@
 
 .kpiLabel {
     display: block;
-    color: #64748B;
+    color: var(--text-secondary);
     font-size: 0.875rem;
     margin-bottom: 0.5rem;
     text-transform: uppercase;
@@ -155,11 +155,11 @@
 }
 
 .destinationCard {
-    background: white;
+    background: var(--bg-card);
     border-radius: var(--radius-lg);
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    border: 1px solid #E2E8F0;
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--border-color);
     transition: all 0.3s ease;
     display: flex;
     flex-direction: column;
@@ -206,17 +206,17 @@
 .actionBtn {
     flex: 1;
     padding: 0.5rem;
-    border: 1px solid #E2E8F0;
-    background: white;
+    border: 1px solid var(--border-color);
+    background: transparent;
     border-radius: var(--radius-sm);
-    color: #64748B;
+    color: var(--text-secondary);
     cursor: pointer;
     transition: all 0.2s;
     font-size: 0.875rem;
 }
 
 .actionBtn:hover {
-    background: #F1F5F9;
+    background: var(--bg-card-hover);
     color: var(--primary-dark);
 }
 

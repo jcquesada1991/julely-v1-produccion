@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
-import { LogIn, Eye, EyeOff, Plane } from 'lucide-react';
+import { LogIn, Eye, EyeOff } from 'lucide-react';
 import styles from '@/styles/Login.module.css';
-import { MOCK_DATA } from '@/data/mockData';
+import { supabase } from '@/lib/supabase';
 
 export default function Login() {
     const router = useRouter();
@@ -18,16 +18,31 @@ export default function Login() {
         setIsLoading(true);
         setError('');
 
-        // Mock login delay
-        setTimeout(() => {
-            // Validation: Allow specific admin credentials OR generic valid inputs (email present + password >= 6 chars)
-            if ((email === 'admin@travelagendy.com' && password === 'admin') || (email && password.length >= 6)) {
-                router.push('/dashboard');
-            } else {
-                setError('Credenciales inválidas');
+        try {
+            const { error: authError } = await supabase.auth.signInWithPassword({
+                email,
+                password,
+            });
+
+            if (authError) {
+                if (authError.message.includes('Invalid login credentials')) {
+                    setError('Credenciales inválidas. Verifica tu email y contraseña.');
+                } else if (authError.message.includes('Email not confirmed')) {
+                    setError('Debes confirmar tu email antes de ingresar.');
+                } else {
+                    setError('Error al iniciar sesión. Intenta de nuevo.');
+                }
                 setIsLoading(false);
+                return;
             }
-        }, 1000);
+
+            // AuthContext detecta el login via onAuthStateChange
+            router.push('/dashboard');
+        } catch (err) {
+            console.error('Login error:', err);
+            setError('Error de conexión. Intenta de nuevo.');
+            setIsLoading(false);
+        }
     };
 
     return (

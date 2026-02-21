@@ -126,13 +126,27 @@ export const MOCK_DATA = {
             id: 1,
             name: "Juan",
             surname: "Pérez",
-            phone: "+1 555 0101"
+            phone: "+1 555 0101",
+            email: "juan.perez@email.com",
+            passport: "PA1234567",
+            birthdate: "1985-03-15",
+            nationality: "Estadounidense",
+            address: "123 Main St, Miami, FL",
+            notes: "Prefiere asiento de ventana. Vegetariano.",
+            booking_date: "2024-01-20"
         },
         {
             id: 2,
             name: "María",
             surname: "García",
-            phone: "+34 600 000 000"
+            phone: "+34 600 000 000",
+            email: "maria.garcia@email.com",
+            passport: "ES9876543",
+            birthdate: "1990-07-22",
+            nationality: "Española",
+            address: "Calle Gran Vía 10, Madrid",
+            notes: "",
+            booking_date: "2024-01-25"
         }
     ],
     itineraries: [

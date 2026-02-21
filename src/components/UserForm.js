@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import styles from '@/styles/FormModal.module.css';
+import { ROLES } from '@/context/AuthContext';
 
 export default function UserForm({ initialData, onSubmit, onCancel }) {
     const [formData, setFormData] = useState({
         name: '',
         lastName: '',
         email: '',
-        role: 'Asesor'
+        password: '',
+        role: ROLES.ASESOR
     });
 
     useEffect(() => {
@@ -19,7 +21,8 @@ export default function UserForm({ initialData, onSubmit, onCancel }) {
                 name: firstName,
                 lastName: lastName,
                 email: initialData.email || '',
-                role: initialData.role || 'Asesor'
+                password: '',
+                role: initialData.role || ROLES.ASESOR
             });
         }
     }, [initialData]);
@@ -36,10 +39,21 @@ export default function UserForm({ initialData, onSubmit, onCancel }) {
         e.preventDefault();
         const submitData = {
             ...formData,
-            name: `${formData.name} ${formData.lastName}`.trim()
+            name: `${formData.name} ${formData.lastName}`.trim(),
+            // Only include password if it was set (for creation or update)
+            ...(formData.password ? { password: formData.password } : {})
         };
+        delete submitData.lastName;
         onSubmit(submitData);
     };
+
+    const roleOptions = [
+        { value: ROLES.ADMIN, label: 'Administrador', desc: 'Control total del sistema', color: 'var(--primary-color)' },
+        { value: ROLES.ASESOR, label: 'Asesor de Ventas', desc: 'Gestión de clientes y ventas', color: '#3B82F6' },
+        { value: ROLES.SUPERVISOR, label: 'Supervisor', desc: 'Reportes y supervisión', color: '#F59E0B' },
+        { value: ROLES.CONTABILIDAD, label: 'Contabilidad', desc: 'Datos financieros', color: '#10B981' },
+        { value: ROLES.OPERACIONES, label: 'Operaciones', desc: 'Logística y proveedores', color: '#EC4899' },
+    ];
 
     return (
         <form onSubmit={handleSubmit}>
@@ -85,30 +99,69 @@ export default function UserForm({ initialData, onSubmit, onCancel }) {
                     </div>
 
                     <div className={`${styles.formGroup} ${styles.formGridFull}`}>
+                        <label className={styles.formLabel}>
+                            {initialData ? 'Nueva Contraseña (dejar vacío para no cambiar)' : 'Contraseña'}
+                        </label>
+                        <input
+                            type="password"
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            required={!initialData}
+                            placeholder="••••••••"
+                            className={styles.formInput}
+                        />
+                    </div>
+
+                    <div className={`${styles.formGroup} ${styles.formGridFull}`}>
                         <label className={styles.formLabel}>Rol del Usuario</label>
-                        <div className={styles.radioGroup}>
-                            <label className={styles.radioLabel}>
-                                <input
-                                    type="radio"
-                                    name="role"
-                                    value="Administrador"
-                                    checked={formData.role === 'Administrador'}
-                                    onChange={handleChange}
-                                    className={styles.radioInput}
-                                />
-                                <span>Administrador</span>
-                            </label>
-                            <label className={styles.radioLabel}>
-                                <input
-                                    type="radio"
-                                    name="role"
-                                    value="Asesor"
-                                    checked={formData.role === 'Asesor'}
-                                    onChange={handleChange}
-                                    className={styles.radioInput}
-                                />
-                                <span>Asesor</span>
-                            </label>
+                        <div className={styles.radioGroup} style={{ flexDirection: 'column', gap: '0.5rem' }}>
+                            {roleOptions.map((role) => (
+                                <label
+                                    key={role.value}
+                                    className={styles.radioLabel}
+                                    style={{
+                                        padding: '0.75rem 1rem',
+                                        borderRadius: '8px',
+                                        border: formData.role === role.value
+                                            ? `2px solid ${role.color}`
+                                            : '1px solid var(--border-color)',
+                                        background: formData.role === role.value
+                                            ? `${role.color}15`
+                                            : 'transparent',
+                                        cursor: 'pointer',
+                                        transition: 'all 0.2s',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '0.75rem'
+                                    }}
+                                >
+                                    <input
+                                        type="radio"
+                                        name="role"
+                                        value={role.value}
+                                        checked={formData.role === role.value}
+                                        onChange={handleChange}
+                                        className={styles.radioInput}
+                                    />
+                                    <div>
+                                        <span style={{
+                                            fontWeight: 600,
+                                            color: formData.role === role.value ? role.color : 'var(--text-primary)'
+                                        }}>
+                                            {role.label}
+                                        </span>
+                                        <span style={{
+                                            display: 'block',
+                                            fontSize: '0.75rem',
+                                            color: 'var(--text-secondary)',
+                                            marginTop: '2px'
+                                        }}>
+                                            {role.desc}
+                                        </span>
+                                    </div>
+                                </label>
+                            ))}
                         </div>
                     </div>
                 </div>

@@ -54,7 +54,7 @@ export default function Dashboard() {
             {/* Page Header Area */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2rem' }}>
                 <div>
-                    <div style={{ color: '#94A3B8', fontSize: '0.9rem', marginBottom: '0.25rem', fontWeight: 500 }}>
+                    <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '0.25rem', fontWeight: 500 }}>
                         Panel de Control
                     </div>
                     <div className={styles.pageTitle}>
@@ -71,41 +71,38 @@ export default function Dashboard() {
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '2rem' }}>
 
                         {/* Total Revenue Card */}
-                        <div className="kanto-card" style={{
-                            background: 'linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%)',
-                            color: 'white'
-                        }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 700, fontSize: '0.9rem' }}>
+                        <div className={`${styles.statCard} ${styles.cardRevenue}`}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', position: 'relative', zIndex: 1 }}>
+                                <div className={styles.statLabel} style={{ color: 'white', marginBottom: 0 }}>
                                     <DollarSign size={18} /> Ingresos Totales
                                 </div>
-                                <button className="btn-icon" style={{ width: 32, height: 32, background: 'rgba(255,255,255,0.2)', color: 'white' }}>
+                                <button className="btn-icon" style={{ width: 32, height: 32, background: 'rgba(255,255,255,0.2)', color: 'white', border: 'none' }}>
                                     <ArrowUpRight size={16} />
                                 </button>
                             </div>
-                            <div style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '0.5rem' }}>
+                            <div className={styles.statNumber} style={{ marginBottom: '0.5rem', position: 'relative', zIndex: 1 }}>
                                 ${dashboardStats.totalRevenue.toLocaleString()}
                             </div>
-                            <div style={{ fontSize: '0.9rem', opacity: 0.9 }}>
+                            <div className={styles.statSub} style={{ color: 'rgba(255, 255, 255, 0.8)', position: 'relative', zIndex: 1 }}>
                                 De {dashboardStats.totalSales} ventas registradas
                             </div>
                         </div>
 
                         {/* Total Sales Card */}
-                        <div className="kanto-card">
+                        <div className={styles.statCard}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 700, fontSize: '0.9rem', color: '#0F172A' }}>
+                                <div className={styles.statLabel} style={{ marginBottom: 0 }}>
                                     <Package size={18} /> Ventas Totales
                                 </div>
-                                <span style={{ color: '#10B981', fontWeight: 700, fontSize: '0.9rem' }}>
+                                <span style={{ color: 'var(--accent-color)', fontWeight: 700, fontSize: '0.9rem' }}>
                                     {dashboardStats.conversionRate}% conversión
                                 </span>
                             </div>
-                            <div style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '0.5rem', color: '#0F172A' }}>
+                            <div className={styles.statNumber}>
                                 {dashboardStats.totalSales}
                             </div>
-                            <div style={{ display: 'flex', gap: '1rem', fontSize: '0.85rem', color: '#64748B' }}>
-                                <span style={{ color: '#10B981' }}>✓ {dashboardStats.confirmedSales} Confirmadas</span>
+                            <div style={{ display: 'flex', gap: '1rem', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                                <span style={{ color: 'var(--accent-color)' }}>✓ {dashboardStats.confirmedSales} Confirmadas</span>
                                 <span style={{ color: '#F59E0B' }}>⏳ {dashboardStats.pendingSales} Pendientes</span>
                             </div>
                         </div>
@@ -118,7 +115,7 @@ export default function Dashboard() {
                             <div>
                                 <div className={styles.statLabel}><Users size={16} /> Clientes</div>
                                 <div className={styles.statNumber}>{dashboardStats.totalClients}</div>
-                                <div style={{ fontSize: '0.85rem', color: '#64748B', marginTop: '0.5rem' }}>
+                                <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '0.5rem' }}>
                                     Clientes registrados
                                 </div>
                             </div>
@@ -128,24 +125,21 @@ export default function Dashboard() {
                             <div>
                                 <div className={styles.statLabel}><MapPin size={16} /> Destinos</div>
                                 <div className={styles.statNumber}>{dashboardStats.totalDestinations}</div>
-                                <div style={{ fontSize: '0.85rem', color: '#64748B', marginTop: '0.5rem' }}>
+                                <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '0.5rem' }}>
                                     Destinos disponibles
                                 </div>
                             </div>
                         </div>
 
-                        <div className={styles.statCard} style={{
-                            background: 'linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%)',
-                            border: '1px solid #FDE68A'
-                        }}>
+                        <div className={`${styles.statCard} ${styles.cardMostSold}`}>
                             <div>
-                                <div className={styles.statLabel} style={{ color: '#92400E' }}>
+                                <div className={styles.statLabel} style={{ color: 'var(--primary-light)', marginBottom: 0 }}>
                                     <TrendingUp size={16} /> Más Vendido
                                 </div>
-                                <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#92400E', marginTop: '0.5rem' }}>
+                                <div className={styles.statNumber} style={{ fontSize: '1.5rem', marginTop: '0.5rem' }}>
                                     {dashboardStats.mostSoldDest?.title || 'N/A'}
                                 </div>
-                                <div style={{ fontSize: '0.85rem', color: '#78350F', marginTop: '0.5rem' }}>
+                                <div className={styles.statSub} style={{ marginTop: '0.5rem' }}>
                                     Destino más popular
                                 </div>
                             </div>
@@ -158,51 +152,22 @@ export default function Dashboard() {
                 <div className={styles.sideSection}>
                     <div className="kanto-card" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 700, color: '#0F172A' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 700, color: 'white' }}>
                                 <MapPin size={20} /> Top Destinos
                             </div>
                         </div>
 
                         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                             {destinations.slice(0, 5).map((dest, idx) => (
-                                <div key={dest.id} style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '1rem',
-                                    padding: '1rem',
-                                    background: idx === 0 ? 'rgba(14, 165, 233, 0.05)' : '#F8FAFC',
-                                    borderRadius: '16px',
-                                    border: idx === 0 ? '1px solid #BAE6FD' : '1px solid #E2E8F0',
-                                    transition: 'all 0.3s ease'
-                                }}
-                                    onMouseEnter={(e) => {
-                                        e.currentTarget.style.transform = 'translateX(4px)';
-                                        e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
-                                    }}
-                                    onMouseLeave={(e) => {
-                                        e.currentTarget.style.transform = 'translateX(0)';
-                                        e.currentTarget.style.boxShadow = 'none';
-                                    }}
-                                >
-                                    <div style={{
-                                        minWidth: '48px',
-                                        height: '48px',
-                                        borderRadius: '12px',
-                                        background: idx === 0 ? 'linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%)' : '#E2E8F0',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        color: idx === 0 ? 'white' : '#64748B',
-                                        fontWeight: 800,
-                                        fontSize: '1.2rem'
-                                    }}>
+                                <div key={dest.id} className={`${styles.topDestItem} ${idx === 0 ? styles.highlight : ''}`}>
+                                    <div className={styles.rankBadge}>
                                         {idx + 1}
                                     </div>
                                     <div style={{ flex: 1 }}>
-                                        <div style={{ fontWeight: 700, color: '#0F172A', marginBottom: '0.25rem' }}>
+                                        <div style={{ fontWeight: 700, color: 'white', marginBottom: '0.25rem' }}>
                                             {dest.title}
                                         </div>
-                                        <div style={{ fontSize: '0.85rem', color: '#64748B' }}>
+                                        <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
                                             {dest.currency} ${dest.price.toLocaleString()}
                                         </div>
                                     </div>
@@ -223,7 +188,7 @@ export default function Dashboard() {
                         </div>
 
                         {destinations.length === 0 && (
-                            <div style={{ padding: '2rem', textAlign: 'center', color: '#94A3B8' }}>
+                            <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
                                 No hay destinos disponibles
                             </div>
                         )}

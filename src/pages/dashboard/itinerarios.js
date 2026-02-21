@@ -42,7 +42,7 @@ export default function Itineraries() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
                 <div>
                     <h2 className={styles.pageTitle} style={{ fontSize: '2rem' }}>Excursiones</h2>
-                    <p style={{ color: '#64748B' }}>Gestiona las excursiones para los itinerarios</p>
+                    <p style={{ color: 'var(--text-secondary)' }}>Gestiona las excursiones para los itinerarios</p>
                 </div>
                 <button className="btn-primary" onClick={() => setIsModalOpen(true)}>
                     <Plus size={20} /> Nueva Excursión
@@ -66,7 +66,7 @@ export default function Itineraries() {
                             {itineraries.map(item => (
                                 <tr key={item.id}>
                                     <td>
-                                        <div className={styles.imgThumbnail} style={{ width: '50px', height: '50px', borderRadius: '8px', overflow: 'hidden', background: '#F1F5F9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                        <div className={styles.imgThumbnail} style={{ width: '50px', height: '50px', borderRadius: '8px', overflow: 'hidden', background: 'var(--bg-card-hover)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                             {item.image ? (
                                                 <img
                                                     src={item.image}
@@ -78,20 +78,20 @@ export default function Itineraries() {
                                                     }}
                                                 />
                                             ) : (
-                                                <CameraOff size={20} color="#94A3B8" />
+                                                <CameraOff size={20} color="var(--text-secondary)" />
                                             )}
                                         </div>
                                     </td>
                                     <td>
-                                        <div style={{ fontWeight: 700, color: '#1E293B' }}>{item.name}</div>
+                                        <div style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{item.name}</div>
                                     </td>
                                     <td>
-                                        <div style={{ fontSize: '0.8rem', color: '#64748B', maxWidth: '300px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                        <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', maxWidth: '300px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                                             {item.description}
                                         </div>
                                     </td>
                                     <td>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#64748B' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-secondary)' }}>
                                             <MapPin size={16} />
                                             {getDestName(item.destination_id)}
                                         </div>
@@ -99,8 +99,8 @@ export default function Itineraries() {
                                     <td>
                                         <span style={{
                                             fontWeight: 800,
-                                            color: '#059669',
-                                            background: '#ECFDF5',
+                                            color: 'var(--accent-color)',
+                                            background: 'rgba(153, 221, 181, 0.15)',
                                             padding: '0.25rem 0.6rem',
                                             borderRadius: '6px',
                                             fontSize: '0.8rem',
@@ -133,7 +133,7 @@ export default function Itineraries() {
                             ))}
                             {itineraries.length === 0 && (
                                 <tr>
-                                    <td colSpan="5" style={{ textAlign: 'center', padding: '3rem', color: '#94A3B8' }}>
+                                    <td colSpan="5" style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-secondary)' }}>
                                         No hay excursiones registradas.
                                     </td>
                                 </tr>
@@ -188,17 +188,19 @@ function ItineraryForm({ initialData, destinations, onSubmit, onCancel }) {
     const inputStyle = {
         width: '100%',
         padding: '0.75rem',
-        border: '1px solid #E2E8F0',
+        border: '1px solid var(--border-color)',
         borderRadius: '8px',
         marginTop: '0.25rem',
-        fontSize: '0.9rem'
+        fontSize: '0.9rem',
+        background: 'var(--bg-main)',
+        color: 'var(--text-primary)'
     };
 
     const labelStyle = {
         display: 'block',
         fontSize: '0.85rem',
         fontWeight: 600,
-        color: '#475569',
+        color: 'var(--text-secondary)',
         marginTop: '1rem'
     };
 
@@ -259,8 +261,8 @@ function ItineraryForm({ initialData, destinations, onSubmit, onCancel }) {
             />
 
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '2rem' }}>
-                <button type="button" onClick={onCancel} style={{ padding: '0.75rem 1.5rem', border: '1px solid #E2E8F0', background: 'white', borderRadius: '8px', cursor: 'pointer' }}>Cancelar</button>
-                <button type="submit" style={{ padding: '0.75rem 1.5rem', background: '#0EA5E9', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer' }}>
+                <button type="button" onClick={onCancel} style={{ padding: '0.75rem 1.5rem', border: '1px solid var(--border-color)', background: 'transparent', borderRadius: '8px', cursor: 'pointer', color: 'var(--text-secondary)' }}>Cancelar</button>
+                <button type="submit" style={{ padding: '0.75rem 1.5rem', background: 'var(--primary-color)', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer' }}>
                     {initialData ? 'Actualizar' : 'Crear'}
                 </button>
             </div>

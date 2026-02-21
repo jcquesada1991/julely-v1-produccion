@@ -11,7 +11,7 @@
 
 .voucherContainer {
     min-height: 100vh;
-    background: #F8FAFC;
+    background: var(--bg-main);
     padding: 2rem;
     display: flex;
     justify-content: center;
@@ -25,7 +25,7 @@
     min-height: 297mm;
     /* A4 Height */
     background: white;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 40px rgba(157, 116, 200, 0.1);
     position: relative;
     display: flex;
     flex-direction: column;
@@ -88,8 +88,8 @@
     line-height: 0.9;
     font-weight: 900;
     text-transform: uppercase;
-    color: #0EA5E9;
-    /* Primary Color Requested */
+    color: var(--primary-color);
+    /* Primary Color - Brand Purple */
     text-shadow: 3px 3px 0px #0F172A, 0 4px 12px rgba(0, 0, 0, 0.5);
     margin: 0;
 }
@@ -118,7 +118,7 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
-    border-bottom: 4px solid #0EA5E9;
+    border-bottom: 4px solid var(--primary-color);
 }
 
 .infoCard {
@@ -172,7 +172,7 @@
 }
 
 .sectionTitle svg {
-    color: #0EA5E9;
+    color: var(--primary-color);
     transform: scale(0.9);
     /* Slightly smaller icons */
 }
@@ -202,7 +202,7 @@
 /* Prepared By Box */
 .preparedByBox {
     margin-top: 1.5rem;
-    background: linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%);
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
     color: white;
     padding: 1rem;
     border-radius: 8px;
@@ -272,7 +272,7 @@
 }
 
 .dayBadge {
-    background: #0F172A;
+    background: var(--primary-dark, #1a0e2e);
     color: white;
     font-weight: 700;
     font-size: 0.8rem;
@@ -369,23 +369,24 @@
 
 /* Volver Button Style Fix */
 .btnBack {
-    background: white;
-    border: 1px solid #CBD5E1;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
     display: flex;
     align-items: center;
     gap: 0.5rem;
     padding: 0.75rem 1.5rem;
     border-radius: 50px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     cursor: pointer;
     font-weight: 600;
-    color: #0F172A;
+    color: var(--text-primary);
     transition: all 0.2s ease;
 }
 
 .btnBack:hover {
-    background: #F1F5F9;
+    background: var(--bg-card-hover);
     transform: translateY(-2px);
+    border-color: var(--primary-color);
 }
 
 .btnDownload {
@@ -394,18 +395,126 @@
     gap: 0.5rem;
     padding: 0.75rem 1.5rem;
     border-radius: 50px;
-    background: #0EA5E9;
+    background: var(--primary-color);
     border: none;
     color: white;
     cursor: pointer;
     font-weight: 800;
-    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.4);
+    box-shadow: 0 4px 12px rgba(157, 116, 200, 0.4);
     transition: all 0.2s ease;
 }
 
 .btnDownload:hover {
-    background: #0284C7;
+    background: var(--primary-dark);
     transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(157, 116, 200, 0.5);
+}
+
+/* Edit Button */
+.btnEdit {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    background: var(--bg-card);
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+    cursor: pointer;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s ease;
+}
+
+.btnEdit:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.btnEdit.active {
+    background: var(--primary-color);
+    color: white;
+    box-shadow: 0 0 16px rgba(157, 116, 200, 0.5);
+}
+
+/* Edit Mode Styles */
+.editInput {
+    border: none;
+    border-bottom: 2px dashed var(--primary-color);
+    background: transparent;
+    font: inherit;
+    color: inherit;
+    width: 100%;
+    padding: 0.25rem 0;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.editInput:focus {
+    border-bottom-style: solid;
+    border-color: var(--primary-color);
+}
+
+.editTextarea {
+    border: 1px dashed var(--primary-color);
+    background: rgba(157, 116, 200, 0.05);
+    border-radius: 8px;
+    font: inherit;
+    color: inherit;
+    width: 100%;
+    padding: 0.5rem;
+    outline: none;
+    resize: vertical;
+    min-height: 60px;
+    transition: border-color 0.2s;
+}
+
+.editTextarea:focus {
+    border-style: solid;
+    border-color: var(--primary-color);
+    background: rgba(157, 116, 200, 0.08);
+}
+
+.editRemoveBtn {
+    background: rgba(239, 68, 68, 0.1);
+    border: none;
+    color: #EF4444;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.editRemoveBtn:hover {
+    background: #EF4444;
+    color: white;
+}
+
+.editAddBtn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: 1px dashed var(--primary-color);
+    background: rgba(157, 116, 200, 0.05);
+    color: var(--primary-color);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: all 0.2s;
+    margin-top: 0.5rem;
+}
+
+.editAddBtn:hover {
+    background: rgba(157, 116, 200, 0.15);
+    border-style: solid;
 }
 
 @media print {

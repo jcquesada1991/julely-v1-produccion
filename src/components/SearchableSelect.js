@@ -54,7 +54,7 @@ export default function SearchableSelect({
                     display: 'block',
                     fontSize: '0.85rem',
                     fontWeight: 600,
-                    color: '#475569',
+                    color: 'var(--text-secondary)',
                     marginBottom: '0.5rem'
                 }}>
                     {label} {required && <span style={{ color: '#EF4444' }}>*</span>}
@@ -65,9 +65,9 @@ export default function SearchableSelect({
                 onClick={() => setIsOpen(!isOpen)}
                 style={{
                     padding: '0.75rem',
-                    border: '1px solid #E2E8F0',
+                    border: '1px solid var(--border-color)',
                     borderRadius: '8px',
-                    backgroundColor: 'white',
+                    backgroundColor: 'var(--bg-main)',
                     cursor: 'pointer',
                     display: 'flex',
                     justifyContent: 'space-between',
@@ -75,12 +75,12 @@ export default function SearchableSelect({
                     fontSize: '0.9rem'
                 }}
             >
-                <span style={{ color: selectedOption ? '#0F172A' : '#94A3B8' }}>
+                <span style={{ color: selectedOption ? 'var(--text-primary)' : 'var(--text-secondary)' }}>
                     {selectedOption
                         ? (renderOption ? renderOption(selectedOption) : selectedOption[labelKey])
                         : placeholder}
                 </span>
-                <ChevronDown size={16} color="#64748B" />
+                <ChevronDown size={16} color="var(--text-secondary)" />
             </div>
 
             {isOpen && (
@@ -91,24 +91,24 @@ export default function SearchableSelect({
                     right: 0,
                     zIndex: 50,
                     marginTop: '0.25rem',
-                    backgroundColor: 'white',
-                    border: '1px solid #E2E8F0',
+                    backgroundColor: 'var(--bg-card)',
+                    border: '1px solid var(--border-color)',
                     borderRadius: '8px',
-                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.3)',
                     maxHeight: '250px',
                     overflow: 'hidden',
                     display: 'flex',
                     flexDirection: 'column'
                 }}>
-                    <div style={{ padding: '0.5rem', borderBottom: '1px solid #F1F5F9' }}>
+                    <div style={{ padding: '0.5rem', borderBottom: '1px solid var(--border-color)' }}>
                         <div style={{
                             display: 'flex',
                             alignItems: 'center',
-                            background: '#F8FAFC',
+                            background: 'var(--bg-main)',
                             padding: '0.5rem',
                             borderRadius: '6px'
                         }}>
-                            <Search size={14} color="#64748B" style={{ marginRight: '0.5rem' }} />
+                            <Search size={14} color="var(--text-secondary)" style={{ marginRight: '0.5rem' }} />
                             <input
                                 autoFocus
                                 type="text"
@@ -120,7 +120,8 @@ export default function SearchableSelect({
                                     background: 'transparent',
                                     width: '100%',
                                     outline: 'none',
-                                    fontSize: '0.85rem'
+                                    fontSize: '0.85rem',
+                                    color: 'var(--text-primary)'
                                 }}
                             />
                         </div>
@@ -136,18 +137,18 @@ export default function SearchableSelect({
                                         padding: '0.75rem',
                                         cursor: 'pointer',
                                         fontSize: '0.9rem',
-                                        color: '#334155',
+                                        color: 'var(--text-primary)',
                                         transition: 'background 0.2s',
-                                        borderBottom: '1px solid #F8FAFC',
+                                        borderBottom: '1px solid var(--border-color)',
                                     }}
-                                    onMouseEnter={(e) => e.target.style.background = '#F1F5F9'}
-                                    onMouseLeave={(e) => e.target.style.background = 'white'}
+                                    onMouseEnter={(e) => e.target.style.background = 'var(--bg-card-hover)'}
+                                    onMouseLeave={(e) => e.target.style.background = 'transparent'}
                                 >
                                     {renderOption ? renderOption(opt) : opt[labelKey]}
                                 </div>
                             ))
                         ) : (
-                            <div style={{ padding: '1rem', textAlign: 'center', color: '#94A3B8', fontSize: '0.85rem' }}>
+                            <div style={{ padding: '1rem', textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
                                 No se encontraron resultados
                             </div>
                         )}
