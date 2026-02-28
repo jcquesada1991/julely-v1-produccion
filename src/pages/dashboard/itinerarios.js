@@ -5,38 +5,58 @@ import Modal from '@/components/Modal';
 import { useApp } from '@/context/AppContext';
 import styles from '@/styles/DashboardV2.module.css';
 import { Plus, MapPin, Edit, Trash2, CameraOff } from 'lucide-react';
+import { useConfirm } from '@/components/ConfirmModal';
 import SearchableSelect from '@/components/SearchableSelect';
+import ImageUploader from '@/components/ImageUploader';
 
 export default function Itineraries() {
     const { itineraries, destinations, addItinerary, updateItinerary, deleteItinerary } = useApp();
+    const confirm = useConfirm();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentItinerary, setCurrentItinerary] = useState(null);
+    const [isDirty, setIsDirty] = useState(false);
 
     const getDestName = (id) => {
-        const d = destinations.find(x => x.id === parseInt(id));
+        const d = destinations.find(x => String(x.id) === String(id));
         return d ? d.title : 'Desconocido';
     };
+
 
     const handleEdit = (item) => {
         setCurrentItinerary(item);
         setIsModalOpen(true);
     };
 
-    const handleDelete = (id) => {
-        if (confirm('¿Estás seguro de eliminar esta excursión?')) {
+    const handleDelete = async (id) => {
+        const item = itineraries.find(i => i.id === id);
+        const name = item ? item.name : '';
+        const ok = await confirm(
+            'Eliminar Excursión',
+            `¿Estás seguro de eliminar "${name}"? Esta acción no se puede deshacer.`
+        );
+        if (ok) {
             deleteItinerary(id);
         }
     };
 
-    const handleClose = () => {
+    const handleClose = async () => {
+        if (isDirty) {
+            const ok = await confirm(
+                'Descartar cambios',
+                '¿Estás seguro que deseas salir sin guardar? Los cambios se perderán.',
+                { confirmText: 'Salir sin guardar', icon: 'alert' }
+            );
+            if (!ok) return;
+        }
         setIsModalOpen(false);
         setCurrentItinerary(null);
+        setIsDirty(false);
     };
 
     return (
         <DashboardLayout title="Gestión de Itinerarios">
             <Head>
-                <title>Itinerarios | TravelAgendy</title>
+                <title>Excursiones | Julely</title>
             </Head>
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
@@ -44,7 +64,7 @@ export default function Itineraries() {
                     <h2 className={styles.pageTitle} style={{ fontSize: '2rem' }}>Excursiones</h2>
                     <p style={{ color: 'var(--text-secondary)' }}>Gestiona las excursiones para los itinerarios</p>
                 </div>
-                <button className="btn-primary" onClick={() => setIsModalOpen(true)}>
+                <button className="btn-primary" onClick={() => { setCurrentItinerary(null); setIsDirty(false); setIsModalOpen(true); }}>
                     <Plus size={20} /> Nueva Excursión
                 </button>
             </div>
@@ -58,7 +78,7 @@ export default function Itineraries() {
                                 <th className={styles.tableHeader}>Nombre</th>
                                 <th className={styles.tableHeader}>Descripción</th>
                                 <th className={styles.tableHeader}>Destino</th>
-                                <th className={styles.tableHeader}>Precio</th>
+                                <th className={styles.tableHeader}>Precios</th>
                                 <th className={styles.tableHeader} style={{ textAlign: 'center' }}>Acciones</th>
                             </tr>
                         </thead>
@@ -97,19 +117,32 @@ export default function Itineraries() {
                                         </div>
                                     </td>
                                     <td>
-                                        <span style={{
-                                            fontWeight: 800,
-                                            color: 'var(--accent-color)',
-                                            background: 'rgba(153, 221, 181, 0.15)',
-                                            padding: '0.25rem 0.6rem',
-                                            borderRadius: '6px',
-                                            fontSize: '0.8rem',
-                                            display: 'inline-flex',
-                                            alignItems: 'center',
-                                            gap: '2px'
-                                        }}>
-                                            $ {item.price ? Number(item.price).toLocaleString() : '0'} USD
-                                        </span>
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                            <span style={{
+                                                fontWeight: 800,
+                                                color: 'var(--accent-color)',
+                                                background: 'rgba(153, 221, 181, 0.15)',
+                                                padding: '0.25rem 0.6rem',
+                                                borderRadius: '6px',
+                                                fontSize: '0.75rem',
+                                                display: 'inline-flex',
+                                                alignItems: 'center',
+                                            }}>
+                                                Adulto: $ {item.price_adult ? Number(item.price_adult).toLocaleString() : '0'} USD
+                                            </span>
+                                            <span style={{
+                                                fontWeight: 800,
+                                                color: '#3B82F6',
+                                                background: 'rgba(59, 130, 246, 0.15)',
+                                                padding: '0.25rem 0.6rem',
+                                                borderRadius: '6px',
+                                                fontSize: '0.75rem',
+                                                display: 'inline-flex',
+                                                alignItems: 'center',
+                                            }}>
+                                                Menor: $ {item.price_child ? Number(item.price_child).toLocaleString() : '0'} USD
+                                            </span>
+                                        </div>
                                     </td>
                                     <td>
                                         <div className={styles.actions} style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
@@ -157,29 +190,32 @@ export default function Itineraries() {
                         } else {
                             addItinerary(data);
                         }
-                        handleClose();
+                        setIsModalOpen(false);
+                        setCurrentItinerary(null);
+                        setIsDirty(false);
                     }}
                     onCancel={handleClose}
+                    onDirty={setIsDirty}
                 />
             </Modal>
         </DashboardLayout>
     );
 }
 
-function ItineraryForm({ initialData, destinations, onSubmit, onCancel }) {
+function ItineraryForm({ initialData, destinations, onSubmit, onCancel, onDirty }) {
     const [formData, setFormData] = useState(initialData || {
         destination_id: '',
         name: '',
         description: '',
-        price: '',
+        price_adult: '',
+        price_child: '',
         image: ''
     });
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Validation: Price > 0
-        if (Number(formData.price) <= 0) {
-            alert('El precio debe ser mayor a 0');
+        if (Number(formData.price_adult) <= 0) {
+            alert('El precio de adulto debe ser mayor a 0');
             return;
         }
         onSubmit(formData);
@@ -211,43 +247,54 @@ function ItineraryForm({ initialData, destinations, onSubmit, onCancel }) {
                 required
                 options={destinations}
                 value={formData.destination_id}
-                onChange={(e) => setFormData({ ...formData, destination_id: e.target.value })}
+                onChange={(e) => { setFormData({ ...formData, destination_id: e.target.value }); if (onDirty) onDirty(true); }}
                 name="destination_id"
                 placeholder="Seleccione un destino"
             />
 
-            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
                 <div>
                     <label style={labelStyle}>Nombre</label>
                     <input
                         required
                         style={inputStyle}
                         value={formData.name}
-                        onChange={e => setFormData({ ...formData, name: e.target.value })}
+                        onChange={e => { setFormData({ ...formData, name: e.target.value }); if (onDirty) onDirty(true); }}
                         placeholder="Ej: Museo del Louvre"
                     />
                 </div>
                 <div>
-                    <label style={labelStyle}>Precio ($)</label>
+                    <label style={labelStyle}>P. Adulto ($)</label>
                     <input
                         type="number"
                         required
                         style={inputStyle}
-                        value={formData.price}
-                        onChange={e => setFormData({ ...formData, price: e.target.value })}
+                        value={formData.price_adult || ''}
+                        onChange={e => { setFormData({ ...formData, price_adult: e.target.value }); if (onDirty) onDirty(true); }}
                         placeholder="0.00"
                         min="0.01" step="0.01"
                     />
                 </div>
+                <div>
+                    <label style={labelStyle}>P. Menor ($)</label>
+                    <input
+                        type="number"
+                        style={inputStyle}
+                        value={formData.price_child || ''}
+                        onChange={e => { setFormData({ ...formData, price_child: e.target.value }); if (onDirty) onDirty(true); }}
+                        placeholder="0.00"
+                        min="0" step="0.01"
+                    />
+                </div>
             </div>
 
-            <label style={labelStyle}>URL de la Imagen</label>
-            <input
-                type="url"
-                style={inputStyle}
-                value={formData.image}
-                onChange={e => setFormData({ ...formData, image: e.target.value })}
-                placeholder="https://... (Dejar vacío si no tiene imagen)"
+            <ImageUploader
+                label="Imagen de la Excursión"
+                value={formData.image || ''}
+                onChange={(url) => { setFormData({ ...formData, image: url }); if (onDirty) onDirty(true); }}
+                folder="excursiones"
+                placeholder="Seleccione la imagen de la excursión"
+                disableUrl={true}
             />
 
             <label style={labelStyle}>Descripción</label>
@@ -256,7 +303,7 @@ function ItineraryForm({ initialData, destinations, onSubmit, onCancel }) {
                 rows={4}
                 style={{ ...inputStyle, resize: 'vertical' }}
                 value={formData.description}
-                onChange={e => setFormData({ ...formData, description: e.target.value })}
+                onChange={e => { setFormData({ ...formData, description: e.target.value }); if (onDirty) onDirty(true); }}
                 placeholder="Breve descripción del lugar..."
             />
 

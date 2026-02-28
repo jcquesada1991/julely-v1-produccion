@@ -20,27 +20,46 @@ export function AppProvider({ children }) {
         setIsLoading(true);
         try {
             const [
-                { data: destData },
-                { data: salesData },
-                { data: usersData },
-                { data: clientsData },
-                { data: activData },
+                { data: destData, error: destErr },
+                { data: salesData, error: salesErr },
+                { data: usersData, error: usersErr },
+                { data: clientsData, error: clientsErr },
+                { data: activData, error: activErr },
+                { data: destImgData, error: destImgErr },
             ] = await Promise.all([
                 supabase.from('destinations').select('*').order('created_at', { ascending: false }),
                 supabase.from('bookings').select('*').order('created_at', { ascending: false }),
                 supabase.from('profiles').select('*').order('created_at', { ascending: false }),
-                supabase.from('clients').select('*').order('created_at', { ascending: false }),
+                // JOIN con client_identity para traer pasaporte, birthdate y nationality
+                supabase.from('clients').select('*, client_identity(passport_number, birthdate, nationality)').order('created_at', { ascending: false }),
                 supabase.from('activities').select('*').order('created_at', { ascending: false }),
+                supabase.from('destination_images').select('*').order('display_order', { ascending: true }),
             ]);
 
-            // Normalize destinations: map is_premium -> isPremium for UI compat
+            if (destErr) console.error('Error cargando destinos:', destErr);
+            if (salesErr) console.error('Error cargando ventas:', salesErr);
+            if (usersErr) console.error('Error cargando usuarios:', usersErr);
+            if (clientsErr) console.error('Error cargando clientes:', clientsErr);
+            if (activErr) console.error('Error cargando actividades:', activErr);
+            if (destImgErr) console.error('Error cargando imágenes de destinos:', destImgErr);
+
+            // Agrupar imágenes por destination_id
+            const imagesByDest = {};
+            (destImgData || []).forEach(img => {
+                if (!imagesByDest[img.destination_id]) imagesByDest[img.destination_id] = [];
+                imagesByDest[img.destination_id].push(img);
+            });
+
+            // Normalize destinations (include gallery images)
             setDestinations((destData || []).map(d => ({
                 ...d,
                 isPremium: d.is_premium,
                 isFavorite: false,
+                images: imagesByDest[d.id] || [],
             })));
 
-            // Normalize bookings: map booking_date -> date, assigned_to -> created_by for UI compat
+
+            // Normalize bookings
             setSales((salesData || []).map(s => ({
                 ...s,
                 date: s.booking_date || s.created_at,
@@ -51,7 +70,7 @@ export function AppProvider({ children }) {
                             : 'Completada',
             })));
 
-            // Normalize profiles: map full_name -> name for UI compat
+            // Normalize profiles
             setUsers((usersData || []).map(u => ({
                 ...u,
                 name: u.full_name ? u.full_name.split(' ')[0] : '',
@@ -65,10 +84,18 @@ export function AppProvider({ children }) {
                 }[u.role] || u.role,
             })));
 
-            // Normalize clients: map passport_number -> passport
-            setClients((clientsData || []).map(c => ({ ...c })));
+            // Normalize clients — aplanar client_identity al nivel raíz
+            setClients((clientsData || []).map(c => {
+                const identity = Array.isArray(c.client_identity) ? c.client_identity[0] : c.client_identity;
+                return {
+                    ...c,
+                    passport: identity?.passport_number || c.passport || '',
+                    birthdate: identity?.birthdate || c.birthdate || '',
+                    nationality: identity?.nationality || c.nationality || '',
+                };
+            }));
 
-            // Normalize activities: map image_url -> image
+            // Normalize activities
             setItineraries((activData || []).map(a => ({
                 ...a,
                 image: a.image_url,
@@ -105,11 +132,7 @@ export function AppProvider({ children }) {
             .select()
             .single();
 
-        if (error) {
-            showNotification('Error al crear destino', 'error');
-            console.error(error);
-            return;
-        }
+        if (error) { showNotification('Error al crear destino', 'error'); console.error(error); return; }
         setDestinations(prev => [{ ...data, isPremium: data.is_premium, isFavorite: false }, ...prev]);
         showNotification(`Destino "${data.title}" creado correctamente`);
     };
@@ -139,8 +162,21 @@ export function AppProvider({ children }) {
     };
 
     const deleteDestination = async (id) => {
-        const { error } = await supabase.from('destinations').delete().eq('id', id);
-        if (error) { showNotification('Error al eliminar destino', 'error'); return; }
+        const { data, error } = await supabase.from('destinations').delete().eq('id', id).select();
+        if (error) {
+            console.error('Error al eliminar destino:', error);
+            showNotification(
+                error.code === '23503'
+                    ? 'No se puede eliminar: hay ventas vinculadas a este destino'
+                    : 'Error al eliminar destino: ' + (error.message || 'Intenta de nuevo'),
+                'error'
+            );
+            return;
+        }
+        if (!data || data.length === 0) {
+            showNotification('No se pudo eliminar el destino (Verifique permisos)', 'error');
+            return;
+        }
         setDestinations(prev => prev.filter(d => d.id !== id));
         showNotification('Destino eliminado', 'info');
     };
@@ -149,20 +185,22 @@ export function AppProvider({ children }) {
     // VENTAS / BOOKINGS CRUD
     // ════════════════════════════════════════════════════════════════
     const addSale = async (newSale) => {
-        // Generar voucher code
         const dest = destinations.find(d => String(d.id) === String(newSale.destination_id));
         const prefix = dest ? dest.title.substring(0, 3).toUpperCase() : 'GEN';
         const timestamp = Date.now().toString().slice(-3);
         const voucherCode = `VOU-${prefix}-${timestamp}`;
         const today = new Date().toISOString().split('T')[0];
 
+        const { data: { user } } = await supabase.auth.getUser();
+
         const { data, error } = await supabase
             .from('bookings')
             .insert([{
                 voucher_code: voucherCode,
                 destination_id: newSale.destination_id || null,
+                destination_name: dest ? dest.title : 'Desconocido',
                 client_id: newSale.client_id || null,
-                assigned_to: newSale.created_by || null,
+                assigned_to: user?.id || null,
                 client_name: newSale.client_name,
                 num_adults: newSale.num_adults || 1,
                 num_children: newSale.num_children || 0,
@@ -171,10 +209,13 @@ export function AppProvider({ children }) {
                 currency: newSale.currency || 'USD',
                 travel_date: newSale.travel_date || null,
                 return_date: newSale.return_date || null,
-                booking_date: newSale.booking_date || today,  // NOT NULL
-                emission_date: today,                          // NOT NULL
+                booking_date: newSale.booking_date || today,
+                emission_date: today,
                 status: 'confirmada',
-                hotel_info: newSale.hotel_info || {},
+                hotel_info: {
+                    ...(newSale.hotel_info || {}),
+                    show_price_on_voucher: newSale.show_price_on_voucher ?? true
+                },
                 custom_itinerary: newSale.custom_itinerary || [],
                 custom_includes: newSale.custom_includes || [],
                 prepared_by: newSale.prepared_by || null,
@@ -192,9 +233,44 @@ export function AppProvider({ children }) {
         showNotification('Venta registrada exitosamente');
     };
 
+    const updateSale = async (id, updatedFields) => {
+        const { data, error } = await supabase
+            .from('bookings')
+            .update(updatedFields)
+            .eq('id', id)
+            .select()
+            .single();
+
+        if (error) {
+            console.error('Error al actualizar venta:', error);
+            showNotification('Error al actualizar venta: ' + (error.message || 'Intenta de nuevo'), 'error');
+            return null;
+        }
+
+        setSales(prev => prev.map(s => s.id === id ? {
+            ...s, ...data,
+            date: data.booking_date || data.created_at,
+            created_by: data.assigned_to,
+            status: data.status === 'confirmada' ? 'Confirmada'
+                : data.status === 'pendiente' ? 'Pendiente'
+                    : data.status === 'cancelada' ? 'Cancelada'
+                        : (data.status || 'Completada'),
+        } : s));
+        showNotification('Voucher guardado correctamente');
+        return data;
+    };
+
     const deleteSale = async (id) => {
-        const { error } = await supabase.from('bookings').delete().eq('id', id);
-        if (error) { showNotification('Error al eliminar venta', 'error'); return; }
+        const { data, error } = await supabase.from('bookings').delete().eq('id', id).select();
+        if (error) {
+            console.error('Error al eliminar venta:', error);
+            showNotification('Error al eliminar venta: ' + (error.message || 'Intenta de nuevo'), 'error');
+            return;
+        }
+        if (!data || data.length === 0) {
+            showNotification('No se pudo eliminar la venta (Verifique permisos)', 'error');
+            return;
+        }
         setSales(prev => prev.filter(s => s.id !== id));
         showNotification('Venta eliminada', 'info');
     };
@@ -202,17 +278,25 @@ export function AppProvider({ children }) {
     const getSaleDetails = (saleId) => {
         const sale = sales.find(s => String(s.id) === String(saleId));
         if (!sale) return null;
+
         const dest = destinations.find(d => String(d.id) === String(sale.destination_id));
-        return { ...sale, destination: dest };
+
+        let finalDest = dest;
+        if (!dest) {
+            finalDest = {
+                title: sale.destination_name ? `${sale.destination_name} (Eliminado)` : 'Destino Desconocido',
+                hero_image_url: '', // Will fallback to the default image in the UI
+                includes: []
+            };
+        }
+
+        return { ...sale, destination: finalDest };
     };
 
     // ════════════════════════════════════════════════════════════════
     // USUARIOS / PROFILES CRUD
     // ════════════════════════════════════════════════════════════════
     const addUser = async (newUser) => {
-        // Crear usuario en Supabase Auth (requiere Admin key — lo hacemos con invitación)
-        // Por ahora creamos solo el registro en profiles si el auth user ya existe
-        // La forma correcta es invitar al usuario desde el dashboard o usar la Admin API
         const roleKey = {
             'Administrador': 'admin',
             'Asesor de Ventas': 'asesor',
@@ -221,18 +305,54 @@ export function AppProvider({ children }) {
             'Operaciones': 'operaciones',
         }[newUser.role] || 'asesor';
 
-        // Usar supabase.auth.admin.inviteUserByEmail (solo funciona con service_role key en server)
-        // Temporalmente mostramos instrucción al usuario
-        showNotification(`Para crear usuario "${newUser.name}", invítalo desde Supabase Dashboard → Authentication → Users`, 'info');
+        try {
+            // Obtener el access token de la sesión actual
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session?.access_token) {
+                throw new Error('No hay sesión activa. Por favor inicia sesión de nuevo.');
+            }
+
+            const { data, error } = await supabase.functions.invoke('create-user', {
+                body: {
+                    email: newUser.email,
+                    password: newUser.password || 'Julely2024!',
+                    full_name: `${newUser.name} ${newUser.surname || ''}`.trim(),
+                    role: roleKey,
+                },
+                headers: {
+                    Authorization: `Bearer ${session.access_token}`,
+                },
+            });
+
+
+            if (error) throw error;
+            if (data?.error) throw new Error(data.error);
+
+            // Recargar lista de usuarios
+            const { data: profilesData } = await supabase
+                .from('profiles').select('*').order('created_at', { ascending: false });
+
+            setUsers((profilesData || []).map(u => ({
+                ...u,
+                name: u.full_name ? u.full_name.split(' ')[0] : '',
+                surname: u.full_name ? u.full_name.split(' ').slice(1).join(' ') : '',
+                role: {
+                    admin: 'Administrador', asesor: 'Asesor de Ventas',
+                    supervisor: 'Supervisor', contabilidad: 'Contabilidad', operaciones: 'Operaciones',
+                }[u.role] || u.role,
+            })));
+
+            showNotification(`Usuario "${newUser.name}" creado correctamente`);
+        } catch (err) {
+            console.error('Error creando usuario:', err);
+            showNotification(`Error al crear usuario: ${err.message || 'Intenta de nuevo'}`, 'error');
+        }
     };
 
     const updateUser = async (id, updatedUser) => {
         const roleKey = {
-            'Administrador': 'admin',
-            'Asesor de Ventas': 'asesor',
-            'Supervisor': 'supervisor',
-            'Contabilidad': 'contabilidad',
-            'Operaciones': 'operaciones',
+            'Administrador': 'admin', 'Asesor de Ventas': 'asesor',
+            'Supervisor': 'supervisor', 'Contabilidad': 'contabilidad', 'Operaciones': 'operaciones',
         }[updatedUser.role] || updatedUser.role;
 
         const { data, error } = await supabase
@@ -242,9 +362,7 @@ export function AppProvider({ children }) {
                 role: roleKey,
                 is_active: updatedUser.is_active !== false,
             })
-            .eq('id', id)
-            .select()
-            .single();
+            .eq('id', id).select().single();
 
         if (error) { showNotification('Error al actualizar usuario', 'error'); return; }
         setUsers(prev => prev.map(u => u.id === id ? {
@@ -257,9 +375,22 @@ export function AppProvider({ children }) {
     };
 
     const deleteUser = async (id) => {
-        // Solo elimina el perfil — la cuenta Auth persiste (solo admin API puede eliminar auth users)
-        const { error } = await supabase.from('profiles').delete().eq('id', id);
-        if (error) { showNotification('Error al eliminar usuario', 'error'); return; }
+        // Nota: Esto solo elimina el perfil, el usuario en auth.users requiere permisos de Admin API.
+        const { data, error } = await supabase.from('profiles').delete().eq('id', id).select();
+        if (error) {
+            console.error('Error al eliminar usuario:', error);
+            showNotification(
+                error.code === '23503'
+                    ? 'No se puede eliminar: el usuario tiene registros vinculados'
+                    : 'Error al eliminar usuario: ' + (error.message || 'Intenta de nuevo'),
+                'error'
+            );
+            return;
+        }
+        if (!data || data.length === 0) {
+            showNotification('No se pudo eliminar el usuario (Verifique permisos)', 'error');
+            return;
+        }
         setUsers(prev => prev.filter(u => u.id !== id));
         showNotification('Usuario eliminado', 'info');
     };
@@ -268,6 +399,8 @@ export function AppProvider({ children }) {
     // CLIENTES CRUD
     // ════════════════════════════════════════════════════════════════
     const addClient = async (newClient) => {
+        const { data: { user } } = await supabase.auth.getUser();
+
         const { data, error } = await supabase
             .from('clients')
             .insert([{
@@ -278,13 +411,12 @@ export function AppProvider({ children }) {
                 address: newClient.address,
                 notes: newClient.notes,
                 booking_date: newClient.booking_date || null,
+                created_by: user?.id || null,
             }])
-            .select()
-            .single();
+            .select().single();
 
         if (error) { showNotification('Error al crear cliente', 'error'); console.error(error); return; }
 
-        // Si hay datos de identidad (pasaporte), los guardamos en client_identity
         if (newClient.passport || newClient.birthdate || newClient.nationality) {
             await supabase.from('client_identity').insert([{
                 client_id: data.id,
@@ -294,7 +426,12 @@ export function AppProvider({ children }) {
             }]);
         }
 
-        setClients(prev => [{ ...data, passport: newClient.passport, nationality: newClient.nationality, birthdate: newClient.birthdate }, ...prev]);
+        setClients(prev => [{
+            ...data,
+            passport: newClient.passport || '',
+            nationality: newClient.nationality || '',
+            birthdate: newClient.birthdate || '',
+        }, ...prev]);
         showNotification(`Cliente "${data.name}" creado correctamente`);
     };
 
@@ -310,13 +447,10 @@ export function AppProvider({ children }) {
                 notes: updatedClient.notes,
                 booking_date: updatedClient.booking_date || null,
             })
-            .eq('id', id)
-            .select()
-            .single();
+            .eq('id', id).select().single();
 
         if (error) { showNotification('Error al actualizar cliente', 'error'); return; }
 
-        // Upsert datos de identidad
         if (updatedClient.passport || updatedClient.birthdate || updatedClient.nationality) {
             await supabase.from('client_identity').upsert([{
                 client_id: id,
@@ -328,16 +462,29 @@ export function AppProvider({ children }) {
 
         setClients(prev => prev.map(c => c.id === id ? {
             ...data,
-            passport: updatedClient.passport,
-            nationality: updatedClient.nationality,
-            birthdate: updatedClient.birthdate,
+            passport: updatedClient.passport || '',
+            nationality: updatedClient.nationality || '',
+            birthdate: updatedClient.birthdate || '',
         } : c));
         showNotification('Cliente actualizado correctamente');
     };
 
     const deleteClient = async (id) => {
-        const { error } = await supabase.from('clients').delete().eq('id', id);
-        if (error) { showNotification('Error al eliminar cliente', 'error'); return; }
+        const { data, error } = await supabase.from('clients').delete().eq('id', id).select();
+        if (error) {
+            console.error('Error al eliminar cliente:', error);
+            showNotification(
+                error.code === '23503'
+                    ? 'No se puede eliminar: el cliente tiene ventas vinculadas'
+                    : 'Error al eliminar cliente: ' + (error.message || 'Intenta de nuevo'),
+                'error'
+            );
+            return;
+        }
+        if (!data || data.length === 0) {
+            showNotification('No se pudo eliminar el cliente (Verifique permisos)', 'error');
+            return;
+        }
         setClients(prev => prev.filter(c => c.id !== id));
         showNotification('Cliente eliminado', 'info');
     };
@@ -352,12 +499,12 @@ export function AppProvider({ children }) {
                 destination_id: newItinerary.destination_id || null,
                 name: newItinerary.name,
                 description: newItinerary.description,
-                price: parseFloat(newItinerary.price) || 0,
+                price_adult: parseFloat(newItinerary.price_adult) || 0,
+                price_child: parseFloat(newItinerary.price_child) || 0,
                 image_url: newItinerary.image || '',
                 is_active: true,
             }])
-            .select()
-            .single();
+            .select().single();
 
         if (error) { showNotification('Error al crear excursión', 'error'); console.error(error); return; }
         setItineraries(prev => [{ ...data, image: data.image_url }, ...prev]);
@@ -371,12 +518,11 @@ export function AppProvider({ children }) {
                 destination_id: updatedItinerary.destination_id || null,
                 name: updatedItinerary.name,
                 description: updatedItinerary.description,
-                price: parseFloat(updatedItinerary.price) || 0,
+                price_adult: parseFloat(updatedItinerary.price_adult) || 0,
+                price_child: parseFloat(updatedItinerary.price_child) || 0,
                 image_url: updatedItinerary.image || '',
             })
-            .eq('id', id)
-            .select()
-            .single();
+            .eq('id', id).select().single();
 
         if (error) { showNotification('Error al actualizar excursión', 'error'); return; }
         setItineraries(prev => prev.map(i => i.id === id ? { ...data, image: data.image_url } : i));
@@ -384,13 +530,57 @@ export function AppProvider({ children }) {
     };
 
     const deleteItinerary = async (id) => {
-        const { error } = await supabase.from('activities').delete().eq('id', id);
-        if (error) { showNotification('Error al eliminar excursión', 'error'); return; }
+        const { data, error } = await supabase.from('activities').delete().eq('id', id).select();
+        if (error) {
+            console.error('Error al eliminar excursión:', error);
+            showNotification('Error al eliminar excursión: ' + (error.message || 'Intenta de nuevo'), 'error');
+            return;
+        }
+        if (!data || data.length === 0) {
+            showNotification('No se pudo eliminar la excursión (Verifique permisos)', 'error');
+            return;
+        }
         setItineraries(prev => prev.filter(i => i.id !== id));
         showNotification('Excursión eliminada', 'info');
     };
 
-    // ─── STATS (calculados del estado en memoria) ─────────────────
+    // ════════════════════════════════════════════════════════════════
+    // IMÁGENES DE DESTINOS
+    // ════════════════════════════════════════════════════════════════
+    const addDestinationImages = async (destinationId, urls) => {
+        // urls: array de strings URL
+        if (!urls || urls.length === 0) return [];
+        const rows = urls.map((url, idx) => ({
+            destination_id: destinationId,
+            url,
+            display_order: idx,
+        }));
+        const { data, error } = await supabase
+            .from('destination_images')
+            .insert(rows)
+            .select();
+        if (error) { console.error('Error guardando imágenes:', error); return []; }
+        // Actualizar estado local
+        setDestinations(prev => prev.map(d =>
+            String(d.id) === String(destinationId)
+                ? { ...d, images: [...(d.images || []), ...data] }
+                : d
+        ));
+        return data;
+    };
+
+    const deleteDestinationImage = async (imageId, destinationId) => {
+        const { error } = await supabase.from('destination_images').delete().eq('id', imageId);
+        if (error) { showNotification('Error al eliminar imagen', 'error'); return; }
+        setDestinations(prev => prev.map(d =>
+            String(d.id) === String(destinationId)
+                ? { ...d, images: (d.images || []).filter(img => img.id !== imageId) }
+                : d
+        ));
+    };
+
+
+    // ─── STATS ─────────────────────────────────────────────────────
     const stats = {
         totalRevenue: sales.reduce((acc, s) => acc + (parseFloat(s.total_amount) || 0), 0),
         activeDestinations: destinations.filter(d => d.is_active).length,
@@ -400,40 +590,19 @@ export function AppProvider({ children }) {
 
     return (
         <AppContext.Provider value={{
-            // Estado
-            destinations,
-            sales,
-            users,
-            clients,
-            itineraries,
-            isLoading,
-            stats,
-            // Destinos
-            addDestination,
-            updateDestination,
-            deleteDestination,
-            // Ventas
-            addSale,
-            deleteSale,
-            getSaleDetails,
-            // Usuarios
-            addUser,
-            updateUser,
-            deleteUser,
-            // Clientes
-            addClient,
-            updateClient,
-            deleteClient,
-            // Itinerarios/Actividades
-            addItinerary,
-            updateItinerary,
-            deleteItinerary,
-            // Utilidades
+            destinations, sales, users, clients, itineraries, isLoading, stats,
+            addDestination, updateDestination, deleteDestination,
+            addDestinationImages, deleteDestinationImage,
+            addSale, updateSale, deleteSale, getSaleDetails,
+            addUser, updateUser, deleteUser,
+            addClient, updateClient, deleteClient,
+            addItinerary, updateItinerary, deleteItinerary,
             refetch: loadAll,
         }}>
             {children}
         </AppContext.Provider>
     );
+
 }
 
 export const useApp = () => useContext(AppContext);

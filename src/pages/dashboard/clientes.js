@@ -6,33 +6,53 @@ import { useApp } from '@/context/AppContext';
 import { useAuth } from '@/context/AuthContext';
 import styles from '@/styles/DashboardV2.module.css';
 import { Plus, User, Phone, Edit, Trash2, Mail, Globe, FileText, Search } from 'lucide-react';
+import { useConfirm } from '@/components/ConfirmModal';
 
 export default function Clients() {
     const { clients, addClient, updateClient, deleteClient } = useApp();
     const { can } = useAuth();
+    const confirm = useConfirm();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentClient, setCurrentClient] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
+    const [isDirty, setIsDirty] = useState(false);
 
     const handleOpenCreate = () => {
         setCurrentClient(null);
+        setIsDirty(false); // Reset dirty state when opening for creation
         setIsModalOpen(true);
     };
 
     const handleEdit = (client) => {
         setCurrentClient(client);
+        setIsDirty(false); // Reset dirty state when opening for edit
         setIsModalOpen(true);
     };
 
-    const handleDelete = (id) => {
-        if (confirm('¿Estás seguro de eliminar este cliente?')) {
+    const handleDelete = async (id) => {
+        const client = clients.find(c => c.id === id);
+        const name = client ? `${client.name} ${client.surname || ''}`.trim() : '';
+        const ok = await confirm(
+            'Eliminar Cliente',
+            `¿Estás seguro de eliminar a "${name}"? Esta acción no se puede deshacer.`
+        );
+        if (ok) {
             deleteClient(id);
         }
     };
 
-    const handleClose = () => {
+    const handleClose = async () => {
+        if (isDirty) {
+            const ok = await confirm(
+                'Descartar cambios',
+                '¿Estás seguro que deseas salir sin guardar? Los cambios se perderán.',
+                { confirmText: 'Salir sin guardar', icon: 'alert' }
+            );
+            if (!ok) return;
+        }
         setIsModalOpen(false);
         setCurrentClient(null);
+        setIsDirty(false);
     };
 
     // Helper to get initials
@@ -58,7 +78,7 @@ export default function Clients() {
     return (
         <DashboardLayout title="Gestión de Clientes">
             <Head>
-                <title>Clientes | TravelAgendy</title>
+                <title>Clientes | Julely</title>
             </Head>
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
@@ -217,16 +237,19 @@ export default function Clients() {
                         } else {
                             addClient(data);
                         }
-                        handleClose();
+                        setIsDirty(false);
+                        setIsModalOpen(false);
+                        setCurrentClient(null);
                     }}
                     onCancel={handleClose}
+                    onDirty={setIsDirty}
                 />
             </Modal>
         </DashboardLayout>
     );
 }
 
-function ClientForm({ initialData, onSubmit, onCancel }) {
+function ClientForm({ initialData, onSubmit, onCancel, onDirty }) {
     const [formData, setFormData] = useState(initialData || {
         name: '',
         surname: '',
@@ -236,8 +259,7 @@ function ClientForm({ initialData, onSubmit, onCancel }) {
         birthdate: '',
         nationality: '',
         address: '',
-        notes: '',
-        booking_date: ''
+        notes: ''
     });
 
     // Helper to split initial phone if exists
@@ -382,15 +404,6 @@ function ClientForm({ initialData, onSubmit, onCancel }) {
                     />
                 </div>
 
-                <div style={groupStyle}>
-                    <label style={labelStyle}>Fecha de Reserva</label>
-                    <input
-                        type="date"
-                        style={inputStyle}
-                        value={formData.booking_date}
-                        onChange={e => handleChange('booking_date', e.target.value)}
-                    />
-                </div>
             </div>
 
             {/* Full width fields */}
@@ -429,6 +442,6 @@ function ClientForm({ initialData, onSubmit, onCancel }) {
                     {initialData ? 'Actualizar' : 'Crear Cliente'}
                 </button>
             </div>
-        </form>
+        </form >
     );
 }

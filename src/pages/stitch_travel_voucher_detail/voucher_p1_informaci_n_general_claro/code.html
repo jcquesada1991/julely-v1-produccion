@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Travel Voucher - Julely Viajando por el Mundo</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f13ec",
+                        "secondary": "#fdf2f8", // soft pink background
+                        "accent-pink": "#ec4899",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#191022",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        @media print {
+            .no-print { display: none; }
+            body { background-color: white !important; }
+            .print-border { border: 1px solid #e2e8f0 !important; }
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
+<div class="max-w-[850px] mx-auto my-8 bg-white dark:bg-slate-900 shadow-xl rounded-xl overflow-hidden print-border">
+<!-- Action Header (Hidden on Print) -->
+<div class="no-print flex justify-between items-center px-8 py-4 border-b border-slate-100 dark:border-slate-800 bg-white/50 backdrop-blur-md">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">info</span>
+<span class="text-sm font-medium text-slate-600 dark:text-slate-400">Electronic Travel Document</span>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-lg font-bold text-sm hover:bg-primary/20 transition-colors" onclick="window.print()">
+<span class="material-symbols-outlined text-[20px]">print</span>
+                    Print Voucher
+                </button>
+<button class="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg font-bold text-sm hover:bg-slate-200 transition-colors">
+<span class="material-symbols-outlined text-[20px]">download</span>
+                    Save PDF
+                </button>
+</div>
+</div>
+<!-- Voucher Content -->
+<div class="p-10 space-y-8">
+<!-- Header: Logo & Confirmation -->
+<div class="flex justify-between items-start">
+<div class="space-y-4">
+<div class="flex items-center gap-3">
+<img alt="Julely Viajando por el Mundo Logo" class="h-16 w-auto" data-alt="Official travel agency logo with globe motif" src="https://lh3.googleusercontent.com/aida-public/AB6AXuASEwvK8VNGDpCknZYueSgl1LnQOaDGTFFnpuwTZIvdkk0zltUsWpWRME726Xv1xramDRBLJfUgPhuPd5cwPkedbs_Fug-IonSPzlDEri1TgDmU-GAOjbg-tNfr1Yw_8Kt_sRfIGxjGi-5n82MjJgpL9JNE5JknTvMuUT16mWIoAGO3A3iWoo--8zVpQd8gZY9nCT97eBOKh66wp_jecMSb5hvOtOkHewzvEiDfhEWkcQiFvhFMBP0JGG8ptyQjDxnnF3P_tfyUig"/>
+<div>
+<h1 class="text-2xl font-extrabold text-slate-900 dark:text-white leading-none">Julely</h1>
+<p class="text-primary font-bold tracking-wider text-xs uppercase">Viajando por el Mundo</p>
+</div>
+</div>
+</div>
+<div class="text-right">
+<p class="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-widest mb-1">Confirmation Number</p>
+<div class="bg-primary/5 dark:bg-primary/20 border border-primary/20 px-4 py-2 rounded-lg">
+<span class="text-2xl font-black text-primary tracking-tight">#JV-98234-XP</span>
+</div>
+</div>
+</div>
+<!-- Hero Image / Visual Break -->
+<div class="relative h-48 w-full rounded-xl overflow-hidden bg-slate-200">
+<div class="absolute inset-0 bg-gradient-to-r from-primary/40 to-accent-pink/40 mix-blend-multiply"></div>
+<img alt="Luxury Travel Destination" class="w-full h-full object-cover" data-alt="Beautiful landscape of a tropical destination resort" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCPZqLbMtF-OepPrcPa314jCx8F3SVR8bPvQgS9wFAeU2OhNRsigpf92CfqmpY69X3q7v1eSCd3GKSrP-bbEF36sdwbA857A9zOxQve9tXUOyrhwJDm7RyEfIIeTzl1xx_0-dHsI4AdvyoZSxnGxVuPfcuE3DYSdIVlX9e6RLF4beAiuzYfMaciyOwEfyRiemkUvzWyIoSkNXnYsMi6sPFrOXB5sHgJmBalDooLjtxWrYZNQUaXzyBQBSb1MF913AsEv-jAqodiwg"/>
+<div class="absolute bottom-6 left-6 text-white">
+<span class="bg-primary px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest mb-2 inline-block">Official Voucher</span>
+<h2 class="text-3xl font-black">Your World Awaits.</h2>
+</div>
+</div>
+<!-- Essential Trip Info Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Traveler Details -->
+<div class="bg-background-light dark:bg-slate-800/50 p-5 rounded-xl border border-slate-100 dark:border-slate-800">
+<div class="flex items-center gap-2 mb-4 text-primary">
+<span class="material-symbols-outlined">person</span>
+<h3 class="font-bold text-sm uppercase tracking-wider">Primary Traveler</h3>
+</div>
+<p class="text-lg font-bold text-slate-900 dark:text-white">Alex Johnson</p>
+<p class="text-slate-600 dark:text-slate-400 text-sm">Passport: A12345678</p>
+<div class="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
+<p class="text-[10px] text-slate-400 uppercase font-bold">Total Guests</p>
+<p class="font-semibold text-slate-800 dark:text-slate-200">2 Adults</p>
+</div>
+</div>
+<!-- Dates & Agent -->
+<div class="bg-secondary/40 dark:bg-primary/5 p-5 rounded-xl border border-pink-100 dark:border-primary/10">
+<div class="flex items-center gap-2 mb-4 text-accent-pink">
+<span class="material-symbols-outlined">calendar_today</span>
+<h3 class="font-bold text-sm uppercase tracking-wider">Travel Schedule</h3>
+</div>
+<div class="space-y-1">
+<p class="text-xs text-slate-500">Check-in</p>
+<p class="font-bold text-slate-900 dark:text-white">Dec 15, 2023</p>
+</div>
+<div class="space-y-1 mt-3">
+<p class="text-xs text-slate-500">Check-out</p>
+<p class="font-bold text-slate-900 dark:text-white">Dec 22, 2023</p>
+</div>
+<div class="mt-4 pt-4 border-t border-pink-200 dark:border-primary/10">
+<p class="text-[10px] text-slate-400 uppercase font-bold">Agent</p>
+<p class="font-semibold text-slate-800 dark:text-slate-200">Maria Gonzalez</p>
+</div>
+</div>
+<!-- Pricing -->
+<div class="bg-primary text-white p-5 rounded-xl flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined">payments</span>
+<h3 class="font-bold text-sm uppercase tracking-wider">Payment Summary</h3>
+</div>
+<p class="text-[10px] text-white/70 uppercase font-bold">Total Reservation</p>
+<p class="text-3xl font-black">$2,450.00</p>
+</div>
+<div class="mt-4 pt-4 border-t border-white/20 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">check_circle</span>
+<span class="text-sm font-bold">Fully Paid</span>
+</div>
+</div>
+</div>
+<!-- Hotel Details Card -->
+<div class="border border-slate-200 dark:border-slate-800 rounded-xl p-6 relative overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -mr-16 -mt-16"></div>
+<div class="flex items-center gap-2 mb-6">
+<div class="bg-primary/10 p-2 rounded-lg text-primary">
+<span class="material-symbols-outlined">hotel</span>
+</div>
+<div>
+<h3 class="font-bold text-slate-900 dark:text-white uppercase tracking-wider">Accommodation Details</h3>
+<p class="text-xs text-slate-500">Official Reservation Document</p>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="space-y-4">
+<div>
+<p class="text-[10px] text-slate-400 uppercase font-bold mb-1">Hotel Name</p>
+<p class="text-xl font-bold text-slate-900 dark:text-white">Royal Palm Resort &amp; Spa</p>
+<div class="flex text-amber-400 mt-1">
+<span class="material-symbols-outlined text-sm">star</span>
+<span class="material-symbols-outlined text-sm">star</span>
+<span class="material-symbols-outlined text-sm">star</span>
+<span class="material-symbols-outlined text-sm">star</span>
+<span class="material-symbols-outlined text-sm">star</span>
+</div>
+</div>
+<div>
+<p class="text-[10px] text-slate-400 uppercase font-bold mb-1">Address</p>
+<p class="text-slate-700 dark:text-slate-300">123 Azure Coastal Road, Paradise Bay, 90210</p>
+</div>
+</div>
+<div class="space-y-4">
+<div>
+<p class="text-[10px] text-slate-400 uppercase font-bold mb-1">Room Category</p>
+<p class="text-slate-900 dark:text-white font-semibold">Ocean View Deluxe Suite</p>
+<p class="text-xs text-slate-500">Non-Smoking, King Bed</p>
+</div>
+<div class="flex gap-8">
+<div>
+<p class="text-[10px] text-slate-400 uppercase font-bold mb-1">Phone</p>
+<p class="text-slate-700 dark:text-slate-300">+1 (555) 012-3456</p>
+</div>
+<div>
+<p class="text-[10px] text-slate-400 uppercase font-bold mb-1">Confirmation ID</p>
+<p class="text-primary font-bold">RP-7721-B</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Notes -->
+<div class="pt-6 border-t border-slate-100 dark:border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4">
+<div class="text-[10px] text-slate-400 max-w-md">
+<p>* Please present this voucher along with a valid ID at check-in. Cancellations must be made 72 hours prior to arrival to avoid penalties. Thank you for choosing Julely Viajando por el Mundo.</p>
+</div>
+<div class="flex items-center gap-4">
+<div class="text-right">
+<p class="text-[10px] font-bold text-slate-400 uppercase">Support</p>
+<p class="text-xs font-bold text-slate-700 dark:text-slate-300">support@julelytravel.com</p>
+</div>
+<div class="bg-background-light dark:bg-slate-800 p-2 rounded-lg">
+<img alt="QR Code" class="w-10 h-10 grayscale opacity-80" data-alt="QR code for digital verification of travel voucher" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDv6TVLGY5A0ZiuDmUKkFpyPEnBNOrouQyz9ziQ5gBrafWPFM_ZxnAofMcFGkrqZQbG6YM9PInFzu3WE7_p9NmphwmANI5xuvYSMg7gbqy99ArjyzkLaPqMbXV2VMLJ02PELoPaJAYfeOsHhgCS_hIeX3XMB6WksUpTcReqgZ-jVElmwzw4z7Hm6KGkt3EhkHcb5Jrq8_AEl_JEmgoHCMQffekrihX8_SBg_NUSCyo-lZpLPsmFqxP1xhKG1nDQW38bvjyqC8szRw"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Print-only Page Break Hint -->
+<div class="max-w-[850px] mx-auto text-center no-print pb-12">
+<p class="text-slate-400 text-xs italic">End of Page 1 - Professional Travel Document</p>
+</div>
+</body></html>

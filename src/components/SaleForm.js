@@ -1,16 +1,25 @@
 import { useState, useEffect } from 'react';
 import { useApp } from '@/context/AppContext';
 import SearchableSelect from './SearchableSelect';
-import { Plus, X, ArrowUp, ArrowDown, MapPin, Calendar, CheckCircle } from 'lucide-react';
+import { Plus, X, ArrowUp, ArrowDown, MapPin, Calendar, CheckCircle, Building } from 'lucide-react';
 import styles from '@/styles/DashboardV2.module.css';
 
 export default function SaleForm({ onSubmit, onCancel }) {
     const { destinations, clients, itineraries } = useApp();
     const [formData, setFormData] = useState({
         client_name: '',
-        clientId: '',
+        client_id: '',
         destination_id: '',
         status: 'Confirmada',
+        num_adults: 1,
+        num_children: 0,
+        show_price_on_voucher: true,
+        travel_date: '',
+        hotel_name: '',
+        hotel_address: '',
+        hotel_phone: '',
+        occupancy: '',
+        confirmation_id: '',
         customItinerary: []
     });
 
@@ -64,18 +73,34 @@ export default function SaleForm({ onSubmit, onCancel }) {
         }
 
         let finalClientName = formData.client_name;
-        if (formData.clientId) {
-            const c = clients.find(cl => String(cl.id) === String(formData.clientId));
+        if (formData.client_id) {
+            const c = clients.find(cl => String(cl.id) === String(formData.client_id));
             if (c) finalClientName = `${c.name} ${c.surname}`;
         }
 
         // Calculate Total
-        const totalAmount = selectedPOIs.reduce((acc, curr) => acc + (Number(curr.price) || 0), 0);
+        const totalAmount = selectedPOIs.reduce((acc, curr) => {
+            const adultTotal = (Number(curr.price_adult) || 0) * Number(formData.num_adults || 0);
+            const childTotal = (Number(curr.price_child) || 0) * Number(formData.num_children || 0);
+            return acc + adultTotal + childTotal;
+        }, 0);
 
         const submission = {
             ...formData,
             client_name: finalClientName,
             total_amount: totalAmount,
+            num_adults: Number(formData.num_adults),
+            num_children: Number(formData.num_children),
+            show_price_on_voucher: formData.show_price_on_voucher,
+            travel_date: formData.travel_date || null,
+            hotel_info: {
+                hotel_name: formData.hotel_name || '',
+                hotel_address: formData.hotel_address || '',
+                hotel_phone: formData.hotel_phone || '',
+                occupancy: formData.occupancy || '',
+                confirmation_id: formData.confirmation_id || '',
+                show_price_on_voucher: formData.show_price_on_voucher
+            },
             custom_itinerary: selectedPOIs.map((p, index) => ({
                 day: index + 1,
                 ...p
@@ -125,9 +150,9 @@ export default function SaleForm({ onSubmit, onCancel }) {
                     label="Cliente"
                     placeholder="Seleccione un cliente..."
                     options={clients}
-                    value={formData.clientId}
-                    onChange={(e) => setFormData({ ...formData, clientId: e.target.value })}
-                    name="clientId"
+                    value={formData.client_id}
+                    onChange={(e) => setFormData({ ...formData, client_id: e.target.value })}
+                    name="client_id"
                     labelKey="name"
                     renderOption={(c) => (
                         <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -165,6 +190,118 @@ export default function SaleForm({ onSubmit, onCancel }) {
                         <option value="Confirmada">Confirmada</option>
                         <option value="Pendiente">Pendiente</option>
                     </select>
+                </div>
+
+                {/* PAX & Pricing Options */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: '1rem' }}>
+                    <div>
+                        <label style={{ ...labelStyle, marginTop: 0 }}>Adultos</label>
+                        <input
+                            type="number"
+                            min="1"
+                            value={formData.num_adults}
+                            onChange={(e) => setFormData({ ...formData, num_adults: e.target.value })}
+                            style={selectStyle}
+                        />
+                    </div>
+                    <div>
+                        <label style={{ ...labelStyle, marginTop: 0 }}>Menores</label>
+                        <input
+                            type="number"
+                            min="0"
+                            value={formData.num_children}
+                            onChange={(e) => setFormData({ ...formData, num_children: e.target.value })}
+                            style={selectStyle}
+                        />
+                    </div>
+                </div>
+
+                <div style={{ marginTop: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <input
+                        type="checkbox"
+                        id="showPriceToggle"
+                        checked={formData.show_price_on_voucher}
+                        onChange={(e) => setFormData({ ...formData, show_price_on_voucher: e.target.checked })}
+                        style={{ width: '18px', height: '18px', cursor: 'pointer', accentColor: 'var(--primary-color)' }}
+                    />
+                    <label htmlFor="showPriceToggle" style={{ fontSize: '0.9rem', color: 'var(--text-primary)', cursor: 'pointer', userSelect: 'none' }}>
+                        Mostrar Precio en el Voucher (PDF)
+                    </label>
+                </div>
+            </div>
+
+            {/* Section 1.5: Optional Data */}
+            <div style={{ background: 'var(--bg-card)', padding: '1.5rem', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
+                <h3 style={{ margin: '0 0 1rem 0', fontSize: '1rem', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <Building size={18} color="var(--primary-color)" /> Datos Adicionales (Opcional - Para Voucher)
+                </h3>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                    <div>
+                        <label style={labelStyle}>Fecha de Viaje</label>
+                        <input
+                            type="date"
+                            value={formData.travel_date || ''}
+                            onChange={(e) => setFormData({ ...formData, travel_date: e.target.value })}
+                            style={{ ...selectStyle, backgroundImage: 'none', paddingRight: '0.75rem' }}
+                        />
+                    </div>
+                    <div>
+                        <label style={labelStyle}>Nombre del Hotel</label>
+                        <input
+                            type="text"
+                            placeholder="Ej. Hotel Paraíso"
+                            value={formData.hotel_name || ''}
+                            onChange={(e) => setFormData({ ...formData, hotel_name: e.target.value })}
+                            style={{ ...selectStyle, backgroundImage: 'none', paddingRight: '0.75rem' }}
+                        />
+                    </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: '1rem' }}>
+                    <div>
+                        <label style={{ ...labelStyle, marginTop: 0 }}>Dirección del Hotel</label>
+                        <input
+                            type="text"
+                            placeholder="Dirección"
+                            value={formData.hotel_address || ''}
+                            onChange={(e) => setFormData({ ...formData, hotel_address: e.target.value })}
+                            style={{ ...selectStyle, backgroundImage: 'none', paddingRight: '0.75rem' }}
+                        />
+                    </div>
+                    <div>
+                        <label style={{ ...labelStyle, marginTop: 0 }}>Teléfono del Hotel</label>
+                        <input
+                            type="text"
+                            placeholder="+1 234 567 8900"
+                            value={formData.hotel_phone || ''}
+                            onChange={(e) => setFormData({ ...formData, hotel_phone: e.target.value })}
+                            style={{ ...selectStyle, backgroundImage: 'none', paddingRight: '0.75rem' }}
+                        />
+                    </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: '1rem' }}>
+                    <div>
+                        <label style={{ ...labelStyle, marginTop: 0 }}>Ocupación</label>
+                        <input
+                            type="text"
+                            placeholder="Doble, Sencilla, etc."
+                            value={formData.occupancy || ''}
+                            onChange={(e) => setFormData({ ...formData, occupancy: e.target.value })}
+                            style={{ ...selectStyle, backgroundImage: 'none', paddingRight: '0.75rem' }}
+                        />
+                    </div>
+                    <div>
+                        <label style={{ ...labelStyle, marginTop: 0 }}>Número de Confirmación</label>
+                        <input
+                            type="text"
+                            placeholder="Ej. CONF-12345"
+                            value={formData.confirmation_id || ''}
+                            onChange={(e) => setFormData({ ...formData, confirmation_id: e.target.value })}
+                            style={{ ...selectStyle, backgroundImage: 'none', paddingRight: '0.75rem' }}
+                        />
+                    </div>
                 </div>
             </div>
 

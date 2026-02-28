@@ -7,4 +7,16 @@ if (!supabaseUrl || !supabaseAnonKey) {
     throw new Error('Missing Supabase environment variables. Check .env.local');
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Dummy lock to bypass Navigator LockManager issues
+const dummyLock = async (name, acquireTimeout, fn) => {
+    return await fn();
+};
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+    auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
+        lock: dummyLock,
+    }
+});

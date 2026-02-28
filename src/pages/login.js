@@ -48,7 +48,7 @@ export default function Login() {
     return (
         <div className={styles.container}>
             <Head>
-                <title>Login | TravelAgendy</title>
+                <title>Login | Julely</title>
             </Head>
 
             {/* Background elements */}
@@ -58,7 +58,7 @@ export default function Login() {
             <div className={styles.loginCard}>
 
                 <div className={styles.welcomeText}>
-                    Bienvenido a TravelAgency
+                    Bienvenido a Julely ✈️
                 </div>
 
                 <form onSubmit={handleSubmit} className={styles.form}>

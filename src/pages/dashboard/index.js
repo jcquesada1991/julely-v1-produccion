@@ -27,7 +27,7 @@ export default function Dashboard() {
         const mostSoldDestId = Object.keys(destinationSales).reduce((a, b) =>
             destinationSales[a] > destinationSales[b] ? a : b, Object.keys(destinationSales)[0]
         );
-        const mostSoldDest = destinations.find(d => d.id === parseInt(mostSoldDestId));
+        const mostSoldDest = destinations.find(d => String(d.id) === String(mostSoldDestId));
 
         // Clientes Totales (registrados)
         const totalClients = clients.length;
@@ -47,7 +47,7 @@ export default function Dashboard() {
     return (
         <DashboardLayout title="Dashboard">
             <Head>
-                <title>Dashboard | TravelAgendy</title>
+                <title>Dashboard | Julely</title>
             </Head>
 
             {/* Page Header Area */}
@@ -163,11 +163,8 @@ export default function Dashboard() {
                                         {idx + 1}
                                     </div>
                                     <div style={{ flex: 1 }}>
-                                        <div style={{ fontWeight: 700, color: 'white', marginBottom: '0.25rem' }}>
+                                        <div style={{ fontWeight: 700, color: 'white' }}>
                                             {dest.title}
-                                        </div>
-                                        <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                                            {dest.currency || 'USD'} ${(dest.price_adult || dest.price || 0).toLocaleString()}
                                         </div>
                                     </div>
                                     {dest.isPremium && (

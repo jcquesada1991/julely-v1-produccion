@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Julely Viajando por el Mundo - Itinerary</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f13ec",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#191022",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .timeline-line {
+            width: 2px;
+            background: repeating-linear-gradient(to bottom, #7f13ec 0%, #7f13ec 50%, transparent 50%, transparent 100%);
+            background-size: 2px 8px;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="relative flex h-auto min-h-screen w-full flex-col bg-white group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<!-- Main Navigation -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-100 px-6 md:px-20 py-4 bg-white">
+<div class="flex items-center gap-4 text-slate-900">
+<div class="size-8 text-primary">
+<span class="material-symbols-outlined text-3xl">travel_explore</span>
+</div>
+<h2 class="text-slate-900 text-lg font-bold leading-tight tracking-tight">Julely Viajando por el Mundo</h2>
+</div>
+<div class="flex flex-1 justify-end gap-8 items-center">
+<nav class="hidden md:flex items-center gap-9">
+<a class="text-slate-600 hover:text-primary text-sm font-medium transition-colors" href="#">My Trips</a>
+<a class="text-slate-600 hover:text-primary text-sm font-medium transition-colors" href="#">Voucher</a>
+<a class="text-slate-600 hover:text-primary text-sm font-medium transition-colors" href="#">Support</a>
+</nav>
+<div class="bg-slate-100 rounded-full size-10 flex items-center justify-center overflow-hidden border border-slate-200">
+<img class="w-full h-full object-cover" data-alt="User profile picture showing a smiling woman" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqF_9eNp5jTQ0BPfn2_jtudM70uTi_hrLO8GVuho3Wr46XHLVqevdGJJrhjtaULFU9bj_CkyJbj64Vwkl3o1cX4Awkmad66Ybbeg_9-CYVJ4gGn278ffSDSjKHTgCSRbxGiG7z92lT3tWzDQtQFlp3KRg7K0ARjdvVPFjdUwo55_TIMXUvW580Thbhh1RVrgIZsNMIDEVOOQzNVyUXb02F6Jh-BGXY7rid4aZOLGKvCqMW3LuMy6ROIOSabLmOJP4XYetQ3jstdg"/>
+</div>
+</div>
+</header>
+<main class="flex-1 max-w-4xl mx-auto w-full px-6 py-8">
+<!-- Header Section -->
+<div class="flex flex-col gap-2 mb-8">
+<div class="flex items-center gap-2 text-primary font-bold text-sm uppercase tracking-wider">
+<span class="material-symbols-outlined text-sm">confirmation_number</span>
+<span>Travel Voucher</span>
+</div>
+<h1 class="text-slate-900 text-4xl font-extrabold tracking-tight">Your Day-by-Day Journey</h1>
+<p class="text-slate-500 text-base">Booking ID: <span class="font-mono text-primary">JV-2024-8821</span> • Destination: Tokyo &amp; Kyoto</p>
+</div>
+<!-- Tab Navigation -->
+<div class="border-b border-slate-200 mb-10">
+<div class="flex gap-8">
+<a class="pb-4 text-slate-500 font-semibold text-sm border-b-2 border-transparent hover:text-slate-700" href="#">Overview</a>
+<a class="pb-4 text-slate-500 font-semibold text-sm border-b-2 border-transparent hover:text-slate-700" href="#">Accommodations</a>
+<a class="pb-4 text-primary font-bold text-sm border-b-2 border-primary" href="#">Itinerary</a>
+</div>
+</div>
+<!-- Timeline Content -->
+<div class="relative space-y-12">
+<!-- Vertical Line -->
+<div class="absolute left-[19px] top-4 bottom-4 timeline-line hidden sm:block"></div>
+<!-- Day 1 -->
+<div class="relative flex flex-col sm:flex-row gap-6">
+<div class="flex-shrink-0 z-10 hidden sm:block">
+<div class="size-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm shadow-lg shadow-primary/20">01</div>
+</div>
+<div class="flex-1 bg-white border border-slate-100 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
+<div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+<div class="flex items-center gap-3">
+<span class="sm:hidden size-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-xs">01</span>
+<h3 class="text-xl font-bold text-slate-900">Arrival in Tokyo</h3>
+</div>
+<span class="px-3 py-1 bg-primary/10 text-primary text-xs font-bold rounded-full">MONDAY, OCT 14</span>
+</div>
+<div class="space-y-6">
+<!-- Activity Item -->
+<div class="flex gap-4">
+<div class="p-2 bg-slate-50 rounded-lg h-fit text-slate-600">
+<span class="material-symbols-outlined">flight_land</span>
+</div>
+<div>
+<p class="text-xs font-bold text-slate-400 uppercase tracking-tighter">10:30 AM</p>
+<p class="text-slate-900 font-semibold">Arrival at Narita International Airport (NRT)</p>
+<p class="text-slate-500 text-sm mt-1">Private transfer to Shinjuku Prince Hotel. Look for the sign with your name at terminal 2 exit.</p>
+</div>
+</div>
+<!-- Activity Item -->
+<div class="flex gap-4">
+<div class="p-2 bg-slate-50 rounded-lg h-fit text-slate-600">
+<span class="material-symbols-outlined">restaurant</span>
+</div>
+<div>
+<p class="text-xs font-bold text-slate-400 uppercase tracking-tighter">07:00 PM</p>
+<p class="text-slate-900 font-semibold">Welcome Dinner in Omoide Yokocho</p>
+<p class="text-slate-500 text-sm mt-1">Traditional Yakitori tasting in the famous "Memory Lane" alleys of Shinjuku.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Day 2 -->
+<div class="relative flex flex-col sm:flex-row gap-6">
+<div class="flex-shrink-0 z-10 hidden sm:block">
+<div class="size-10 rounded-full bg-white border-2 border-primary text-primary flex items-center justify-center font-bold text-sm">02</div>
+</div>
+<div class="flex-1 bg-white border border-slate-100 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
+<div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+<div class="flex items-center gap-3">
+<span class="sm:hidden size-8 rounded-full bg-white border-2 border-primary text-primary flex items-center justify-center font-bold text-xs">02</span>
+<h3 class="text-xl font-bold text-slate-900">Modern Tokyo Explorer</h3>
+</div>
+<span class="px-3 py-1 bg-slate-100 text-slate-600 text-xs font-bold rounded-full">TUESDAY, OCT 15</span>
+</div>
+<div class="space-y-6">
+<!-- Activity Item -->
+<div class="flex gap-4">
+<div class="p-2 bg-slate-50 rounded-lg h-fit text-slate-600">
+<span class="material-symbols-outlined">camera_enhance</span>
+</div>
+<div>
+<p class="text-xs font-bold text-slate-400 uppercase tracking-tighter">09:00 AM</p>
+<p class="text-slate-900 font-semibold">Shibuya Crossing &amp; Hachiko Memorial</p>
+<p class="text-slate-500 text-sm mt-1">Experience the world's busiest pedestrian crossing and visit the famous loyalty dog statue.</p>
+</div>
+</div>
+<!-- Activity Item -->
+<div class="flex gap-4">
+<div class="p-2 bg-slate-50 rounded-lg h-fit text-slate-600">
+<span class="material-symbols-outlined">palette</span>
+</div>
+<div>
+<p class="text-xs font-bold text-slate-400 uppercase tracking-tighter">02:00 PM</p>
+<p class="text-slate-900 font-semibold">TeamLab Borderless Digital Art Museum</p>
+<p class="text-slate-500 text-sm mt-1">Immersive art experience in Azabudai Hills. Ticket QR code is attached to your voucher email.</p>
+</div>
+</div>
+<div class="rounded-lg overflow-hidden h-40 mt-4">
+<img class="w-full h-full object-cover" data-alt="Vibrant neon lights of Shibuya crossing at night" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgK4-hKbLOVZ9YzXTlCu70QSD0ZAQNDvKNO5eeOpYEHVm9Ivo9ZnTDfqtPUh5OoNapfnuGTrezmBmww2v-2UVRbwEVjtbr2EkI04GykanNU86Kl_Hu2elAFKYP-FYFjzRkLoW-vDRGpi0R3YO6cA2RVNQgwix_sTi1oDw8QhqZCR99CLxKAdKTZ9VTSEF2h9rTzxaFEhWVLq6Y_be06kWko5G9a7qgPZQaMxSjKQ-gFHtI5No3ef0dnaOW0kkvBtZX5_3OCheLsw"/>
+</div>
+</div>
+</div>
+</div>
+<!-- Day 3 -->
+<div class="relative flex flex-col sm:flex-row gap-6">
+<div class="flex-shrink-0 z-10 hidden sm:block">
+<div class="size-10 rounded-full bg-white border-2 border-primary text-primary flex items-center justify-center font-bold text-sm">03</div>
+</div>
+<div class="flex-1 bg-white border border-slate-100 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
+<div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+<div class="flex items-center gap-3">
+<span class="sm:hidden size-8 rounded-full bg-white border-2 border-primary text-primary flex items-center justify-center font-bold text-xs">03</span>
+<h3 class="text-xl font-bold text-slate-900">Shrines &amp; Traditions</h3>
+</div>
+<span class="px-3 py-1 bg-slate-100 text-slate-600 text-xs font-bold rounded-full">WEDNESDAY, OCT 16</span>
+</div>
+<div class="space-y-6">
+<!-- Activity Item -->
+<div class="flex gap-4">
+<div class="p-2 bg-slate-50 rounded-lg h-fit text-slate-600">
+<span class="material-symbols-outlined">temple_buddhist</span>
+</div>
+<div>
+<p class="text-xs font-bold text-slate-400 uppercase tracking-tighter">10:00 AM</p>
+<p class="text-slate-900 font-semibold">Senso-ji Temple &amp; Nakamise-dori</p>
+<p class="text-slate-500 text-sm mt-1">Explore Tokyo's oldest temple in Asakusa and shop for traditional snacks and crafts.</p>
+</div>
+</div>
+<!-- Activity Item -->
+<div class="flex gap-4">
+<div class="p-2 bg-slate-50 rounded-lg h-fit text-slate-600">
+<span class="material-symbols-outlined">train</span>
+</div>
+<div>
+<p class="text-xs font-bold text-slate-400 uppercase tracking-tighter">04:00 PM</p>
+<p class="text-slate-900 font-semibold">Shinkansen to Kyoto</p>
+<p class="text-slate-500 text-sm mt-1">Bullet train from Tokyo Station. Reserved seat in Car 5. Duration: 2h 20m.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Action Footer -->
+<div class="mt-12 flex flex-col sm:flex-row gap-4 items-center justify-between p-6 bg-slate-900 rounded-2xl text-white">
+<div>
+<h4 class="font-bold text-lg">Need help during your trip?</h4>
+<p class="text-slate-400 text-sm">Our support team is available 24/7 for you.</p>
+</div>
+<div class="flex gap-3">
+<button class="bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-lg font-bold text-sm transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">support_agent</span>
+                        Contact Support
+                    </button>
+<button class="bg-white/10 hover:bg-white/20 text-white px-6 py-2.5 rounded-lg font-bold text-sm transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">download</span>
+                        PDF Voucher
+                    </button>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="border-t border-slate-100 py-10 px-20 mt-10 text-center">
+<p class="text-slate-400 text-sm">© 2024 Julely Viajando por el Mundo. All rights reserved. Travel with love.</p>
+</footer>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f13ec",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#191022",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .custom-checkbox:checked {
+            background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
+        }
+    </style>
+</head>
+<body class="bg-background-light font-display text-slate-900">
+<div class="relative flex min-h-screen w-full flex-col bg-white">
+<div class="layout-container flex h-full grow flex-col">
+<!-- Header -->
+<header class="flex items-center justify-between border-b border-primary/10 px-6 md:px-20 py-4 bg-white sticky top-0 z-50">
+<div class="flex items-center gap-3">
+<img alt="Julely Viajando logo" class="h-10 w-auto" data-alt="Official logo of Julely Viajando travel agency" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCF6h8CxPVDdYYPeQF7v39Eq5wjEV-I7w2Imov-GU5bhLKaB3I7Yl_inGvYY-rQz7jzqiU9kV7Gjmv8SqaaHJoZXnlbI9G1XdgNF9SStRhstqZ8WpnHYMbGcO9r6moa2XaJDWthGbzIG0uYFs-u6tNTDr7_xTkyu6bpRrI5BZ4mFRoqZYCLElIAWidhCHbivvWOEOV3GH0ZGcATWdKYv9Fa-GxVYtnbEXTK3gEciR95hcJHS10xjl_uSil1UXPQP2fc9spSvWQK6g"/>
+<h1 class="text-primary text-xl font-extrabold tracking-tight">Julely Viajando</h1>
+</div>
+<div class="flex items-center gap-6">
+<nav class="hidden md:flex gap-6 text-sm font-semibold text-slate-600">
+<a class="hover:text-primary transition-colors" href="#">Voucher Details</a>
+<a class="hover:text-primary transition-colors" href="#">Itinerary</a>
+<a class="hover:text-primary transition-colors" href="#">Support</a>
+</nav>
+<div class="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">person</span>
+</div>
+</div>
+</header>
+<main class="flex-1 max-w-5xl mx-auto w-full px-6 py-8">
+<!-- Hero Section -->
+<div class="relative rounded-xl overflow-hidden mb-12 h-[450px] shadow-2xl shadow-primary/10">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="Beautiful turquoise beach landscape with white sand" style="background-image: linear-gradient(to top, rgba(25, 16, 34, 0.8), transparent), url('https://lh3.googleusercontent.com/aida-public/AB6AXuBMAs231F2nLtvqOxdmGgfET9PgI824M1oPRXNA4arjw0T09NMpuYy7JMTWlqWD4yMznnv0h4nTHL8VrNZJHClsHHGiVN57BJYrUJKvl9W5OEvMl1_dd5GKEw9_LIQ0PHgvdx8s0--srq_toK5Y3rMX_Q8D4a5wb4JwPIP1fxHn-EgxolK3C8piQjNM8bzQDclG6ucqhAuB_fnw0TDFPzdjg7i5Q26P20MIiPizpSthkXRmxxxX5uED-9ykzy_PEnL0TMR5ea818Q');"></div>
+<div class="absolute bottom-0 left-0 p-8 md:p-12 w-full">
+<div class="inline-block px-3 py-1 bg-primary text-white text-xs font-bold rounded-full mb-4 tracking-widest uppercase">Premium Experience</div>
+<h2 class="text-white text-4xl md:text-5xl font-black leading-tight mb-4">The Magic of the Amalfi Coast</h2>
+<p class="text-slate-200 text-lg max-w-2xl font-light leading-relaxed">
+                        Discover the breathtaking vertical landscapes, sapphire waters, and hidden grottoes of Italy's most iconic coastline. A journey designed for those who seek beauty in every detail.
+                    </p>
+</div>
+</div>
+<!-- Content Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+<!-- Left Column: Description -->
+<div class="lg:col-span-2 space-y-8">
+<section>
+<h3 class="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">explore</span>
+                            Destination Highlights
+                        </h3>
+<p class="text-slate-600 leading-loose text-lg font-light">
+                            Your journey begins in the heart of the Mediterranean. From the lemon groves of Sorrento to the colorful cliffs of Positano, every moment is curated by <span class="text-primary font-semibold">Julely Viajando por el Mundo</span> to ensure an unforgettable experience. You'll enjoy private boat tours at sunset, authentic culinary workshops with local chefs, and exclusive access to historic villas overlooking the sea.
+                        </p>
+</section>
+<!-- Stats / Quick Info -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 py-6 border-y border-primary/10">
+<div class="text-center">
+<span class="material-symbols-outlined text-primary mb-1">calendar_today</span>
+<p class="text-xs text-slate-400 uppercase font-bold tracking-tighter">Duration</p>
+<p class="font-bold text-slate-800">8 Days</p>
+</div>
+<div class="text-center">
+<span class="material-symbols-outlined text-primary mb-1">hotel</span>
+<p class="text-xs text-slate-400 uppercase font-bold tracking-tighter">Stay</p>
+<p class="font-bold text-slate-800">5-Star</p>
+</div>
+<div class="text-center">
+<span class="material-symbols-outlined text-primary mb-1">group</span>
+<p class="text-xs text-slate-400 uppercase font-bold tracking-tighter">Group</p>
+<p class="font-bold text-slate-800">Private</p>
+</div>
+<div class="text-center">
+<span class="material-symbols-outlined text-primary mb-1">map</span>
+<p class="text-xs text-slate-400 uppercase font-bold tracking-tighter">Guide</p>
+<p class="font-bold text-slate-800">Included</p>
+</div>
+</div>
+</div>
+<!-- Right Column: Inclusions -->
+<div class="lg:col-span-1">
+<div class="bg-primary/5 rounded-xl p-8 border border-primary/10 sticky top-28">
+<h3 class="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">task_alt</span>
+                            Inclusiones
+                        </h3>
+<div class="space-y-4">
+<div class="flex items-start gap-3">
+<div class="mt-1 flex-shrink-0 bg-primary/20 rounded-full p-1 text-primary">
+<span class="material-symbols-outlined text-[16px] block">check</span>
+</div>
+<p class="text-slate-700 font-medium leading-tight">Premium flight connections with SkyPriority access</p>
+</div>
+<div class="flex items-start gap-3">
+<div class="mt-1 flex-shrink-0 bg-primary/20 rounded-full p-1 text-primary">
+<span class="material-symbols-outlined text-[16px] block">check</span>
+</div>
+<p class="text-slate-700 font-medium leading-tight">Luxury boutique hotel suites with sea views</p>
+</div>
+<div class="flex items-start gap-3">
+<div class="mt-1 flex-shrink-0 bg-primary/20 rounded-full p-1 text-primary">
+<span class="material-symbols-outlined text-[16px] block">check</span>
+</div>
+<p class="text-slate-700 font-medium leading-tight">All-access passes to regional archaeological sites</p>
+</div>
+<div class="flex items-start gap-3">
+<div class="mt-1 flex-shrink-0 bg-primary/20 rounded-full p-1 text-primary">
+<span class="material-symbols-outlined text-[16px] block">check</span>
+</div>
+<p class="text-slate-700 font-medium leading-tight">Private chauffeur for all inland transfers</p>
+</div>
+<div class="flex items-start gap-3">
+<div class="mt-1 flex-shrink-0 bg-primary/20 rounded-full p-1 text-primary">
+<span class="material-symbols-outlined text-[16px] block">check</span>
+</div>
+<p class="text-slate-700 font-medium leading-tight">Curated gastronomy experience (Breakfast &amp; Dinner)</p>
+</div>
+<div class="flex items-start gap-3">
+<div class="mt-1 flex-shrink-0 bg-primary/20 rounded-full p-1 text-primary">
+<span class="material-symbols-outlined text-[16px] block">check</span>
+</div>
+<p class="text-slate-700 font-medium leading-tight">24/7 Concierge support from our local team</p>
+</div>
+</div>
+<div class="mt-8">
+<button class="w-full bg-primary text-white font-bold py-4 rounded-lg shadow-lg shadow-primary/30 hover:bg-primary/90 transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">download</span>
+                                Download Voucher
+                            </button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-white border-t border-primary/10 mt-12 py-12">
+<div class="max-w-5xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
+<div class="flex flex-col items-center md:items-start">
+<img alt="Logo" class="h-8 mb-4 opacity-50 grayscale hover:grayscale-0 transition-all" data-alt="Julely Viajando logo in monochrome for footer" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbQ3VLz1tpz7dopRj9KDoUuRQVRqRUDxflOqev0pKdRrrIhBJ8aUy-eUNV1aQomeaUn2YCppp4RbPmaUK7YSkE5AUb-SIbj4M6jWk8sjRVQ-tHIu8RaRMKiaMnir2-BtUsv0yWDfZ60-UucaNzpnsAi-9UIENnPK3Ma4o-r_ZAParhlm7dmM9iO-sEGtDGtyq8RKbY-oAvUQES83ne9giTYA-m7FNd91IB9fkIPEKCiYmv0K1_kIw9a5D-niT-QHYiETdNSfps2A"/>
+<p class="text-slate-400 text-sm">© 2024 Julely Viajando por el Mundo. All rights reserved.</p>
+</div>
+<div class="flex gap-8">
+<a class="text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">public</span>
+</a>
+<a class="text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">mail</span>
+</a>
+<a class="text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">call</span>
+</a>
+</div>
+<div class="text-center md:text-right">
+<p class="text-slate-500 font-semibold text-sm">Your Travel Voucher ID:</p>
+<p class="text-primary font-black tracking-widest text-lg">JV-AMALFI-2024-08</p>
+</div>
+</div>
+</footer>
+</div>
+</div>
+</body></html>

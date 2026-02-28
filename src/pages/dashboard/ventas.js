@@ -8,11 +8,13 @@ import { useApp } from '@/context/AppContext';
 import { useAuth } from '@/context/AuthContext';
 import styles from '@/styles/DashboardV2.module.css';
 import { Plus, MapPin, Trash2, Map, FileText, Pencil, Search } from 'lucide-react';
+import { useConfirm } from '@/components/ConfirmModal';
 
 export default function Sales() {
     const router = useRouter();
     const { sales, destinations, addSale, deleteSale } = useApp();
     const { currentUser, can } = useAuth();
+    const confirm = useConfirm();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [viewingItinerary, setViewingItinerary] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
@@ -26,9 +28,11 @@ export default function Sales() {
         setIsModalOpen(false);
     };
 
-    const getDestinationName = (id) => {
-        const d = destinations.find(x => String(x.id) === String(id));
-        return d ? d.title : 'Desconocido';
+    const getDestinationName = (sale) => {
+        const d = destinations.find(x => String(x.id) === String(sale.destination_id));
+        if (d) return d.title;
+        // Si no se encuentra by ID pero la venta tiene un nombre guardado:
+        return sale.destination_name ? `${sale.destination_name} (Eliminado)` : 'Desconocido';
     };
 
     // Filter sales based on role permissions
@@ -44,14 +48,14 @@ export default function Sales() {
         displayedSales = displayedSales.filter(s =>
             (s.client_name || '').toLowerCase().includes(term) ||
             (s.voucher_code || '').toLowerCase().includes(term) ||
-            getDestinationName(s.destination_id).toLowerCase().includes(term)
+            getDestinationName(s).toLowerCase().includes(term)
         );
     }
 
     return (
         <DashboardLayout title="Registro de Ventas">
             <Head>
-                <title>Ventas | TravelAgendy</title>
+                <title>Ventas | Julely</title>
             </Head>
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
@@ -94,7 +98,6 @@ export default function Sales() {
                     <table className={styles.table}>
                         <thead>
                             <tr>
-                                <th className={styles.tableHeader}>ID</th>
                                 <th className={styles.tableHeader}>Fecha</th>
                                 <th className={styles.tableHeader}>Cliente</th>
                                 <th className={styles.tableHeader}>Destino</th>
@@ -109,7 +112,6 @@ export default function Sales() {
                         <tbody>
                             {displayedSales.map((sale) => (
                                 <tr key={sale.id}>
-                                    <td style={{ fontWeight: 600 }}>#{sale.id}</td>
                                     <td style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
                                         {new Date(sale.date || Date.now()).toLocaleDateString('es-ES', {
                                             day: '2-digit',
@@ -121,7 +123,18 @@ export default function Sales() {
                                     <td>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-secondary)' }}>
                                             <MapPin size={16} />
-                                            {getDestinationName(sale.destination_id)}
+                                            {getDestinationName(sale) === 'Desconocido' ? (
+                                                <span>Desconocido</span>
+                                            ) : getDestinationName(sale).includes('(Eliminado)') ? (
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                                                    <span style={{ textDecoration: 'line-through', opacity: 0.7 }}>
+                                                        {getDestinationName(sale).replace(' (Eliminado)', '')}
+                                                    </span>
+                                                    <span style={{ fontSize: '0.65rem', background: 'rgba(239, 68, 68, 0.15)', color: '#ef4444', padding: '0.1rem 0.4rem', borderRadius: '4px', fontWeight: 600 }}>Eliminado</span>
+                                                </div>
+                                            ) : (
+                                                <span>{getDestinationName(sale)}</span>
+                                            )}
                                         </div>
                                     </td>
                                     <td>
@@ -193,8 +206,12 @@ export default function Sales() {
                                             <button
                                                 className={`${styles.actionBtn} ${styles.actionBtnDanger}`}
                                                 data-tooltip="Eliminar"
-                                                onClick={() => {
-                                                    if (confirm('¿Estás seguro de eliminar esta venta?')) {
+                                                onClick={async () => {
+                                                    const ok = await confirm(
+                                                        'Eliminar Venta',
+                                                        `¿Estás seguro de eliminar esta venta? Esta acción no se puede deshacer.`
+                                                    );
+                                                    if (ok) {
                                                         deleteSale(sale.id);
                                                     }
                                                 }}

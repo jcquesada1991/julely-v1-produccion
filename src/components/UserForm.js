@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import styles from '@/styles/FormModal.module.css';
 import { ROLES } from '@/context/AuthContext';
 
-export default function UserForm({ initialData, onSubmit, onCancel }) {
+export default function UserForm({ initialData, onSubmit, onCancel, onDirty }) {
     const [formData, setFormData] = useState({
         name: '',
         lastName: '',
@@ -33,6 +33,7 @@ export default function UserForm({ initialData, onSubmit, onCancel }) {
             ...prev,
             [name]: value
         }));
+        if (onDirty) onDirty(true);
     };
 
     const handleSubmit = (e) => {

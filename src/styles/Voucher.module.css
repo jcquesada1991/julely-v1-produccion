@@ -1,287 +1,498 @@
-/* Flyer Design - Premium Travel */
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap');
-
-/* Force Page Break Class */
-.pageBreak {
-    break-after: always;
-    page-break-after: always;
-    height: 1px;
-    margin: 1rem 0;
-}
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
 .voucherContainer {
     min-height: 100vh;
-    background: var(--bg-main);
+    background: #f7f6f8;
     padding: 2rem;
     display: flex;
-    justify-content: center;
-    font-family: 'Outfit', sans-serif;
-    color: #1E293B;
+    flex-direction: column;
+    align-items: center;
+    gap: 3rem;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    color: #0f172a;
 }
 
 .voucherPage {
     width: 210mm;
-    /* A4 Width */
     min-height: 297mm;
-    /* A4 Height */
     background: white;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 40px rgba(157, 116, 200, 0.1);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
     position: relative;
     display: flex;
     flex-direction: column;
-    padding-bottom: 200px;
-    /* Space for the footer */
+    border-radius: 12px;
+    overflow: hidden;
+    page-break-after: always;
+    break-after: always;
+    border: 1px solid #e2e8f0;
 }
 
-/* 1. Header Section */
-.header {
-    height: 400px;
-    position: relative;
+/* 1. Header & Hero Area */
+.pagePadding {
+    padding: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.topHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.brandInfo {
     display: flex;
     align-items: center;
-    justify-content: center;
-    /* S-Wave Clip Path */
-    clip-path: path('M0,0 L794,0 L794,360 C550,280 250,440 0,360 Z');
-    background: #0F172A;
-    color: white;
+    gap: 1rem;
 }
 
-.headerImg {
-    position: absolute;
-    inset: 0;
+.logoImage {
+    height: 60px;
+    object-fit: contain;
+}
+
+.brandText {}
+
+.brandTitle {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1;
+    margin: 0;
+}
+
+.brandSubtitle {
+    color: var(--primary-color);
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0;
+}
+
+.confirmationBox {
+    text-align: right;
+}
+
+.confLabel {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #64748b;
+    margin-bottom: 0.25rem;
+}
+
+.confNumber {
+    background: rgba(127, 19, 236, 0.05);
+    border: 1px solid rgba(127, 19, 236, 0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 1.25rem;
+    font-weight: 900;
+    color: var(--primary-color);
+    letter-spacing: -0.5px;
+}
+
+/* 2. Hero Destination Image */
+.heroBanner {
+    position: relative;
+    height: 200px;
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #e2e8f0;
+}
+
+.heroImg {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-.headerOverlay {
+.heroOverlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to bottom, rgba(15, 23, 42, 0.4) 0%, rgba(15, 23, 42, 0.8) 100%);
+    background: linear-gradient(to right, rgba(127, 19, 236, 0.5), rgba(236, 72, 153, 0.5));
+    mix-blend-mode: multiply;
 }
 
-.headerContent {
-    position: relative;
+.heroText {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 1.5rem;
+    color: white;
     z-index: 10;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    padding-bottom: 2rem;
 }
 
-.logoRow {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 1.2rem;
-    font-weight: 800;
-    letter-spacing: 2px;
-    margin-bottom: 0.5rem;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-    color: white;
-}
-
-.destinationTitle {
-    font-size: 5rem;
-    line-height: 0.9;
-    font-weight: 900;
-    text-transform: uppercase;
-    color: var(--primary-color);
-    /* Primary Color - Brand Purple */
-    text-shadow: 3px 3px 0px #0F172A, 0 4px 12px rgba(0, 0, 0, 0.5);
-    margin: 0;
-}
-
-.voucherCode {
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(4px);
-    padding: 0.4rem 1rem;
+.heroBadge {
+    background: var(--primary-color);
+    padding: 0.25rem 0.75rem;
     border-radius: 99px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    font-family: monospace;
-    font-size: 1.1rem;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
     letter-spacing: 1px;
-    color: white;
+    display: inline-block;
+    margin-bottom: 0.5rem;
 }
 
-/* 2. Info Section (Client, Price, Date) */
-.infoSection {
-    background: white;
-    margin: -3rem 3rem 2rem 3rem;
-    padding: 1.5rem;
-    border-radius: 16px;
-    position: relative;
-    z-index: 20;
-    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1);
+.heroTitle {
+    font-size: 2.25rem;
+    font-weight: 900;
+    margin: 0;
+    line-height: 1;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* 3. Essential Trip Info Grid */
+.infoGrid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-    border-bottom: 4px solid var(--primary-color);
+    gap: 1.5rem;
 }
 
 .infoCard {
-    text-align: center;
+    padding: 1.25rem;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
 }
 
-.infoLabel {
-    font-size: 0.75rem;
-    color: #64748B;
+.infoCardHeader {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.infoCardHeader h3 {
+    font-size: 0.8rem;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1px;
+    margin: 0;
+}
+
+/* Traveler Variant */
+.cardTraveler {
+    background: #f8fafc;
+    border: 1px solid #f1f5f9;
+}
+
+.cardTraveler .infoCardHeader {
+    color: var(--primary-color);
+}
+
+.travelerName {
+    font-size: 1.15rem;
     font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 0.25rem 0;
+}
+
+.travelerSub {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin: 0;
+}
+
+.cardFooter {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.cardFooterLabel {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #94a3b8;
+}
+
+.cardFooterVal {
+    font-weight: 600;
+    color: #1e293b;
+    font-size: 0.9rem;
+}
+
+/* Schedule Variant */
+.cardSchedule {
+    background: rgba(127, 19, 236, 0.03);
+    border: 1px solid rgba(127, 19, 236, 0.1);
+}
+
+.cardSchedule .infoCardHeader {
+    color: #ec4899;
+}
+
+.scheduleRow {
+    margin-bottom: 0.5rem;
+}
+
+.scheduleRow span {
+    display: block;
+}
+
+.scheduleLabel {
+    font-size: 0.75rem;
+    color: #64748b;
+}
+
+.scheduleVal {
+    font-weight: 700;
+    color: #0f172a;
+}
+
+/* Pricing Variant */
+.cardPricing {
+    background: var(--primary-color);
+    color: white;
+    justify-content: space-between;
+}
+
+.cardPricing .infoCardHeader {
+    color: white;
+}
+
+.priceLabel {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    opacity: 0.8;
+}
+
+.priceVal {
+    font-size: 2rem;
+    font-weight: 900;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.cardPricing .cardFooter {
+    border-top-color: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Hotel Subcard */
+.hotelDetailsBox {
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.hotelDetailsBox::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 6rem;
+    height: 6rem;
+    background: rgba(127, 19, 236, 0.05);
+    border-bottom-left-radius: 100%;
+}
+
+.hotelHeader {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.hotelIcon {
+    background: rgba(127, 19, 236, 0.1);
+    color: var(--primary-color);
+    padding: 0.5rem;
+    border-radius: 8px;
+    display: flex;
+}
+
+.hotelCatTitle {
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0;
+}
+
+.hotelCatSub {
+    font-size: 0.75rem;
+    color: #64748b;
+    margin: 0;
+}
+
+.hotelGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.hotelCol {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.hotelItem {}
+
+.hotelItemLabel {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #94a3b8;
     margin-bottom: 0.25rem;
 }
 
-.infoValue {
+.hotelItemVal {
     font-size: 1.1rem;
-    color: #0F172A;
     font-weight: 700;
+    color: #0f172a;
+    margin: 0;
 }
 
-/* Main Content Area */
+.hotelItemSub {
+    font-size: 0.85rem;
+    color: #475569;
+    margin: 0;
+}
+
+.hotelStar {
+    color: #fbbf24;
+    margin-top: 0.25rem;
+    display: flex;
+    gap: 2px;
+}
+
+.hotelStar svg {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+}
+
+/* Section Blocks for Page 2, 3, etc. */
 .mainContent {
     flex: 1;
-    padding: 0 3rem 2rem 3rem;
+    padding: 3rem 2.5rem 2rem 2.5rem;
     display: flex;
     flex-direction: column;
     gap: 2.5rem;
 }
 
 .sectionBlock {
-    /* Avoid breaking inside sections by default (Terms, Description, Checklist) */
     break-inside: avoid;
-    /* Add visual margin at bottom of every block to prevent sticking to footer if it breaks */
-    padding-bottom: 5mm;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 }
 
 .sectionTitle {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    font-size: 1.1rem;
+    font-size: 1.25rem;
     font-weight: 800;
-    color: #0F172A;
-    margin: 0 0 1rem 0;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    border-bottom: 2px solid #E2E8F0;
-    padding-bottom: 0.5rem;
+    color: #0f172a;
+    margin: 0 0 1.25rem 0;
 }
 
 .sectionTitle svg {
     color: var(--primary-color);
-    transform: scale(0.9);
-    /* Slightly smaller icons */
 }
 
-/* 3. Checklist */
+/* Checklist */
 .checklistGrid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 0.75rem 2rem;
+    gap: 1rem;
+    background: rgba(127, 19, 236, 0.03);
+    border: 1px solid rgba(127, 19, 236, 0.1);
+    border-radius: 12px;
+    padding: 1.5rem;
 }
 
 .checkItem {
     display: flex;
     align-items: flex-start;
-    gap: 0.5rem;
-    font-size: 0.9rem;
+    gap: 0.75rem;
+    font-weight: 500;
     color: #334155;
+    font-size: 0.95rem;
     line-height: 1.4;
 }
 
 .customCheck {
-    color: #059669;
-    font-weight: 800;
-    min-width: 14px;
-}
-
-/* Prepared By Box */
-.preparedByBox {
-    margin-top: 1.5rem;
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-    color: white;
-    padding: 1rem;
-    border-radius: 8px;
+    background: rgba(127, 19, 236, 0.2);
+    color: var(--primary-color);
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0.25rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    break-inside: avoid;
+    flex-shrink: 0;
+    font-size: 12px;
+    font-weight: bold;
+    margin-top: 2px;
 }
 
-.preparedByLabel {
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    opacity: 0.9;
-    font-weight: 600;
-}
-
-.preparedByName {
-    font-size: 1.1rem;
-    font-weight: 800;
-    letter-spacing: 0.5px;
-}
-
-/* Print Running Header */
-.printHeader {
-    display: none;
-}
-
-/* 4. Terms */
-.termsText {
-    font-size: 0.8rem;
-    color: #64748B;
-    line-height: 1.5;
-    text-align: justify;
-    background: #F8FAFC;
-    padding: 1rem;
-    border-radius: 8px;
-    white-space: pre-line;
-}
-
-/* 5. Description */
 .descriptionText {
-    font-size: 0.95rem;
-    color: #334155;
-    line-height: 1.6;
+    font-size: 1rem;
+    color: #475569;
+    line-height: 1.7;
+    font-weight: 300;
 }
 
-/* 6. Itinerary */
+/* Gallery inside Section */
+.galleryGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 200px;
+    gap: 1rem;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.galleryImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+/* Itinerary */
 .itineraryList {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    /* Allow the long list to span pages */
-    break-inside: auto;
 }
 
 .itineraryItem {
     display: flex;
     gap: 1.5rem;
-    /* Keep each day's content together */
     break-inside: avoid;
-    /* Add margin to ensure separation if it lands near bottom */
-    margin-bottom: 5mm;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.itineraryItem:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
 }
 
 .dayBadge {
-    background: var(--primary-dark, #1a0e2e);
+    background: #0f172a;
     color: white;
-    font-weight: 700;
-    font-size: 0.8rem;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
+    font-weight: 800;
+    font-size: 0.75rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 6px;
     height: fit-content;
     white-space: nowrap;
-    min-width: 60px;
     text-align: center;
+    min-width: 65px;
 }
 
 .itineraryContent {
@@ -290,23 +501,24 @@
 
 .itineraryTitle {
     margin: 0 0 0.5rem 0;
-    font-size: 1rem;
-    color: #1E293B;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #0f172a;
 }
 
 .itineraryDesc {
-    margin: 0 0 0.75rem 0;
-    font-size: 0.9rem;
-    color: #64748B;
-    line-height: 1.5;
+    margin: 0 0 1rem 0;
+    font-size: 0.95rem;
+    color: #475569;
+    line-height: 1.6;
+    font-weight: 300;
 }
 
 .itineraryImageWrapper {
     width: 100%;
-    height: 180px;
-    border-radius: 8px;
+    height: 220px;
+    border-radius: 12px;
     overflow: hidden;
-    margin-top: 0.5rem;
 }
 
 .itineraryImageWrapper img {
@@ -315,49 +527,165 @@
     object-fit: cover;
 }
 
-/* 7. Footer */
-.footer {
-    background: #0F172A;
-    color: white;
-    padding: 2rem;
-    text-align: center;
-    /* Straight Footer (No Clip Path) */
-    position: absolute;
-    /* Absolute relative to voucherPage for Web */
-    bottom: 0;
-    left: 0;
+/* Terms & Footer Note */
+.termsText {
+    font-size: 0.8rem;
+    color: #64748b;
+    line-height: 1.6;
+    background: #f8fafc;
+    padding: 1.5rem;
+    border-radius: 12px;
+    white-space: pre-line;
+    border: 1px solid #e2e8f0;
+}
+
+.pageFooter {
+    margin-top: auto;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+}
+
+.footerNote {
+    color: #94a3b8;
+    font-size: 0.75rem;
+    max-width: 60%;
+    line-height: 1.4;
+}
+
+.footerContact {
+    text-align: right;
+}
+
+.footerContactLabel {
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #94a3b8;
+}
+
+.footerContactEmail {
+    font-weight: 700;
+    color: #475569;
+}
+
+/* Edit Inputs */
+.editInput {
+    border: none;
+    border-bottom: 2px dashed rgba(127, 19, 236, 0.5);
+    background: transparent;
+    font: inherit;
+    color: inherit;
     width: 100%;
-    z-index: 100;
-    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+    padding: 0.25rem 0;
+    outline: none;
 }
 
-/* Print Specific Footer */
-.printFooter {
-    display: none;
-    /* Hidden on Web */
-    background: #0F172A;
+.editInput:focus {
+    border-bottom-color: var(--primary-color);
+}
+
+.cardPricing .editInput {
+    border-bottom-color: rgba(255, 255, 255, 0.5);
     color: white;
-    padding: 2rem;
+}
+
+.editTextarea {
+    width: 100%;
+    border: 1px dashed var(--primary-color);
+    border-radius: 8px;
+    padding: 0.75rem;
+    font: inherit;
+    color: inherit;
+    background: #f8fafc;
+    min-height: 100px;
+    resize: vertical;
+}
+
+.editRemoveBtn,
+.editAddBtn {
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.editRemoveBtn {
+    color: #ef4444;
+    padding: 4px;
+    border-radius: 4px;
+}
+
+.editRemoveBtn:hover {
+    background: #fee2e2;
+}
+
+.editAddBtn {
+    color: var(--primary-color);
+    font-size: 0.85rem;
+    font-weight: 600;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: 1px dashed var(--primary-color);
+    border-radius: 8px;
+    margin-top: 1rem;
+}
+
+.editAddBtn:hover {
+    background: rgba(127, 19, 236, 0.05);
+}
+
+/* Quick Info extra fields (Phone, Nationality, etc.) - If used */
+.extraInfoGrid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 1rem;
+    margin-top: -1.5rem;
+    /* pull up closer to hero */
+    margin-bottom: 2rem;
+    background: white;
+    padding: 1rem;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.extraInfoItem {
     text-align: center;
 }
 
-/* Hide Signature by default (only for print) */
+.extraIcon {
+    color: var(--primary-color);
+    margin-bottom: 0.25rem;
+    display: flex;
+    justify-content: center;
+}
+
+.extraLabel {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #94a3b8;
+}
+
+.extraVal {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+/* Sticky Print Signature */
 .printSignature {
     display: none;
 }
 
-.footerContent {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.9rem;
-    max-width: 90%;
-    /* Wider for 3 items */
-    margin: 0 auto;
-    font-weight: 500;
-}
 
-/* Actions */
+/* Actions Buttons (Unchanged Logic, Adapted Colors) */
 .actions {
     position: fixed;
     bottom: 2rem;
@@ -367,273 +695,85 @@
     z-index: 100;
 }
 
-/* Volver Button Style Fix */
-.btnBack {
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
-    border-radius: 50px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    cursor: pointer;
-    font-weight: 600;
-    color: var(--text-primary);
-    transition: all 0.2s ease;
-}
-
-.btnBack:hover {
-    background: var(--bg-card-hover);
-    transform: translateY(-2px);
-    border-color: var(--primary-color);
-}
-
+.btnBack,
+.btnEdit,
 .btnDownload {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     padding: 0.75rem 1.5rem;
     border-radius: 50px;
-    background: var(--primary-color);
-    border: none;
-    color: white;
+    font-weight: 700;
     cursor: pointer;
-    font-weight: 800;
-    box-shadow: 0 4px 12px rgba(157, 116, 200, 0.4);
-    transition: all 0.2s ease;
+    transition: all 0.2s;
 }
 
-.btnDownload:hover {
-    background: var(--primary-dark);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(157, 116, 200, 0.5);
+.btnBack {
+    background: white;
+    border: 1px solid #e2e8f0;
+    color: #0f172a;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* Edit Button */
 .btnEdit {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
-    border-radius: 50px;
-    background: var(--bg-card);
+    background: white;
     border: 1px solid var(--primary-color);
     color: var(--primary-color);
-    cursor: pointer;
-    font-weight: 700;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    transition: all 0.2s ease;
-}
-
-.btnEdit:hover {
-    background: var(--primary-color);
-    color: white;
-    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .btnEdit.active {
     background: var(--primary-color);
     color: white;
-    box-shadow: 0 0 16px rgba(157, 116, 200, 0.5);
 }
 
-/* Edit Mode Styles */
-.editInput {
+.btnDownload {
+    background: var(--primary-color);
     border: none;
-    border-bottom: 2px dashed var(--primary-color);
-    background: transparent;
-    font: inherit;
-    color: inherit;
-    width: 100%;
-    padding: 0.25rem 0;
-    outline: none;
-    transition: border-color 0.2s;
-}
-
-.editInput:focus {
-    border-bottom-style: solid;
-    border-color: var(--primary-color);
-}
-
-.editTextarea {
-    border: 1px dashed var(--primary-color);
-    background: rgba(157, 116, 200, 0.05);
-    border-radius: 8px;
-    font: inherit;
-    color: inherit;
-    width: 100%;
-    padding: 0.5rem;
-    outline: none;
-    resize: vertical;
-    min-height: 60px;
-    transition: border-color 0.2s;
-}
-
-.editTextarea:focus {
-    border-style: solid;
-    border-color: var(--primary-color);
-    background: rgba(157, 116, 200, 0.08);
-}
-
-.editRemoveBtn {
-    background: rgba(239, 68, 68, 0.1);
-    border: none;
-    color: #EF4444;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-    flex-shrink: 0;
-}
-
-.editRemoveBtn:hover {
-    background: #EF4444;
     color: white;
+    box-shadow: 0 4px 15px rgba(127, 19, 236, 0.4);
 }
 
-.editAddBtn {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    border: 1px dashed var(--primary-color);
-    background: rgba(157, 116, 200, 0.05);
-    color: var(--primary-color);
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 0.85rem;
-    font-weight: 600;
-    transition: all 0.2s;
-    margin-top: 0.5rem;
+.btnDownload:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(127, 19, 236, 0.6);
 }
 
-.editAddBtn:hover {
-    background: rgba(157, 116, 200, 0.15);
-    border-style: solid;
-}
-
+/* Print Mode */
 @media print {
-
-    /* General Pages (2, 3, etc.) */
-    /* General Pages (2, 3, etc.) */
     @page {
         margin: 0;
-        margin-bottom: 0mm !important;
         size: A4 portrait;
-
     }
-
-    /* REMOVED :first page override to ensure consistency */
 
     .voucherContainer {
         padding: 0;
         background: white;
         display: block;
-        height: auto;
     }
 
     .voucherPage {
         width: 100%;
-        height: auto;
-        min-height: 0;
         box-shadow: none;
+        border: none;
+        border-radius: 0;
         margin: 0;
-        display: block;
-        padding: 0;
-        padding-bottom: 0;
-        /* Footer space handled by @page margin-bottom */
-        background: white !important;
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-
-        /* Global font size for print - set to 15px as requested */
-        font-size: 15px;
+        margin-bottom: 0;
     }
 
-    /* Standardized sizes */
-    .termsText,
-    .checkItem,
-    .itineraryDesc,
-    .infoValue,
-    .preparedByName,
-    .descriptionText {
-        font-size: 1rem !important;
-        /* Use full size */
-        line-height: 1.5;
-        /* Standard line height */
+    .actions {
+        display: none !important;
     }
 
-    .sectionTitle {
-        font-size: 1.15rem !important;
-        margin-top: 1rem;
-        /* Reduced top margin */
-        margin-bottom: 0.5rem;
-    }
-
-    .header {
-        height: 300px;
-        /* Reduced specific print height */
-        width: 100%;
-        /* Ensure header fits on page 1 without pushing content too far */
-    }
-
-    /* Add padding to content only, to preserve header full width */
-    .infoSection,
+    .pagePadding,
     .mainContent {
-        padding-left: 15mm;
-        padding-right: 15mm;
-        gap: 1.5rem;
-        /* Compact gap for print */
+        padding: 15mm;
     }
 
-    .sectionBlock {
-        padding-bottom: 2mm;
-        margin-bottom: 1rem;
+    .heroBanner {
+        height: 180px;
     }
 
-    .itineraryList {
-        gap: 1rem;
-    }
-
-    .itineraryItem {
-        margin-bottom: 2mm;
-    }
-
-    .itineraryDesc {
-        margin-bottom: 0.5rem;
-        line-height: 1.4;
-    }
-
-    .infoSection {
-        margin-top: -3rem;
-        /* Keep the overlap look */
-    }
-
-    .actions,
-    .printHeader,
-    .footer {
-        display: none !important;
-    }
-
-    /* Fixed Footer repeating on every page */
-    /* Fixed Footer repeating on every page */
-    .printFooter {
-        display: block;
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        background: transparent !important;
-        display: none !important;
-        /* Hide footer container entirely, using signature instead */
-    }
-
-    /* Fixed Signature on every page (Bottom Center) */
     .printSignature {
         position: fixed;
         display: block !important;
@@ -653,12 +793,5 @@
         width: 100%;
         height: auto;
         display: block;
-    }
-
-
-
-    /* Page Number Pseudo-element (Best effort support) */
-    .pageNumber::after {
-        content: "Página " counter(page);
     }
 }
