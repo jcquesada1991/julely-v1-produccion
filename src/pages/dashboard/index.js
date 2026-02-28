@@ -19,15 +19,25 @@ export default function Dashboard() {
             return acc + (parseFloat(sale.total_amount) || 0);
         }, 0);
 
-        // Destino más vendido
+        // Destino más vendido — solo ventas con destination_id válido
         const destinationSales = {};
+        const destinationNames = {}; // fallback por nombre si el destino fue eliminado
         sales.forEach(sale => {
-            destinationSales[sale.destination_id] = (destinationSales[sale.destination_id] || 0) + 1;
+            if (sale.destination_id) {
+                destinationSales[sale.destination_id] = (destinationSales[sale.destination_id] || 0) + 1;
+                if (sale.destination_name && !destinationNames[sale.destination_id]) {
+                    destinationNames[sale.destination_id] = sale.destination_name;
+                }
+            }
         });
-        const mostSoldDestId = Object.keys(destinationSales).reduce((a, b) =>
-            destinationSales[a] > destinationSales[b] ? a : b, Object.keys(destinationSales)[0]
-        );
-        const mostSoldDest = destinations.find(d => String(d.id) === String(mostSoldDestId));
+        const destKeys = Object.keys(destinationSales);
+        const mostSoldDestId = destKeys.length > 0
+            ? destKeys.reduce((a, b) => destinationSales[a] > destinationSales[b] ? a : b)
+            : null;
+        const mostSoldDest = mostSoldDestId
+            ? (destinations.find(d => String(d.id) === String(mostSoldDestId))
+                || (destinationNames[mostSoldDestId] ? { title: destinationNames[mostSoldDestId] } : null))
+            : null;
 
         // Clientes Totales (registrados)
         const totalClients = clients.length;

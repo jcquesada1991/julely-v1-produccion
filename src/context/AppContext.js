@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useNotification } from './NotificationContext';
 
@@ -14,6 +14,40 @@ export function AppProvider({ children }) {
     const [clients, setClients] = useState([]);
     const [itineraries, setItineraries] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+
+    // Ref para las imágenes de destinos (para que el realtime las use)
+    const destImagesRef = useRef({});
+
+    // ─── HELPERS DE NORMALIZACIÓN ─────────────────────────────────────
+    const normalizeBooking = useCallback((s) => ({
+        ...s,
+        date: s.booking_date || s.created_at,
+        created_by: s.assigned_to,
+        status: s.status === 'confirmada' ? 'Confirmada'
+            : s.status === 'pendiente' ? 'Pendiente'
+                : s.status === 'cancelada' ? 'Cancelada'
+                    : 'Completada',
+    }), []);
+
+    const normalizeProfile = useCallback((u) => ({
+        ...u,
+        name: u.full_name ? u.full_name.split(' ')[0] : '',
+        surname: u.full_name ? u.full_name.split(' ').slice(1).join(' ') : '',
+        role: {
+            admin: 'Administrador',
+            asesor: 'Asesor de Ventas',
+            supervisor: 'Supervisor',
+            contabilidad: 'Contabilidad',
+            operaciones: 'Operaciones',
+        }[u.role] || u.role,
+    }), []);
+
+    const normalizeDestination = useCallback((d) => ({
+        ...d,
+        isPremium: d.is_premium,
+        isFavorite: false,
+        images: destImagesRef.current[d.id] || [],
+    }), []);
 
     // ─── LOAD ALL DATA (on mount) ─────────────────────────────────────
     const loadAll = useCallback(async () => {
@@ -49,6 +83,7 @@ export function AppProvider({ children }) {
                 if (!imagesByDest[img.destination_id]) imagesByDest[img.destination_id] = [];
                 imagesByDest[img.destination_id].push(img);
             });
+            destImagesRef.current = imagesByDest;
 
             // Normalize destinations (include gallery images)
             setDestinations((destData || []).map(d => ({
@@ -60,29 +95,10 @@ export function AppProvider({ children }) {
 
 
             // Normalize bookings
-            setSales((salesData || []).map(s => ({
-                ...s,
-                date: s.booking_date || s.created_at,
-                created_by: s.assigned_to,
-                status: s.status === 'confirmada' ? 'Confirmada'
-                    : s.status === 'pendiente' ? 'Pendiente'
-                        : s.status === 'cancelada' ? 'Cancelada'
-                            : 'Completada',
-            })));
+            setSales((salesData || []).map(normalizeBooking));
 
             // Normalize profiles
-            setUsers((usersData || []).map(u => ({
-                ...u,
-                name: u.full_name ? u.full_name.split(' ')[0] : '',
-                surname: u.full_name ? u.full_name.split(' ').slice(1).join(' ') : '',
-                role: {
-                    admin: 'Administrador',
-                    asesor: 'Asesor de Ventas',
-                    supervisor: 'Supervisor',
-                    contabilidad: 'Contabilidad',
-                    operaciones: 'Operaciones',
-                }[u.role] || u.role,
-            })));
+            setUsers((usersData || []).map(normalizeProfile));
 
             // Normalize clients — aplanar client_identity al nivel raíz
             setClients((clientsData || []).map(c => {
@@ -105,11 +121,114 @@ export function AppProvider({ children }) {
         } finally {
             setIsLoading(false);
         }
-    }, []);
+    }, [normalizeBooking, normalizeProfile]);
 
     useEffect(() => {
         loadAll();
     }, [loadAll]);
+
+    // ─── SUPABASE REALTIME SUBSCRIPTIONS ─────────────────────────────
+    useEffect(() => {
+        // Suscripción a bookings (ventas)
+        const bookingsChannel = supabase
+            .channel('realtime-bookings')
+            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'bookings' }, (payload) => {
+                setSales(prev => {
+                    if (prev.find(s => s.id === payload.new.id)) return prev;
+                    return [normalizeBooking(payload.new), ...prev];
+                });
+            })
+            .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'bookings' }, (payload) => {
+                setSales(prev => prev.map(s => s.id === payload.new.id ? normalizeBooking(payload.new) : s));
+            })
+            .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'bookings' }, (payload) => {
+                setSales(prev => prev.filter(s => s.id !== payload.old.id));
+            })
+            .subscribe();
+
+        // Suscripción a destinations
+        const destinationsChannel = supabase
+            .channel('realtime-destinations')
+            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'destinations' }, (payload) => {
+                setDestinations(prev => {
+                    if (prev.find(d => d.id === payload.new.id)) return prev;
+                    return [normalizeDestination(payload.new), ...prev];
+                });
+            })
+            .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'destinations' }, (payload) => {
+                setDestinations(prev => prev.map(d => d.id === payload.new.id
+                    ? { ...normalizeDestination(payload.new), images: d.images || [] }
+                    : d));
+            })
+            .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'destinations' }, (payload) => {
+                setDestinations(prev => prev.filter(d => d.id !== payload.old.id));
+            })
+            .subscribe();
+
+        // Suscripción a clients
+        const clientsChannel = supabase
+            .channel('realtime-clients')
+            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'clients' }, (payload) => {
+                setClients(prev => {
+                    if (prev.find(c => c.id === payload.new.id)) return prev;
+                    return [{ ...payload.new, passport: '', birthdate: '', nationality: '' }, ...prev];
+                });
+            })
+            .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'clients' }, (payload) => {
+                setClients(prev => prev.map(c => c.id === payload.new.id
+                    ? { ...payload.new, passport: c.passport || '', birthdate: c.birthdate || '', nationality: c.nationality || '' }
+                    : c));
+            })
+            .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'clients' }, (payload) => {
+                setClients(prev => prev.filter(c => c.id !== payload.old.id));
+            })
+            .subscribe();
+
+        // Suscripción a activities (excursiones/itinerarios)
+        const activitiesChannel = supabase
+            .channel('realtime-activities')
+            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'activities' }, (payload) => {
+                setItineraries(prev => {
+                    if (prev.find(i => i.id === payload.new.id)) return prev;
+                    return [{ ...payload.new, image: payload.new.image_url }, ...prev];
+                });
+            })
+            .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'activities' }, (payload) => {
+                setItineraries(prev => prev.map(i => i.id === payload.new.id
+                    ? { ...payload.new, image: payload.new.image_url }
+                    : i));
+            })
+            .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'activities' }, (payload) => {
+                setItineraries(prev => prev.filter(i => i.id !== payload.old.id));
+            })
+            .subscribe();
+
+        // Suscripción a profiles (usuarios)
+        const profilesChannel = supabase
+            .channel('realtime-profiles')
+            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'profiles' }, (payload) => {
+                setUsers(prev => {
+                    if (prev.find(u => u.id === payload.new.id)) return prev;
+                    return [normalizeProfile(payload.new), ...prev];
+                });
+            })
+            .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'profiles' }, (payload) => {
+                setUsers(prev => prev.map(u => u.id === payload.new.id ? normalizeProfile(payload.new) : u));
+            })
+            .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'profiles' }, (payload) => {
+                setUsers(prev => prev.filter(u => u.id !== payload.old.id));
+            })
+            .subscribe();
+
+        // Cleanup al desmontar
+        return () => {
+            supabase.removeChannel(bookingsChannel);
+            supabase.removeChannel(destinationsChannel);
+            supabase.removeChannel(clientsChannel);
+            supabase.removeChannel(activitiesChannel);
+            supabase.removeChannel(profilesChannel);
+        };
+    }, [normalizeBooking, normalizeProfile, normalizeDestination]);
 
     // ════════════════════════════════════════════════════════════════
     // DESTINOS CRUD
@@ -252,12 +371,7 @@ export function AppProvider({ children }) {
             .single();
 
         if (error) { showNotification('Error al registrar venta', 'error'); console.error(error); return; }
-        setSales(prev => [{
-            ...data,
-            date: data.booking_date || data.created_at,
-            created_by: data.assigned_to,
-            status: 'Confirmada',
-        }, ...prev]);
+        setSales(prev => [normalizeBooking(data), ...prev]);
         showNotification('Venta registrada exitosamente');
     };
 
@@ -275,15 +389,7 @@ export function AppProvider({ children }) {
             return null;
         }
 
-        setSales(prev => prev.map(s => s.id === id ? {
-            ...s, ...data,
-            date: data.booking_date || data.created_at,
-            created_by: data.assigned_to,
-            status: data.status === 'confirmada' ? 'Confirmada'
-                : data.status === 'pendiente' ? 'Pendiente'
-                    : data.status === 'cancelada' ? 'Cancelada'
-                        : (data.status || 'Completada'),
-        } : s));
+        setSales(prev => prev.map(s => s.id === id ? normalizeBooking({ ...s, ...data }) : s));
         showNotification('Voucher guardado correctamente');
         return data;
     };
@@ -360,15 +466,7 @@ export function AppProvider({ children }) {
             const { data: profilesData } = await supabase
                 .from('profiles').select('*').order('created_at', { ascending: false });
 
-            setUsers((profilesData || []).map(u => ({
-                ...u,
-                name: u.full_name ? u.full_name.split(' ')[0] : '',
-                surname: u.full_name ? u.full_name.split(' ').slice(1).join(' ') : '',
-                role: {
-                    admin: 'Administrador', asesor: 'Asesor de Ventas',
-                    supervisor: 'Supervisor', contabilidad: 'Contabilidad', operaciones: 'Operaciones',
-                }[u.role] || u.role,
-            })));
+            setUsers((profilesData || []).map(normalizeProfile));
 
             showNotification(`Usuario "${newUser.name}" creado correctamente`);
         } catch (err) {
@@ -393,12 +491,7 @@ export function AppProvider({ children }) {
             .eq('id', id).select().single();
 
         if (error) { showNotification('Error al actualizar usuario', 'error'); return; }
-        setUsers(prev => prev.map(u => u.id === id ? {
-            ...data,
-            name: data.full_name ? data.full_name.split(' ')[0] : '',
-            surname: data.full_name ? data.full_name.split(' ').slice(1).join(' ') : '',
-            role: updatedUser.role,
-        } : u));
+        setUsers(prev => prev.map(u => u.id === id ? normalizeProfile(data) : u));
         showNotification('Usuario actualizado correctamente');
     };
 

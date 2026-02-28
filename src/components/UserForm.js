@@ -80,7 +80,6 @@ export default function UserForm({ initialData, onSubmit, onCancel, onDirty }) {
                             name="lastName"
                             value={formData.lastName}
                             onChange={handleChange}
-                            required
                             placeholder="Ej. Pérez"
                             className={styles.formInput}
                         />

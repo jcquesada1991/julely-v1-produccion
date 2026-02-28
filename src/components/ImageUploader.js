@@ -3,9 +3,61 @@ import { supabase } from '@/lib/supabase';
 import { Upload, Link, X, Image as ImageIcon, Loader } from 'lucide-react';
 
 /**
+ * Comprime una imagen usando Canvas antes de subirla.
+ * Reduce el tamaño de 4-8MB a ~300-500KB sin pérdida visual notable.
+ */
+async function compressImage(file, maxWidthPx = 1920, quality = 0.85) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                // Calcular dimensiones manteniendo proporción
+                let { width, height } = img;
+                if (width > maxWidthPx) {
+                    height = Math.round((height * maxWidthPx) / width);
+                    width = maxWidthPx;
+                }
+
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+
+                // Intentar WebP primero, fallback a JPEG
+                canvas.toBlob(
+                    (blob) => {
+                        if (blob) {
+                            resolve(blob);
+                        } else {
+                            // Si WebP falla, intentar JPEG
+                            canvas.toBlob(
+                                (jpegBlob) => {
+                                    if (jpegBlob) resolve(jpegBlob);
+                                    else reject(new Error('No se pudo comprimir la imagen'));
+                                },
+                                'image/jpeg',
+                                quality
+                            );
+                        }
+                    },
+                    'image/webp',
+                    quality
+                );
+            };
+            img.onerror = () => reject(new Error('No se pudo leer la imagen'));
+            img.src = e.target.result;
+        };
+        reader.onerror = () => reject(new Error('Error al leer el archivo'));
+        reader.readAsDataURL(file);
+    });
+}
+
+/**
  * ImageUploader — Componente reutilizable para subir imágenes.
  * Soporta dos modos:
- *   1. Subir archivo desde el dispositivo (→ Supabase Storage)
+ *   1. Subir archivo desde el dispositivo (→ Supabase Storage, con compresión automática)
  *   2. Pegar una URL externa directamente
  *
  * Props:
@@ -26,10 +78,11 @@ export default function ImageUploader({
     disableUrl = false,
     multiple = false,
     maxFiles = 3,
-    maxSizeMB = 10,
+    maxSizeMB = 20, // Permitimos hasta 20MB originales (se comprimirán)
 }) {
     const [mode, setMode] = useState(disableUrl ? 'upload' : 'url'); // 'url' | 'upload'
     const [uploading, setUploading] = useState(false);
+    const [uploadProgress, setUploadProgress] = useState('');
     const [error, setError] = useState('');
     const fileInputRef = useRef(null);
 
@@ -42,7 +95,7 @@ export default function ImageUploader({
             return;
         }
 
-        // Validar tipos y tamaños
+        // Validar tipos
         for (const file of files) {
             if (!file.type.startsWith('image/')) {
                 setError('Solo se permiten imágenes (JPG, PNG, WebP, etc.)');
@@ -56,15 +109,38 @@ export default function ImageUploader({
 
         setError('');
         setUploading(true);
+        setUploadProgress('Comprimiendo imagen...');
 
         try {
-            const uploadPromises = files.map(async (file) => {
-                const ext = file.name.split('.').pop();
+            const uploadPromises = files.map(async (file, idx) => {
+                // 1. Comprimir imagen antes de subir
+                let uploadBlob;
+                try {
+                    uploadBlob = await compressImage(file);
+                } catch {
+                    // Si falla la compresión, subir el original
+                    uploadBlob = file;
+                }
+
+                if (files.length > 1) {
+                    setUploadProgress(`Subiendo imagen ${idx + 1} de ${files.length}...`);
+                } else {
+                    setUploadProgress('Subiendo imagen...');
+                }
+
+                // 2. Generar nombre de archivo (WebP o extensión original)
+                const isWebP = uploadBlob.type === 'image/webp';
+                const ext = isWebP ? 'webp' : (file.name.split('.').pop() || 'jpg');
                 const fileName = `${folder}/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
 
+                // 3. Subir a Supabase Storage
                 const { error: uploadError } = await supabase.storage
                     .from(bucket)
-                    .upload(fileName, file, { cacheControl: '3600', upsert: false });
+                    .upload(fileName, uploadBlob, {
+                        cacheControl: '3600',
+                        upsert: false,
+                        contentType: uploadBlob.type,
+                    });
 
                 if (uploadError) throw uploadError;
 
@@ -78,16 +154,15 @@ export default function ImageUploader({
             const publicUrls = await Promise.all(uploadPromises);
 
             if (multiple) {
-                // Return array of urls if multiple
                 onChange(publicUrls);
             } else {
-                // Return single url
                 onChange(publicUrls[0]);
             }
         } catch (err) {
             setError('Error al subir imagen(es): ' + (err.message || 'Inténtalo de nuevo'));
         } finally {
             setUploading(false);
+            setUploadProgress('');
             if (fileInputRef.current) fileInputRef.current.value = '';
         }
     };
@@ -187,13 +262,16 @@ export default function ImageUploader({
                         {uploading ? (
                             <>
                                 <Loader size={24} style={{ animation: 'spin 1s linear infinite' }} />
-                                <span>Subiendo imagen...</span>
+                                <span>{uploadProgress || 'Procesando...'}</span>
+                                <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+                                    Comprimiendo y subiendo imagen, por favor espera...
+                                </span>
                             </>
                         ) : (
                             <>
                                 <Upload size={24} />
                                 <span style={{ fontWeight: 600 }}>Haz clic para seleccionar imagen{multiple ? ' (hasta 3)' : ''}</span>
-                                <span style={{ fontSize: '0.75rem' }}>JPG, PNG, WebP · Máx {maxSizeMB} MB {multiple ? 'en total' : ''}</span>
+                                <span style={{ fontSize: '0.75rem' }}>JPG, PNG, WebP · Se comprimirán automáticamente</span>
                             </>
                         )}
                     </button>
