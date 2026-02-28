@@ -162,23 +162,51 @@ export function AppProvider({ children }) {
     };
 
     const deleteDestination = async (id) => {
-        const { data, error } = await supabase.from('destinations').delete().eq('id', id).select();
-        if (error) {
-            console.error('Error al eliminar destino:', error);
-            showNotification(
-                error.code === '23503'
-                    ? 'No se puede eliminar: hay ventas vinculadas a este destino'
-                    : 'Error al eliminar destino: ' + (error.message || 'Intenta de nuevo'),
-                'error'
-            );
-            return;
+        try {
+            // 1. Eliminar excursiones (actividades) asociadas
+            const { error: activError } = await supabase
+                .from('activities')
+                .delete()
+                .eq('destination_id', id);
+
+            if (activError) {
+                console.error('Error al eliminar excursiones del destino:', activError);
+            }
+
+            // 2. Eliminar imágenes de galería asociadas
+            await supabase
+                .from('destination_images')
+                .delete()
+                .eq('destination_id', id);
+
+            // 3. Finalmente eliminar el destino
+            const { data, error } = await supabase.from('destinations').delete().eq('id', id).select();
+
+            if (error) {
+                console.error('Error al eliminar destino:', error);
+                showNotification(
+                    error.code === '23503'
+                        ? 'No se puede eliminar: hay ventas vinculadas a este destino'
+                        : 'Error al eliminar destino: ' + (error.message || 'Intenta de nuevo'),
+                    'error'
+                );
+                return;
+            }
+
+            if (!data || data.length === 0) {
+                showNotification('No se pudo eliminar el destino (Verifique permisos)', 'error');
+                return;
+            }
+
+            // Actualizar estado local
+            setDestinations(prev => prev.filter(d => d.id !== id));
+            setItineraries(prev => prev.filter(i => String(i.destination_id) !== String(id)));
+
+            showNotification('Destino y sus excursiones eliminados', 'info');
+        } catch (err) {
+            console.error('Error en el proceso de eliminación:', err);
+            showNotification('Error inesperado al eliminar el destino', 'error');
         }
-        if (!data || data.length === 0) {
-            showNotification('No se pudo eliminar el destino (Verifique permisos)', 'error');
-            return;
-        }
-        setDestinations(prev => prev.filter(d => d.id !== id));
-        showNotification('Destino eliminado', 'info');
     };
 
     // ════════════════════════════════════════════════════════════════
@@ -493,10 +521,12 @@ export function AppProvider({ children }) {
     // ITINERARIOS / ACTIVIDADES CRUD
     // ════════════════════════════════════════════════════════════════
     const addItinerary = async (newItinerary) => {
+        const dest = destinations.find(d => String(d.id) === String(newItinerary.destination_id));
         const { data, error } = await supabase
             .from('activities')
             .insert([{
                 destination_id: newItinerary.destination_id || null,
+                destination_name: dest ? dest.title : 'Desconocido',
                 name: newItinerary.name,
                 description: newItinerary.description,
                 price_adult: parseFloat(newItinerary.price_adult) || 0,
@@ -512,10 +542,12 @@ export function AppProvider({ children }) {
     };
 
     const updateItinerary = async (id, updatedItinerary) => {
+        const dest = destinations.find(d => String(d.id) === String(updatedItinerary.destination_id));
         const { data, error } = await supabase
             .from('activities')
             .update({
                 destination_id: updatedItinerary.destination_id || null,
+                destination_name: dest ? dest.title : 'Desconocido',
                 name: updatedItinerary.name,
                 description: updatedItinerary.description,
                 price_adult: parseFloat(updatedItinerary.price_adult) || 0,

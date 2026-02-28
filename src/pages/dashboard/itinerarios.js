@@ -16,9 +16,25 @@ export default function Itineraries() {
     const [currentItinerary, setCurrentItinerary] = useState(null);
     const [isDirty, setIsDirty] = useState(false);
 
-    const getDestName = (id) => {
-        const d = destinations.find(x => String(x.id) === String(id));
-        return d ? d.title : 'Desconocido';
+    const renderDestName = (item) => {
+        const d = destinations.find(x => String(x.id) === String(item.destination_id));
+        if (d) return d.title;
+
+        const name = item.destination_name || 'Desconocido';
+        return (
+            <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <span style={{ textDecoration: 'line-through', opacity: 0.7 }}>{name}</span>
+                <span style={{
+                    fontSize: '0.65rem',
+                    fontWeight: 'bold',
+                    backgroundColor: 'rgba(239, 68, 68, 0.15)',
+                    color: '#EF4444',
+                    padding: '0.15rem 0.4rem',
+                    borderRadius: '4px',
+                    textTransform: 'uppercase'
+                }}>Eliminado</span>
+            </span>
+        );
     };
 
 
@@ -113,7 +129,7 @@ export default function Itineraries() {
                                     <td>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-secondary)' }}>
                                             <MapPin size={16} />
-                                            {getDestName(item.destination_id)}
+                                            {renderDestName(item)}
                                         </div>
                                     </td>
                                     <td>
