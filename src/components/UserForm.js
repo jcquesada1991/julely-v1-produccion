@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
 import styles from '@/styles/FormModal.module.css';
 import { ROLES } from '@/context/AuthContext';
 
 export default function UserForm({ initialData, onSubmit, onCancel, onDirty }) {
+    const [showPassword, setShowPassword] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
         lastName: '',
@@ -102,15 +104,37 @@ export default function UserForm({ initialData, onSubmit, onCancel, onDirty }) {
                         <label className={styles.formLabel}>
                             {initialData ? 'Nueva Contraseña (dejar vacío para no cambiar)' : 'Contraseña'}
                         </label>
-                        <input
-                            type="password"
-                            name="password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            required={!initialData}
-                            placeholder="••••••••"
-                            className={styles.formInput}
-                        />
+                        <div style={{ position: 'relative' }}>
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                name="password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                required={!initialData}
+                                placeholder="••••••••"
+                                className={styles.formInput}
+                                style={{ paddingRight: '2.5rem' }}
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                style={{
+                                    position: 'absolute',
+                                    right: '0.75rem',
+                                    top: '50%',
+                                    transform: 'translateY(-50%)',
+                                    background: 'none',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                    color: 'var(--text-secondary)',
+                                    padding: '4px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                }}
+                            >
+                                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                            </button>
+                        </div>
                     </div>
 
                     <div className={`${styles.formGroup} ${styles.formGridFull}`}>

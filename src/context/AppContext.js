@@ -481,18 +481,70 @@ export function AppProvider({ children }) {
             'Supervisor': 'supervisor', 'Contabilidad': 'contabilidad', 'Operaciones': 'operaciones',
         }[updatedUser.role] || updatedUser.role;
 
-        const { data, error } = await supabase
-            .from('profiles')
-            .update({
-                full_name: `${updatedUser.name} ${updatedUser.surname || ''}`.trim(),
-                role: roleKey,
-                is_active: updatedUser.is_active !== false,
-            })
-            .eq('id', id).select().single();
+        try {
+            // If password is provided, use Edge Function to update via Auth Admin API
+            if (updatedUser.password) {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (!session?.access_token) {
+                    throw new Error('No hay sesión activa. Por favor inicia sesión de nuevo.');
+                }
 
-        if (error) { showNotification('Error al actualizar usuario', 'error'); return; }
-        setUsers(prev => prev.map(u => u.id === id ? normalizeProfile(data) : u));
-        showNotification('Usuario actualizado correctamente');
+                const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+                const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+                const resp = await fetch(`${supabaseUrl}/functions/v1/update-user`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${session.access_token}`,
+                        'apikey': supabaseKey,
+                    },
+                    body: JSON.stringify({
+                        user_id: id,
+                        password: updatedUser.password,
+                        full_name: `${updatedUser.name} ${updatedUser.surname || ''}`.trim(),
+                        role: roleKey,
+                    }),
+                });
+
+                const result = await resp.json();
+                if (!resp.ok || result.error) {
+                    throw new Error(result.error || `Error ${resp.status}`);
+                }
+            } else {
+                // No password change — update profile directly
+                const { error } = await supabase
+                    .from('profiles')
+                    .update({
+                        full_name: `${updatedUser.name} ${updatedUser.surname || ''}`.trim(),
+                        role: roleKey,
+                        is_active: updatedUser.is_active !== false,
+                    })
+                    .eq('id', id);
+
+                if (error) throw error;
+            }
+
+            // Reload user in local state
+            const { data: refreshed } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', id)
+                .single();
+
+            if (refreshed) {
+                setUsers(prev => prev.map(u => u.id === id ? normalizeProfile(refreshed) : u));
+            }
+
+            showNotification(
+                updatedUser.password
+                    ? 'Usuario y contraseña actualizados correctamente'
+                    : 'Usuario actualizado correctamente'
+            );
+        } catch (err) {
+            console.error('Error actualizando usuario:', err);
+            showNotification(`Error al actualizar usuario: ${err.message || 'Intenta de nuevo'}`, 'error');
+        }
     };
 
     const deleteUser = async (id) => {
