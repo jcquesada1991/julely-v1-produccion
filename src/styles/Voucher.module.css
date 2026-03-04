@@ -50,6 +50,8 @@
 .logoImage {
     height: 60px;
     object-fit: contain;
+    filter: invert(1) hue-rotate(180deg);
+    mix-blend-mode: multiply;
 }
 
 .brandText {}

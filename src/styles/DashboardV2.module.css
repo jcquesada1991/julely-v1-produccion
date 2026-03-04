@@ -68,7 +68,10 @@
     gap: 0.5rem;
 }
 
-
+.brandLogo img {
+    filter: invert(1) hue-rotate(180deg);
+    mix-blend-mode: multiply;
+}
 
 /* ... existing code ... */
 
