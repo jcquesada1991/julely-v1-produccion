@@ -13,7 +13,7 @@ export default function Layout({ children, title }) {
             {/* Sidebar */}
             <aside className={styles.sidebar}>
                 <div className={styles.brand}>
-                    <img src="/images/logo.png" alt="Julely" style={{ height: '40px', objectFit: 'contain', margin: '0 auto' }} />
+                    <img src="/images/logo_transparent.png" alt="Julely" style={{ height: '40px', objectFit: 'contain', margin: '0 auto' }} />
                 </div>
 
                 <nav className={styles.nav}>

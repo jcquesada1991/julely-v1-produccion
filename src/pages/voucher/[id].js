@@ -288,7 +288,7 @@ export default function Voucher() {
                         {/* 1. Top Header */}
                         <div className={styles.topHeader}>
                             <div className={styles.brandInfo}>
-                                <img src="/images/logo.png" className={styles.logoImage} alt="Julely" style={{ height: '200px', objectFit: 'contain' }} />
+                                <img src="/images/logo_transparent.png" className={styles.logoImage} alt="Julely" style={{ height: '200px', objectFit: 'contain' }} />
                             </div>
                             <div className={styles.confirmationBox}>
                                 <div className={styles.confLabel}>CONFIRMATION NUMBER</div>
