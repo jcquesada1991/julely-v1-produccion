@@ -135,8 +135,8 @@
 .loginBtn {
     width: 100%;
     padding: 1rem;
-    background: #2563eb;
-    /* Primary Blue */
+    background: var(--primary-color);
+    /* Primary Color */
     color: white;
     display: flex;
     align-items: center;
@@ -155,7 +155,7 @@
 }
 
 .loginBtn:hover {
-    background: #1d4ed8;
+    background: var(--primary-dark);
     transform: translateY(-2px);
 }
 

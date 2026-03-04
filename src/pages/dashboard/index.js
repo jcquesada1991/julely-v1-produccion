@@ -161,7 +161,7 @@ export default function Dashboard() {
                 <div className={styles.sideSection}>
                     <div className="kanto-card" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 700, color: 'white' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 700, color: 'var(--text-primary)' }}>
                                 <MapPin size={20} /> Top Destinos
                             </div>
                         </div>
@@ -173,7 +173,7 @@ export default function Dashboard() {
                                         {idx + 1}
                                     </div>
                                     <div style={{ flex: 1 }}>
-                                        <div style={{ fontWeight: 700, color: 'white' }}>
+                                        <div style={{ fontWeight: 700, color: 'var(--text-primary)' }}>
                                             {dest.title}
                                         </div>
                                     </div>

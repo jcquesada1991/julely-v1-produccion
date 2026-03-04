@@ -5,7 +5,7 @@ import { Plus, X, ArrowUp, ArrowDown, MapPin, Calendar, CheckCircle, Building } 
 import styles from '@/styles/DashboardV2.module.css';
 
 export default function SaleForm({ onSubmit, onCancel }) {
-    const { destinations, clients, itineraries } = useApp();
+    const { destinations, clients, itineraries, sales } = useApp();
     const [formData, setFormData] = useState({
         client_name: '',
         client_id: '',
@@ -37,6 +37,26 @@ export default function SaleForm({ onSubmit, onCancel }) {
             setSelectedPOIs([]);
         }
     }, [formData.destination_id, itineraries]);
+
+    // Auto-generate consecutive confirmation number based on existing sales
+    useEffect(() => {
+        if (!formData.confirmation_id && sales && sales.length > 0) {
+            let maxNum = 0;
+            sales.forEach(s => {
+                const confStr = s.hotel_info?.confirmation_id || '';
+                const match = confStr.match(/JULELYCONF-(\d+)/);
+                if (match) {
+                    const num = parseInt(match[1], 10);
+                    if (num > maxNum) maxNum = num;
+                }
+            });
+            const nextNum = maxNum + 1;
+            const nextConfId = `JULELYCONF-${nextNum.toString().padStart(2, '0')}`;
+            setFormData(prev => ({ ...prev, confirmation_id: nextConfId }));
+        } else if (!formData.confirmation_id) {
+            setFormData(prev => ({ ...prev, confirmation_id: 'JULELYCONF-01' }));
+        }
+    }, [sales]);
 
     const handleAddPOI = (poi) => {
         // Allow adding same POI multiple times? Usually no, but maybe. Let's assume Unique for now.
@@ -296,10 +316,10 @@ export default function SaleForm({ onSubmit, onCancel }) {
                         <label style={{ ...labelStyle, marginTop: 0 }}>Número de Confirmación</label>
                         <input
                             type="text"
-                            placeholder="Ej. CONF-12345"
+                            placeholder="Ej. JULELYCONF-01"
                             value={formData.confirmation_id || ''}
-                            onChange={(e) => setFormData({ ...formData, confirmation_id: e.target.value })}
-                            style={{ ...selectStyle, backgroundImage: 'none', paddingRight: '0.75rem' }}
+                            readOnly
+                            style={{ ...selectStyle, backgroundImage: 'none', paddingRight: '0.75rem', background: 'var(--bg-card-hover)', cursor: 'not-allowed', color: 'var(--text-secondary)' }}
                         />
                     </div>
                 </div>

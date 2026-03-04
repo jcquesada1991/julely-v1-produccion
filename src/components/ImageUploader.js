@@ -109,15 +109,30 @@ export default function ImageUploader({
 
         setError('');
         setUploading(true);
-        setUploadProgress('Comprimiendo imagen...');
+        setUploadProgress('Preparando imágenes...');
 
         try {
-            const uploadPromises = files.map(async (file, idx) => {
+            const publicUrls = [];
+
+            for (let idx = 0; idx < files.length; idx++) {
+                const file = files[idx];
+
+                if (files.length > 1) {
+                    setUploadProgress(`Procesando imagen ${idx + 1} de ${files.length}...`);
+                } else {
+                    setUploadProgress('Procesando imagen...');
+                }
+
                 // 1. Comprimir imagen antes de subir
                 let uploadBlob;
                 try {
-                    uploadBlob = await compressImage(file);
-                } catch {
+                    // Promise with timeout for compression
+                    uploadBlob = await Promise.race([
+                        compressImage(file),
+                        new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout de compresión')), 15000))
+                    ]);
+                } catch (e) {
+                    console.warn('Error comprimiendo, usando original:', e);
                     // Si falla la compresión, subir el original
                     uploadBlob = file;
                 }
@@ -128,7 +143,7 @@ export default function ImageUploader({
                     setUploadProgress('Subiendo imagen...');
                 }
 
-                // 2. Generar nombre de archivo (WebP o extensión original)
+                // 2. Generar nombre de archivo
                 const isWebP = uploadBlob.type === 'image/webp';
                 const ext = isWebP ? 'webp' : (file.name.split('.').pop() || 'jpg');
                 const fileName = `${folder}/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
@@ -148,10 +163,8 @@ export default function ImageUploader({
                     .from(bucket)
                     .getPublicUrl(fileName);
 
-                return publicUrl;
-            });
-
-            const publicUrls = await Promise.all(uploadPromises);
+                publicUrls.push(publicUrl);
+            }
 
             if (multiple) {
                 onChange(publicUrls);
@@ -159,6 +172,7 @@ export default function ImageUploader({
                 onChange(publicUrls[0]);
             }
         } catch (err) {
+            console.error('Error general de subida:', err);
             setError('Error al subir imagen(es): ' + (err.message || 'Inténtalo de nuevo'));
         } finally {
             setUploading(false);

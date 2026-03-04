@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
+import Link from 'next/link';
 import { LogIn, Eye, EyeOff } from 'lucide-react';
 import styles from '@/styles/Login.module.css';
 import { supabase } from '@/lib/supabase';
@@ -91,6 +92,12 @@ export default function Login() {
                                 {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                             </button>
                         </div>
+                    </div>
+
+                    <div style={{ textAlign: 'right', marginTop: '-0.5rem', marginBottom: '1.5rem' }}>
+                        <Link href="/forgot-password" style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', textDecoration: 'none' }}>
+                            ¿Olvidaste tu contraseña?
+                        </Link>
                     </div>
 
                     <button type="submit" className={styles.loginBtn} disabled={isLoading}>

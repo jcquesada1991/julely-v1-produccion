@@ -5,6 +5,33 @@
     flex-direction: column;
     min-height: 100vh;
     background-color: var(--bg-main);
+    background-image: url('/images/login_bg_v2.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    position: relative;
+}
+
+.dashboardContainer::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(252, 250, 254, 0.4);
+    /* Lighter overlay */
+    backdrop-filter: blur(2px);
+    z-index: 0;
+}
+
+.mainContent {
+    flex: 1;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 3rem 3rem 3rem;
+    max-width: 1800px;
+    margin: 0 auto;
+    width: 100%;
 }
 
 /* --- Top Navigation --- */
@@ -14,7 +41,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 0 3rem;
-    background: rgba(15, 17, 21, 0.8);
+    background: rgba(255, 255, 255, 0.6);
     /* Glass effect base */
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border-color);
@@ -34,19 +61,14 @@
     font-family: 'Poppins', sans-serif;
     font-size: 1.5rem;
     font-weight: 800;
-    color: white;
+    color: var(--primary-color);
     letter-spacing: -0.02em;
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
-.brandLogo img {
-    mix-blend-mode: screen;
-    /* Removes black background */
-    filter: drop-shadow(0 0 8px rgba(157, 116, 200, 0.3));
-    /* Adds subtle brand glow */
-}
+
 
 /* ... existing code ... */
 
@@ -88,8 +110,8 @@
 }
 
 .navItem:hover {
-    color: white;
-    background: rgba(255, 255, 255, 0.05);
+    color: var(--primary-color);
+    background: rgba(0, 0, 0, 0.05);
     border-color: var(--border-color);
 }
 
@@ -113,7 +135,7 @@
 }
 
 .searchBar {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--bg-card);
     border: 1px solid var(--border-color);
     padding: 0.6rem 1rem;
     border-radius: 50px;
@@ -127,9 +149,9 @@
 
 .searchBar:focus-within {
     border-color: var(--primary-color);
-    background: rgba(255, 255, 255, 0.08);
-    box-shadow: 0 0 0 2px rgba(157, 116, 200, 0.2);
-    color: white;
+    background: var(--bg-main);
+    box-shadow: 0 0 0 2px rgba(181, 29, 224, 0.2);
+    color: var(--text-primary);
 }
 
 .userProfile {
@@ -170,7 +192,7 @@
 .userName {
     font-weight: 700;
     font-size: 0.9rem;
-    color: white;
+    color: var(--text-primary);
 }
 
 .userRole {
@@ -254,6 +276,8 @@
 /* Cards specific overrides */
 .statCard {
     background: var(--bg-card);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     padding: 2rem;
     border-radius: 20px;
     box-shadow: var(--shadow-card);
@@ -296,8 +320,8 @@
 }
 
 .cardMostSold {
-    background: linear-gradient(135deg, rgba(24, 27, 33, 1) 0%, rgba(157, 116, 200, 0.1) 100%);
-    border: 1px solid rgba(157, 116, 200, 0.3);
+    background: var(--gradient-card);
+    border: 1px solid var(--border-hover);
 }
 
 .statLabel {
@@ -313,7 +337,7 @@
 .statNumber {
     font-size: 2.5rem;
     font-weight: 700;
-    color: white;
+    color: var(--text-primary);
     font-family: 'Poppins', sans-serif;
     letter-spacing: -0.02em;
     margin-bottom: 0.5rem;
@@ -330,6 +354,8 @@
 /* --- Destination Cards Grid --- */
 .paramountCard {
     background: var(--bg-card);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border-radius: 20px;
     overflow: hidden;
     box-shadow: var(--shadow-card);
@@ -354,6 +380,8 @@
 .card {
     position: relative;
     background: var(--bg-card);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border-radius: 24px;
     overflow: hidden;
     box-shadow: var(--shadow-card);
@@ -491,8 +519,8 @@
     left: 0;
     right: 0;
     padding: 1.5rem;
-    background: linear-gradient(to bottom, rgba(24, 27, 33, 0.9), rgba(24, 27, 33, 1));
-    /* Dark gradient */
+    background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.95) 20%, rgba(255, 255, 255, 1) 100%);
+    /* Light gradient */
     opacity: 0;
     transform: translateY(20px);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -519,7 +547,7 @@
 .cardTitle {
     font-size: 1.5rem;
     font-weight: 800;
-    color: white;
+    color: var(--text-primary);
     margin-bottom: 0.3rem;
     line-height: 1.2;
 }
@@ -593,8 +621,8 @@
     bottom: calc(100% + 8px);
     left: 50%;
     transform: translateX(-50%) scale(0.9);
-    background: #1A1C23;
-    color: white;
+    background: var(--text-primary);
+    color: var(--bg-main);
     padding: 0.4rem 0.8rem;
     border-radius: 8px;
     font-size: 0.75rem;
@@ -619,7 +647,7 @@
 }
 
 .table thead {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.02) 100%);
     border-bottom: 1px solid var(--border-color);
 }
 
@@ -676,7 +704,7 @@
 }
 
 .topDestItem.highlight {
-    background: linear-gradient(90deg, rgba(157, 116, 200, 0.1) 0%, rgba(24, 27, 33, 0) 100%);
+    background: linear-gradient(90deg, rgba(181, 29, 224, 0.1) 0%, transparent 100%);
     border-color: var(--primary-color);
 }
 

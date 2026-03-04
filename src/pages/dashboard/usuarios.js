@@ -128,7 +128,7 @@ export default function Usuarios() {
                                 <tr key={user.id}>
                                     <td>
 
-                                        <div className={styles.avatarCircle} style={{
+                                        <div className={styles.avatarInitials} style={{
                                             background: `linear-gradient(135deg, ${({
                                                 'Administrador': 'var(--primary-color)',
                                                 'admin': 'var(--primary-color)',
@@ -151,9 +151,10 @@ export default function Usuarios() {
                                                 'contabilidad': '#065F46',
                                                 'Operaciones': '#BE185D',
                                                 'operaciones': '#BE185D'
-                                            })[user.role] || '#6FDA9A'} 100%)`
+                                            })[user.role] || '#6FDA9A'} 100%)`,
+                                            color: 'white'
                                         }}>
-                                            <span className={styles.avatarInitials}>{getInitials(user.name)}</span>
+                                            {getInitials(user.name)}
                                         </div>
                                     </td>
                                     <td>

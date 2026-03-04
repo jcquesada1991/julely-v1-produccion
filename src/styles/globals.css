@@ -2,57 +2,59 @@
 @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;500;600;700&display=swap');
 
 :root {
-  /* Sistema de Colores - Julely Dark Theme */
-  --primary-color: #9D74C8;
-  /* Purple */
-  --primary-dark: #7B5AA0;
-  --primary-light: #BFA3E0;
+  /* Sistema de Colores - Julely Light Theme */
+  --primary-color: #B51DE0;
+  /* Vibrant Purple */
+  --primary-dark: #9212BA;
+  --primary-light: #D876F5;
 
   --secondary-color: #F4A6B6;
   /* Pink */
   --secondary-light: #FAD2DB;
 
   /* Accent */
-  --accent-color: #99DDB5;
-  /* Mint Green */
+  --accent-color: #5BCBA6;
+  /* Vibrant Mint Green/Teal */
 
-  /* Dark Theme Palette */
-  --bg-main: #0F1115;
-  /* Deep Dark Background */
-  --bg-card: #181B21;
-  /* Dark Surface */
-  --bg-card-hover: #1E2229;
+  /* Light Theme Palette */
+  --bg-main: #FCFAFE;
+  /* Very subtle tinted purple/white background */
+  --bg-card: rgba(255, 255, 255, 0.55);
+  /* Transparent white for more pronounced glass effect */
+  --bg-card-hover: rgba(248, 244, 251, 0.65);
+  /* Soft purple hover with transparency */
+  /* Soft purple hover */
 
   /* Text Colors */
-  --text-primary: #F3F4F6;
-  /* High contrast white-ish */
-  --text-secondary: #9CA3AF;
-  /* Muted grey */
-  --text-light: #6B7280;
-  /* Darker grey */
-  --text-dark: #FFFFFF;
+  --text-primary: #2D2536;
+  /* Dark purple-grey */
+  --text-secondary: #5A4E66;
+  /* Medium purple-grey */
+  --text-light: #9CA3AF;
+  /* Light grey */
+  --text-dark: #120A1A;
 
   /* Accents */
-  --primary-accent: #FFFFFF;
-  --active-nav-bg: rgba(157, 116, 200, 0.2);
-  --active-nav-text: #FFFFFF;
+  --primary-accent: #B51DE0;
+  --active-nav-bg: rgba(181, 29, 224, 0.1);
+  --active-nav-text: #B51DE0;
 
   /* Borders */
-  --border-color: rgba(255, 255, 255, 0.1);
-  --border-hover: rgba(157, 116, 200, 0.3);
+  --border-color: rgba(0, 0, 0, 0.1);
+  --border-hover: rgba(181, 29, 224, 0.3);
 
   /* Gradients */
-  --gradient-purple: linear-gradient(135deg, #9D74C8 0%, #F4A6B6 100%);
-  --gradient-card: linear-gradient(145deg, rgba(24, 27, 33, 0.9) 0%, rgba(24, 27, 33, 0.6) 100%);
-  --gradient-mint: linear-gradient(135deg, rgba(153, 221, 181, 0.1) 0%, rgba(153, 221, 181, 0.2) 100%);
-  --gradient-mix: linear-gradient(135deg, #9D74C8 0%, #7B5AA0 50%, #F4A6B6 100%);
+  --gradient-purple: linear-gradient(135deg, #B51DE0 0%, #F4A6B6 100%);
+  --gradient-card: linear-gradient(145deg, rgba(255, 255, 255, 0.6) 0%, rgba(249, 250, 251, 0.55) 100%);
+  --gradient-mint: linear-gradient(135deg, rgba(91, 203, 166, 0.1) 0%, rgba(91, 203, 166, 0.2) 100%);
+  --gradient-mix: linear-gradient(135deg, #B51DE0 0%, #9212BA 50%, #F4A6B6 100%);
 
-  /* Shadows - Dark Mode Glows */
-  --shadow-soft: 0 4px 20px -2px rgba(157, 116, 200, 0.15);
-  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.15);
-  --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(157, 116, 200, 0.2);
-  --shadow-glow: 0 0 20px rgba(157, 116, 200, 0.25);
-  --shadow-mint: 0 0 15px rgba(153, 221, 181, 0.2);
+  /* Shadows - Light Theme Soft Shadows */
+  --shadow-soft: 0 4px 20px -2px rgba(181, 29, 224, 0.05);
+  --shadow-card: 0 8px 16px -4px rgba(181, 29, 224, 0.08), 0 4px 8px -2px rgba(181, 29, 224, 0.04);
+  --shadow-hover: 0 12px 24px -4px rgba(181, 29, 224, 0.12), 0 6px 12px -2px rgba(181, 29, 224, 0.06);
+  --shadow-glow: 0 0 20px rgba(181, 29, 224, 0.25);
+  --shadow-mint: 0 0 15px rgba(91, 203, 166, 0.2);
 
   /* Radius */
   --radius-xl: 16px;

@@ -120,7 +120,7 @@
 .formSelect:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 4px rgba(157, 116, 200, 0.15);
+    box-shadow: 0 0 0 4px rgba(181, 29, 224, 0.15);
 }
 
 .formTextarea {
@@ -149,7 +149,7 @@
 
 .radioLabel:hover {
     border-color: var(--primary-color);
-    background: rgba(157, 116, 200, 0.05);
+    background: rgba(181, 29, 224, 0.05);
 }
 
 .radioInput {
@@ -164,7 +164,7 @@
 
 .radioLabel:has(.radioInput:checked) {
     border-color: var(--primary-color);
-    background: linear-gradient(135deg, rgba(157, 116, 200, 0.15) 0%, rgba(123, 90, 160, 0.15) 100%);
+    background: rgba(181, 29, 224, 0.15);
     color: var(--primary-color);
 }
 
@@ -211,7 +211,7 @@
 
 .btnSecondary:hover {
     border-color: var(--text-secondary);
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--bg-card-hover);
     color: var(--text-primary);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);

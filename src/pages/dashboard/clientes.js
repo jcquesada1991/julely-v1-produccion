@@ -130,10 +130,9 @@ export default function Clients() {
                                 <tr key={client.id}>
                                     <td>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                            <div className={styles.avatarCircle} style={{
-                                                background: 'var(--bg-card-hover)',
-                                                border: '1px solid var(--border-color)',
-                                                color: 'var(--text-primary)'
+                                            <div className={styles.avatarInitials} style={{
+                                                background: 'linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%)',
+                                                color: 'white'
                                             }}>
                                                 {getInitials(client.name, client.surname)}
                                             </div>
