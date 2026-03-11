@@ -1,12 +1,14 @@
 import Head from 'next/head';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useApp } from '@/context/AppContext';
+import { useAuth } from '@/context/AuthContext';
 import styles from '@/styles/DashboardV2.module.css';
 import { TrendingUp, DollarSign, MapPin, Users, Package, Clock, ArrowUpRight } from 'lucide-react';
 import { useState, useMemo } from 'react';
 
 export default function Dashboard() {
     const { stats, destinations, sales, clients } = useApp();
+    const { can } = useAuth();
 
     // Calcular estadísticas reales
     const dashboardStats = useMemo(() => {
@@ -80,22 +82,24 @@ export default function Dashboard() {
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '2rem' }}>
 
                         {/* Total Revenue Card */}
-                        <div className={`${styles.statCard} ${styles.cardRevenue}`}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', position: 'relative', zIndex: 1 }}>
-                                <div className={styles.statLabel} style={{ color: 'white', marginBottom: 0 }}>
-                                    <DollarSign size={18} /> Ingresos Totales
+                        {can('canViewFinancials') && (
+                            <div className={`${styles.statCard} ${styles.cardRevenue}`}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', position: 'relative', zIndex: 1 }}>
+                                    <div className={styles.statLabel} style={{ color: 'white', marginBottom: 0 }}>
+                                        <DollarSign size={18} /> Ingresos Totales
+                                    </div>
+                                    <button className="btn-icon" style={{ width: 32, height: 32, background: 'rgba(255,255,255,0.2)', color: 'white', border: 'none' }}>
+                                        <ArrowUpRight size={16} />
+                                    </button>
                                 </div>
-                                <button className="btn-icon" style={{ width: 32, height: 32, background: 'rgba(255,255,255,0.2)', color: 'white', border: 'none' }}>
-                                    <ArrowUpRight size={16} />
-                                </button>
+                                <div className={styles.statNumber} style={{ marginBottom: '0.5rem', position: 'relative', zIndex: 1 }}>
+                                    ${dashboardStats.totalRevenue.toLocaleString()}
+                                </div>
+                                <div className={styles.statSub} style={{ color: 'rgba(255, 255, 255, 0.8)', position: 'relative', zIndex: 1 }}>
+                                    De {dashboardStats.totalSales} ventas registradas
+                                </div>
                             </div>
-                            <div className={styles.statNumber} style={{ marginBottom: '0.5rem', position: 'relative', zIndex: 1 }}>
-                                ${dashboardStats.totalRevenue.toLocaleString()}
-                            </div>
-                            <div className={styles.statSub} style={{ color: 'rgba(255, 255, 255, 0.8)', position: 'relative', zIndex: 1 }}>
-                                De {dashboardStats.totalSales} ventas registradas
-                            </div>
-                        </div>
+                        )}
 
                         {/* Total Sales Card */}
                         <div className={styles.statCard}>

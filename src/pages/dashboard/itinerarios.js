@@ -94,7 +94,6 @@ export default function Itineraries() {
                                 <th className={styles.tableHeader}>Nombre</th>
                                 <th className={styles.tableHeader}>Descripción</th>
                                 <th className={styles.tableHeader}>Destino</th>
-                                <th className={styles.tableHeader}>Precios</th>
                                 <th className={styles.tableHeader} style={{ textAlign: 'center' }}>Acciones</th>
                             </tr>
                         </thead>
@@ -130,34 +129,6 @@ export default function Itineraries() {
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-secondary)' }}>
                                             <MapPin size={16} />
                                             {renderDestName(item)}
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                                            <span style={{
-                                                fontWeight: 800,
-                                                color: 'var(--accent-color)',
-                                                background: 'rgba(153, 221, 181, 0.15)',
-                                                padding: '0.25rem 0.6rem',
-                                                borderRadius: '6px',
-                                                fontSize: '0.75rem',
-                                                display: 'inline-flex',
-                                                alignItems: 'center',
-                                            }}>
-                                                Adulto: $ {item.price_adult ? Number(item.price_adult).toLocaleString() : '0'} USD
-                                            </span>
-                                            <span style={{
-                                                fontWeight: 800,
-                                                color: '#3B82F6',
-                                                background: 'rgba(59, 130, 246, 0.15)',
-                                                padding: '0.25rem 0.6rem',
-                                                borderRadius: '6px',
-                                                fontSize: '0.75rem',
-                                                display: 'inline-flex',
-                                                alignItems: 'center',
-                                            }}>
-                                                Menor: $ {item.price_child ? Number(item.price_child).toLocaleString() : '0'} USD
-                                            </span>
                                         </div>
                                     </td>
                                     <td>
@@ -230,10 +201,6 @@ function ItineraryForm({ initialData, destinations, onSubmit, onCancel, onDirty 
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (Number(formData.price_adult) <= 0) {
-            alert('El precio de adulto debe ser mayor a 0');
-            return;
-        }
         onSubmit(formData);
     };
 
@@ -268,7 +235,7 @@ function ItineraryForm({ initialData, destinations, onSubmit, onCancel, onDirty 
                 placeholder="Seleccione un destino"
             />
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 <div>
                     <label style={labelStyle}>Nombre</label>
                     <input
@@ -277,29 +244,6 @@ function ItineraryForm({ initialData, destinations, onSubmit, onCancel, onDirty 
                         value={formData.name}
                         onChange={e => { setFormData({ ...formData, name: e.target.value }); if (onDirty) onDirty(true); }}
                         placeholder="Ej: Museo del Louvre"
-                    />
-                </div>
-                <div>
-                    <label style={labelStyle}>P. Adulto ($)</label>
-                    <input
-                        type="number"
-                        required
-                        style={inputStyle}
-                        value={formData.price_adult || ''}
-                        onChange={e => { setFormData({ ...formData, price_adult: e.target.value }); if (onDirty) onDirty(true); }}
-                        placeholder="0.00"
-                        min="0.01" step="0.01"
-                    />
-                </div>
-                <div>
-                    <label style={labelStyle}>P. Menor ($)</label>
-                    <input
-                        type="number"
-                        style={inputStyle}
-                        value={formData.price_child || ''}
-                        onChange={e => { setFormData({ ...formData, price_child: e.target.value }); if (onDirty) onDirty(true); }}
-                        placeholder="0.00"
-                        min="0" step="0.01"
                     />
                 </div>
             </div>

@@ -57,6 +57,7 @@ export default function DashboardLayout({ children, title }) {
         { icon: Map, label: 'Excursiones', path: '/dashboard/itinerarios', show: true },
         { icon: Calendar, label: 'Ventas', path: '/dashboard/ventas', show: true },
         { icon: Users, label: 'Usuarios', path: '/dashboard/usuarios', show: can('canManageUsers') },
+        { icon: Shield, label: 'Configuración', path: '/dashboard/configuracion', show: can('canManageUsers') },
     ];
 
     // Role badge color

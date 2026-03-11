@@ -65,45 +65,48 @@ CREATE POLICY "clients: solo admin borra"
 -- ─────────────────────────────────────────────────────────
 -- CLIENT_IDENTITY (datos sensibles: pasaporte, nacimiento)
 -- ─────────────────────────────────────────────────────────
-CREATE POLICY "client_identity: solo admin y contabilidad"
+CREATE POLICY "client_identity: todos acceden a sus clientes"
   ON client_identity FOR ALL
-  USING (get_user_role() IN ('admin', 'contabilidad'));
+  USING (
+    get_user_role() IN ('admin', 'contabilidad', 'operaciones', 'supervisor')
+    OR client_id IN (SELECT id FROM clients WHERE created_by = auth.uid())
+  );
 
 -- ─────────────────────────────────────────────────────────
 -- DESTINATIONS
 -- ─────────────────────────────────────────────────────────
 CREATE POLICY "destinations: todos ven activos"
   ON destinations FOR SELECT
-  USING (is_active = TRUE OR get_user_role() IN ('admin', 'operaciones'));
+  USING (is_active = TRUE OR get_user_role() IN ('admin', 'operaciones', 'asesor'));
 
 CREATE POLICY "destinations: admin y operaciones gestionan"
   ON destinations FOR ALL
-  USING (get_user_role() IN ('admin', 'operaciones'));
+  USING (get_user_role() IN ('admin', 'operaciones', 'asesor'));
 
 CREATE POLICY "destination_itinerary: todos ven"
   ON destination_itinerary FOR SELECT USING (TRUE);
 
 CREATE POLICY "destination_itinerary: admin/op gestionan"
   ON destination_itinerary FOR ALL
-  USING (get_user_role() IN ('admin', 'operaciones'));
+  USING (get_user_role() IN ('admin', 'operaciones', 'asesor'));
 
 CREATE POLICY "destination_options: todos ven"
   ON destination_options FOR SELECT USING (TRUE);
 
 CREATE POLICY "destination_options: admin/op gestionan"
   ON destination_options FOR ALL
-  USING (get_user_role() IN ('admin', 'operaciones'));
+  USING (get_user_role() IN ('admin', 'operaciones', 'asesor'));
 
 -- ─────────────────────────────────────────────────────────
 -- ACTIVITIES
 -- ─────────────────────────────────────────────────────────
 CREATE POLICY "activities: todos ven activas"
   ON activities FOR SELECT
-  USING (is_active = TRUE OR get_user_role() IN ('admin', 'operaciones'));
+  USING (is_active = TRUE OR get_user_role() IN ('admin', 'operaciones', 'asesor'));
 
 CREATE POLICY "activities: admin/op gestionan"
   ON activities FOR ALL
-  USING (get_user_role() IN ('admin', 'operaciones'));
+  USING (get_user_role() IN ('admin', 'operaciones', 'asesor'));
 
 -- ─────────────────────────────────────────────────────────
 -- BOOKINGS

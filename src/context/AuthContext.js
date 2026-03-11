@@ -116,8 +116,13 @@ export function AuthProvider({ children }) {
 
         // Listener de cambios (login, logout, token refresh)
         const { data: { subscription } } = supabase.auth.onAuthStateChange(
-            async (_event, session) => {
-                await loadProfile(session?.user ?? null);
+            async (event, session) => {
+                if (event === 'SIGNED_OUT' || !session) {
+                    setCurrentUser(null);
+                    router.push('/login');
+                } else {
+                    await loadProfile(session?.user ?? null);
+                }
                 setIsLoading(false);
             }
         );
@@ -138,6 +143,30 @@ export function AuthProvider({ children }) {
         setCurrentUser(null);
         router.push('/login');
     };
+
+    // Auto-logout after 30 minutos de inactividad
+    useEffect(() => {
+        if (!currentUser) return;
+
+        let timeoutId;
+        const resetTimer = () => {
+            if (timeoutId) clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => {
+                // Notificar de alguna manera si quisieras, aquí cerramos sesión directamente
+                logout();
+            }, 30 * 60 * 1000); // 30 minutos
+        };
+
+        const events = ['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart'];
+        
+        events.forEach(e => window.addEventListener(e, resetTimer));
+        resetTimer();
+
+        return () => {
+            events.forEach(e => window.removeEventListener(e, resetTimer));
+            if (timeoutId) clearTimeout(timeoutId);
+        };
+    }, [currentUser]);
 
     // Permission helpers — mantiene la misma API que antes
     const getPermissions = () => {

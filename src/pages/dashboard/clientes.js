@@ -121,7 +121,6 @@ export default function Clients() {
                                 <th className={styles.tableHeader}>Cliente</th>
                                 <th className={styles.tableHeader}>Contacto</th>
                                 <th className={styles.tableHeader}>Nacionalidad</th>
-                                <th className={styles.tableHeader}>Pasaporte</th>
                                 <th className={styles.tableHeader} style={{ textAlign: 'center' }}>Acciones</th>
                             </tr>
                         </thead>
@@ -168,23 +167,6 @@ export default function Clients() {
                                                 <Globe size={14} />
                                                 {client.nationality}
                                             </div>
-                                        ) : (
-                                            <span style={{ color: 'var(--text-light)', fontSize: '0.8rem' }}>—</span>
-                                        )}
-                                    </td>
-                                    <td>
-                                        {client.passport ? (
-                                            <span style={{
-                                                fontFamily: 'monospace',
-                                                fontSize: '0.85rem',
-                                                color: 'var(--text-primary)',
-                                                background: 'var(--bg-card-hover)',
-                                                padding: '0.2rem 0.5rem',
-                                                borderRadius: '4px',
-                                                border: '1px solid var(--border-color)'
-                                            }}>
-                                                {client.passport}
-                                            </span>
                                         ) : (
                                             <span style={{ color: 'var(--text-light)', fontSize: '0.8rem' }}>—</span>
                                         )}
@@ -244,7 +226,7 @@ export default function Clients() {
                     onDirty={setIsDirty}
                 />
             </Modal>
-        </DashboardLayout>
+        </DashboardLayout >
     );
 }
 
@@ -254,10 +236,8 @@ function ClientForm({ initialData, onSubmit, onCancel, onDirty }) {
         surname: '',
         phone: '', // Stored combined
         email: '',
-        passport: '',
-        birthdate: '',
+        registration_date: initialData?.registration_date || new Date().toISOString().split('T')[0],
         nationality: '',
-        address: '',
         notes: ''
     });
 
@@ -321,6 +301,8 @@ function ClientForm({ initialData, onSubmit, onCancel, onDirty }) {
                         value={formData.name}
                         onChange={e => handleChange('name', e.target.value)}
                         placeholder="Nombre"
+                        name="given-name"
+                        autoComplete="given-name"
                     />
                 </div>
 
@@ -332,6 +314,8 @@ function ClientForm({ initialData, onSubmit, onCancel, onDirty }) {
                         value={formData.surname}
                         onChange={e => handleChange('surname', e.target.value)}
                         placeholder="Apellidos"
+                        name="family-name"
+                        autoComplete="family-name"
                     />
                 </div>
 
@@ -353,10 +337,13 @@ function ClientForm({ initialData, onSubmit, onCancel, onDirty }) {
                         </select>
                         <input
                             required
+                            type="tel"
                             style={{ ...inputStyle, flex: 1 }}
                             value={phoneNumber}
                             onChange={e => setPhoneNumber(e.target.value)}
                             placeholder="000 000 0000"
+                            name="phone"
+                            autoComplete="tel"
                         />
                     </div>
                 </div>
@@ -370,26 +357,18 @@ function ClientForm({ initialData, onSubmit, onCancel, onDirty }) {
                         value={formData.email}
                         onChange={e => handleChange('email', e.target.value)}
                         placeholder="correo@ejemplo.com"
+                        name="email"
+                        autoComplete="email"
                     />
                 </div>
 
                 <div style={groupStyle}>
-                    <label style={labelStyle}>Nro. de Pasaporte</label>
-                    <input
-                        style={inputStyle}
-                        value={formData.passport}
-                        onChange={e => handleChange('passport', e.target.value)}
-                        placeholder="PA1234567"
-                    />
-                </div>
-
-                <div style={groupStyle}>
-                    <label style={labelStyle}>Fecha de Nacimiento</label>
+                    <label style={labelStyle}>Fecha de Registro</label>
                     <input
                         type="date"
                         style={inputStyle}
-                        value={formData.birthdate}
-                        onChange={e => handleChange('birthdate', e.target.value)}
+                        value={formData.registration_date}
+                        onChange={e => handleChange('registration_date', e.target.value)}
                     />
                 </div>
 
@@ -406,15 +385,6 @@ function ClientForm({ initialData, onSubmit, onCancel, onDirty }) {
             </div>
 
             {/* Full width fields */}
-            <div style={groupStyle}>
-                <label style={labelStyle}>Dirección</label>
-                <input
-                    style={inputStyle}
-                    value={formData.address}
-                    onChange={e => handleChange('address', e.target.value)}
-                    placeholder="Dirección completa"
-                />
-            </div>
 
             <div style={groupStyle}>
                 <label style={labelStyle}>Notas Especiales / Requerimientos</label>

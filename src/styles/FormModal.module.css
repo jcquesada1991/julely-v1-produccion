@@ -229,10 +229,28 @@
 }
 
 @media (max-width: 768px) {
+    .modalContent {
+        width: 95%;
+        max-height: 95vh;
+    }
+    .modalHeader {
+        padding: 1.5rem;
+    }
+    .modalBody {
+        padding: 1.5rem;
+        max-height: calc(95vh - 160px);
+    }
+    .modalFooter {
+        padding: 1rem 1.5rem;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    .btnPrimary, .btnSecondary {
+        width: 100%;
+    }
     .formGrid {
         grid-template-columns: 1fr;
     }
-
     .radioGroup {
         flex-direction: column;
     }

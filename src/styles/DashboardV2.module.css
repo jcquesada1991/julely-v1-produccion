@@ -10,6 +10,7 @@
     background-position: center;
     background-attachment: fixed;
     position: relative;
+    z-index: 0;
 }
 
 .dashboardContainer::before {
@@ -19,13 +20,11 @@
     background: rgba(252, 250, 254, 0.4);
     /* Lighter overlay */
     backdrop-filter: blur(2px);
-    z-index: 0;
+    z-index: -1;
 }
 
 .mainContent {
     flex: 1;
-    position: relative;
-    z-index: 1;
     display: flex;
     flex-direction: column;
     padding: 1rem 3rem 3rem 3rem;
@@ -818,10 +817,8 @@
 
     .navLinks.showMenu {
         max-height: 500px;
-        /* Adjust based on content */
         opacity: 1;
         padding: 0 1.5rem 1.5rem 1.5rem;
-        border-bottom: 1px solid var(--border-color);
     }
 
     .navItem {
@@ -831,9 +828,6 @@
         font-size: 1rem;
     }
 
-    /* Hide scrollbar removal code as we changed strategy */
-    /* .navLinks::-webkit-scrollbar { display: none; } */
-
     .actions {
         display: none;
         width: 100%;
@@ -841,44 +835,15 @@
         padding: 1rem 1.5rem;
         border-top: 1px solid var(--border-color);
         background: var(--bg-main);
-    }
-
-    /* We need to toggle actions visibility too or move it. 
-       Let's use the 'showMenu' class on a parent wrapper if we wanted both.
-       But .actions is outside .navLinks.
-       
-       Let's simplistic approach: 
-       Hide .actions normally, Show when menu is open?
-       But we can't easily target sibling .actions from .navLinks.showMenu CSS only usually (unless using generic sibling selector)
-       
-       Better: Since we didn't wrap them in a container in JS, 
-       we can use generic sibling selector if they are siblings.
-       .navLinks.showMenu ~ .actions
-    */
-
-    .actions {
-        display: none;
-    }
-
-    .navLinks.showMenu~.actions {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        padding-bottom: 1.5rem;
         margin-top: 0;
-        border-top: none;
+    }
+
+    .navLinks.showMenu ~ .actions {
+        display: flex;
     }
 
     .brandLogo {
         font-size: 1.25rem;
-    }
-
-    .actions {
-        width: 100%;
-        justify-content: space-between;
-        border-top: 1px solid var(--border-color);
-        padding-top: 1rem;
-        margin-top: 0.5rem;
     }
 
     .pageTitle {
@@ -887,12 +852,10 @@
 
     /* Dashboard Specific Mobile Fixes */
     .mainSection>div:first-child {
-        /* The revenue/sales grid */
         grid-template-columns: 1fr !important;
         gap: 1rem !important;
     }
 
-    /* Stack Itinerary Builder on Mobile */
     .itineraryBuilderGrid {
         grid-template-columns: 1fr !important;
     }

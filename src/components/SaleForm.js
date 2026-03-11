@@ -1,24 +1,28 @@
 import { useState, useEffect } from 'react';
 import { useApp } from '@/context/AppContext';
+import { useAuth } from '@/context/AuthContext';
 import SearchableSelect from './SearchableSelect';
 import { Plus, X, ArrowUp, ArrowDown, MapPin, Calendar, CheckCircle, Building } from 'lucide-react';
 import styles from '@/styles/DashboardV2.module.css';
 
 export default function SaleForm({ onSubmit, onCancel }) {
-    const { destinations, clients, itineraries, sales } = useApp();
+    const { destinations, clients, users, itineraries, sales } = useApp();
+    const { currentUser: profile } = useAuth();
     const [formData, setFormData] = useState({
         client_name: '',
         client_id: '',
         destination_id: '',
+        seller_id: '',
         status: 'Confirmada',
-        num_adults: 1,
-        num_children: 0,
+        travelers: 1,
         show_price_on_voucher: true,
         travel_date: '',
         hotel_name: '',
         hotel_address: '',
         hotel_phone: '',
+        description: 'Personalizado',
         occupancy: '',
+        additional_notes: '',
         confirmation_id: '',
         customItinerary: []
     });
@@ -37,6 +41,13 @@ export default function SaleForm({ onSubmit, onCancel }) {
             setSelectedPOIs([]);
         }
     }, [formData.destination_id, itineraries]);
+
+    // Auto-assign seller ID based on the logged-in user
+    useEffect(() => {
+        if (profile?.id && !formData.seller_id) {
+            setFormData(prev => ({ ...prev, seller_id: profile.id }));
+        }
+    }, [profile]);
 
     // Auto-generate consecutive confirmation number based on existing sales
     useEffect(() => {
@@ -100,25 +111,27 @@ export default function SaleForm({ onSubmit, onCancel }) {
 
         // Calculate Total
         const totalAmount = selectedPOIs.reduce((acc, curr) => {
-            const adultTotal = (Number(curr.price_adult) || 0) * Number(formData.num_adults || 0);
-            const childTotal = (Number(curr.price_child) || 0) * Number(formData.num_children || 0);
-            return acc + adultTotal + childTotal;
+            const adultTotal = (Number(curr.price_adult) || 0) * Number(formData.travelers || 0);
+            return acc + adultTotal;
         }, 0);
 
         const submission = {
             ...formData,
             client_name: finalClientName,
             total_amount: totalAmount,
-            num_adults: Number(formData.num_adults),
-            num_children: Number(formData.num_children),
+            num_adults: Number(formData.travelers),
+            num_children: 0,
             show_price_on_voucher: formData.show_price_on_voucher,
             travel_date: formData.travel_date || null,
+            assigned_to: formData.seller_id || null, // Vendedor
             hotel_info: {
                 hotel_name: formData.hotel_name || '',
                 hotel_address: formData.hotel_address || '',
                 hotel_phone: formData.hotel_phone || '',
-                occupancy: formData.occupancy || '',
+                description: formData.description || '', // Grupal, personalizado, etc.
+                occupancy: formData.occupancy || '', // Doble, triple, etc.
                 confirmation_id: formData.confirmation_id || '',
+                additional_notes: formData.additional_notes || '', // Notas adicionales
                 show_price_on_voucher: formData.show_price_on_voucher
             },
             custom_itinerary: selectedPOIs.map((p, index) => ({
@@ -197,63 +210,79 @@ export default function SaleForm({ onSubmit, onCancel }) {
                     required
                 />
 
-                <label style={labelStyle}>Estado de la Venta</label>
-                <div style={{ position: 'relative' }}>
-                    <select
-                        name="status"
-                        value={formData.status}
-                        onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                        style={selectStyle}
-                        onFocus={(e) => e.target.style.borderColor = 'var(--primary-color)'}
-                        onBlur={(e) => e.target.style.borderColor = 'var(--border-color)'}
-                    >
-                        <option value="Confirmada">Confirmada</option>
-                        <option value="Pendiente">Pendiente</option>
-                    </select>
+                <div>
+                    <label style={{ ...labelStyle, marginTop: '1rem' }}>Vendedor *</label>
+                    <div style={{ ...selectStyle, backgroundImage: 'none', background: 'var(--bg-card)', borderColor: 'var(--border-color)', display: 'flex', alignItems: 'center', minHeight: '44px', opacity: 0.8, cursor: 'not-allowed' }}>
+                        {profile ? [profile.name, profile.surname].filter(Boolean).join(' ') : 'Cargando vendedor...'}
+                    </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                    <div>
+                        <label style={labelStyle}>Estado de la Venta</label>
+                        <select
+                            name="status"
+                            value={formData.status}
+                            onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                            style={selectStyle}
+                            onFocus={(e) => e.target.style.borderColor = 'var(--primary-color)'}
+                            onBlur={(e) => e.target.style.borderColor = 'var(--border-color)'}
+                        >
+                            <option value="Confirmada">Confirmada</option>
+                            <option value="Pendiente">Pendiente</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style={labelStyle}>Descripción</label>
+                        <select
+                            name="description"
+                            value={formData.description}
+                            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                            style={selectStyle}
+                            onFocus={(e) => e.target.style.borderColor = 'var(--primary-color)'}
+                            onBlur={(e) => e.target.style.borderColor = 'var(--border-color)'}
+                        >
+                            <option value="Grupal">Grupal</option>
+                            <option value="Personalizado">Personalizado</option>
+                            <option value="Privado">Privado</option>
+                            <option value="Crucero">Crucero</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                    </div>
                 </div>
 
                 {/* PAX & Pricing Options */}
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: '1rem' }}>
                     <div>
-                        <label style={{ ...labelStyle, marginTop: 0 }}>Adultos</label>
+                        <label style={{ ...labelStyle, marginTop: 0 }}>Viajeros</label>
                         <input
                             type="number"
                             min="1"
-                            value={formData.num_adults}
-                            onChange={(e) => setFormData({ ...formData, num_adults: e.target.value })}
+                            value={formData.travelers}
+                            onChange={(e) => setFormData({ ...formData, travelers: e.target.value })}
                             style={selectStyle}
                         />
                     </div>
-                    <div>
-                        <label style={{ ...labelStyle, marginTop: 0 }}>Menores</label>
-                        <input
-                            type="number"
-                            min="0"
-                            value={formData.num_children}
-                            onChange={(e) => setFormData({ ...formData, num_children: e.target.value })}
-                            style={selectStyle}
-                        />
+                    <div style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: '0.1rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <input
+                                type="checkbox"
+                                id="showPriceToggle"
+                                checked={formData.show_price_on_voucher}
+                                onChange={(e) => setFormData({ ...formData, show_price_on_voucher: e.target.checked })}
+                                style={{ width: '18px', height: '18px', cursor: 'pointer', accentColor: 'var(--primary-color)' }}
+                            />
+                            <label htmlFor="showPriceToggle" style={{ fontSize: '0.9rem', color: 'var(--text-primary)', cursor: 'pointer', userSelect: 'none' }}>
+                                Mostrar Precio en el Voucher (PDF)
+                            </label>
+                        </div>
                     </div>
-                </div>
-
-                <div style={{ marginTop: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <input
-                        type="checkbox"
-                        id="showPriceToggle"
-                        checked={formData.show_price_on_voucher}
-                        onChange={(e) => setFormData({ ...formData, show_price_on_voucher: e.target.checked })}
-                        style={{ width: '18px', height: '18px', cursor: 'pointer', accentColor: 'var(--primary-color)' }}
-                    />
-                    <label htmlFor="showPriceToggle" style={{ fontSize: '0.9rem', color: 'var(--text-primary)', cursor: 'pointer', userSelect: 'none' }}>
-                        Mostrar Precio en el Voucher (PDF)
-                    </label>
                 </div>
             </div>
 
-            {/* Section 1.5: Optional Data */}
             <div style={{ background: 'var(--bg-card)', padding: '1.5rem', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
                 <h3 style={{ margin: '0 0 1rem 0', fontSize: '1rem', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <Building size={18} color="var(--primary-color)" /> Datos Adicionales (Opcional - Para Voucher)
+                    <Building size={18} color="var(--primary-color)" /> Datos Adicionales
                 </h3>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
@@ -304,13 +333,17 @@ export default function SaleForm({ onSubmit, onCancel }) {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: '1rem' }}>
                     <div>
                         <label style={{ ...labelStyle, marginTop: 0 }}>Ocupación</label>
-                        <input
-                            type="text"
-                            placeholder="Doble, Sencilla, etc."
+                        <select
                             value={formData.occupancy || ''}
                             onChange={(e) => setFormData({ ...formData, occupancy: e.target.value })}
-                            style={{ ...selectStyle, backgroundImage: 'none', paddingRight: '0.75rem' }}
-                        />
+                            style={selectStyle}
+                        >
+                            <option value="">Seleccionar...</option>
+                            <option value="Sencillo">Sencillo</option>
+                            <option value="Doble">Doble</option>
+                            <option value="Triple">Triple</option>
+                            <option value="Cuádruple">Cuádruple</option>
+                        </select>
                     </div>
                     <div>
                         <label style={{ ...labelStyle, marginTop: 0 }}>Número de Confirmación</label>
@@ -322,6 +355,16 @@ export default function SaleForm({ onSubmit, onCancel }) {
                             style={{ ...selectStyle, backgroundImage: 'none', paddingRight: '0.75rem', background: 'var(--bg-card-hover)', cursor: 'not-allowed', color: 'var(--text-secondary)' }}
                         />
                     </div>
+                </div>
+
+                <div style={{ marginTop: '1rem' }}>
+                    <label style={{ ...labelStyle, marginTop: 0 }}>Notas Adicionales</label>
+                    <textarea
+                        placeholder="Requerimientos, alergias, o detalles extra..."
+                        value={formData.additional_notes || ''}
+                        onChange={(e) => setFormData({ ...formData, additional_notes: e.target.value })}
+                        style={{ ...selectStyle, backgroundImage: 'none', minHeight: '80px', resize: 'vertical' }}
+                    />
                 </div>
             </div>
 

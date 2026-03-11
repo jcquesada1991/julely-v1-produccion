@@ -91,7 +91,7 @@ export default function SearchableSelect({
                     right: 0,
                     zIndex: 50,
                     marginTop: '0.25rem',
-                    backgroundColor: 'var(--bg-card)',
+                    backgroundColor: 'var(--bg-main)',
                     border: '1px solid var(--border-color)',
                     borderRadius: '8px',
                     boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.3)',
@@ -114,7 +114,7 @@ export default function SearchableSelect({
                                 type="text"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                placeholder="Filtrar por nombre..."
+                                placeholder="Buscar..."
                                 style={{
                                     border: 'none',
                                     background: 'transparent',
@@ -148,8 +148,8 @@ export default function SearchableSelect({
                                 </div>
                             ))
                         ) : (
-                            <div style={{ padding: '1rem', textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
-                                No se encontraron resultados
+                            <div style={{ padding: '0.75rem', color: 'var(--text-secondary)', textAlign: 'center' }}>
+                                No se encontraron opciones
                             </div>
                         )}
                     </div>

@@ -148,14 +148,19 @@ export default function ImageUploader({
                 const ext = isWebP ? 'webp' : (file.name.split('.').pop() || 'jpg');
                 const fileName = `${folder}/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
 
-                // 3. Subir a Supabase Storage
-                const { error: uploadError } = await supabase.storage
+                // 3. Subir a Supabase Storage con timeout de 30s
+                const uploadPromise = supabase.storage
                     .from(bucket)
                     .upload(fileName, uploadBlob, {
                         cacheControl: '3600',
                         upsert: false,
                         contentType: uploadBlob.type,
                     });
+
+                const { error: uploadError } = await Promise.race([
+                    uploadPromise,
+                    new Promise((_, reject) => setTimeout(() => reject(new Error('La subida de imagen tardó demasiado (30s). Inténtalo de nuevo.')), 30000))
+                ]);
 
                 if (uploadError) throw uploadError;
 

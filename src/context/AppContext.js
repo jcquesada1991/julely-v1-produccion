@@ -13,6 +13,7 @@ export function AppProvider({ children }) {
     const [users, setUsers] = useState([]);
     const [clients, setClients] = useState([]);
     const [itineraries, setItineraries] = useState([]);
+    const [systemSettings, setSystemSettings] = useState({});
     const [isLoading, setIsLoading] = useState(true);
 
     // Ref para las imágenes de destinos (para que el realtime las use)
@@ -49,9 +50,16 @@ export function AppProvider({ children }) {
         images: destImagesRef.current[d.id] || [],
     }), []);
 
+    const ensureSession = async () => {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+            await supabase.auth.refreshSession();
+        }
+    };
+
     // ─── LOAD ALL DATA (on mount) ─────────────────────────────────────
-    const loadAll = useCallback(async () => {
-        setIsLoading(true);
+    const loadAll = useCallback(async (silent = false) => {
+        if (!silent) setIsLoading(true);
         try {
             const [
                 { data: destData, error: destErr },
@@ -60,14 +68,16 @@ export function AppProvider({ children }) {
                 { data: clientsData, error: clientsErr },
                 { data: activData, error: activErr },
                 { data: destImgData, error: destImgErr },
+                { data: settingsData, error: settingsErr },
             ] = await Promise.all([
                 supabase.from('destinations').select('*').order('created_at', { ascending: false }),
                 supabase.from('bookings').select('*').order('created_at', { ascending: false }),
                 supabase.from('profiles').select('*').order('created_at', { ascending: false }),
-                // JOIN con client_identity para traer pasaporte, birthdate y nationality
-                supabase.from('clients').select('*, client_identity(passport_number, birthdate, nationality)').order('created_at', { ascending: false }),
+                // JOIN con client_identity para traer nationality
+                supabase.from('clients').select('*, client_identity(nationality)').order('created_at', { ascending: false }),
                 supabase.from('activities').select('*').order('created_at', { ascending: false }),
                 supabase.from('destination_images').select('*').order('display_order', { ascending: true }),
+                supabase.from('settings').select('*'),
             ]);
 
             if (destErr) console.error('Error cargando destinos:', destErr);
@@ -76,6 +86,7 @@ export function AppProvider({ children }) {
             if (clientsErr) console.error('Error cargando clientes:', clientsErr);
             if (activErr) console.error('Error cargando actividades:', activErr);
             if (destImgErr) console.error('Error cargando imágenes de destinos:', destImgErr);
+            if (settingsErr) console.error('Error cargando settings:', settingsErr);
 
             // Agrupar imágenes por destination_id
             const imagesByDest = {};
@@ -105,9 +116,8 @@ export function AppProvider({ children }) {
                 const identity = Array.isArray(c.client_identity) ? c.client_identity[0] : c.client_identity;
                 return {
                     ...c,
-                    passport: identity?.passport_number || c.passport || '',
-                    birthdate: identity?.birthdate || c.birthdate || '',
                     nationality: identity?.nationality || c.nationality || '',
+                    registration_date: c.booking_date || '', // Map booking_date to registration_date in UI
                 };
             }));
 
@@ -116,10 +126,16 @@ export function AppProvider({ children }) {
                 ...a,
                 image: a.image_url,
             })));
+
+            const settingsMap = {};
+            (settingsData || []).forEach(s => {
+                settingsMap[s.key] = s.value;
+            });
+            setSystemSettings(settingsMap);
         } catch (err) {
             console.error('Error loading data:', err);
         } finally {
-            setIsLoading(false);
+            if (!silent) setIsLoading(false);
         }
     }, [normalizeBooking, normalizeProfile]);
 
@@ -134,15 +150,15 @@ export function AppProvider({ children }) {
             .channel('realtime-bookings')
             .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'bookings' }, (payload) => {
                 setSales(prev => {
-                    if (prev.find(s => s.id === payload.new.id)) return prev;
+                    if (prev.find(s => String(s.id) === String(payload.new.id))) return prev;
                     return [normalizeBooking(payload.new), ...prev];
                 });
             })
             .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'bookings' }, (payload) => {
-                setSales(prev => prev.map(s => s.id === payload.new.id ? normalizeBooking(payload.new) : s));
+                setSales(prev => prev.map(s => String(s.id) === String(payload.new.id) ? normalizeBooking(payload.new) : s));
             })
             .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'bookings' }, (payload) => {
-                setSales(prev => prev.filter(s => s.id !== payload.old.id));
+                setSales(prev => prev.filter(s => String(s.id) !== String(payload.old.id)));
             })
             .subscribe();
 
@@ -151,17 +167,17 @@ export function AppProvider({ children }) {
             .channel('realtime-destinations')
             .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'destinations' }, (payload) => {
                 setDestinations(prev => {
-                    if (prev.find(d => d.id === payload.new.id)) return prev;
+                    if (prev.find(d => String(d.id) === String(payload.new.id))) return prev;
                     return [normalizeDestination(payload.new), ...prev];
                 });
             })
             .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'destinations' }, (payload) => {
-                setDestinations(prev => prev.map(d => d.id === payload.new.id
+                setDestinations(prev => prev.map(d => String(d.id) === String(payload.new.id)
                     ? { ...normalizeDestination(payload.new), images: d.images || [] }
                     : d));
             })
             .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'destinations' }, (payload) => {
-                setDestinations(prev => prev.filter(d => d.id !== payload.old.id));
+                setDestinations(prev => prev.filter(d => String(d.id) !== String(payload.old.id)));
             })
             .subscribe();
 
@@ -170,17 +186,17 @@ export function AppProvider({ children }) {
             .channel('realtime-clients')
             .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'clients' }, (payload) => {
                 setClients(prev => {
-                    if (prev.find(c => c.id === payload.new.id)) return prev;
-                    return [{ ...payload.new, passport: '', birthdate: '', nationality: '' }, ...prev];
+                    if (prev.find(c => String(c.id) === String(payload.new.id))) return prev;
+                    return [{ ...payload.new, nationality: '', registration_date: payload.new.booking_date || '' }, ...prev];
                 });
             })
             .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'clients' }, (payload) => {
-                setClients(prev => prev.map(c => c.id === payload.new.id
-                    ? { ...payload.new, passport: c.passport || '', birthdate: c.birthdate || '', nationality: c.nationality || '' }
+                setClients(prev => prev.map(c => String(c.id) === String(payload.new.id)
+                    ? { ...c, ...payload.new, nationality: c.nationality || '', registration_date: payload.new.booking_date || '' }
                     : c));
             })
             .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'clients' }, (payload) => {
-                setClients(prev => prev.filter(c => c.id !== payload.old.id));
+                setClients(prev => prev.filter(c => String(c.id) !== String(payload.old.id)));
             })
             .subscribe();
 
@@ -189,17 +205,17 @@ export function AppProvider({ children }) {
             .channel('realtime-activities')
             .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'activities' }, (payload) => {
                 setItineraries(prev => {
-                    if (prev.find(i => i.id === payload.new.id)) return prev;
+                    if (prev.find(i => String(i.id) === String(payload.new.id))) return prev;
                     return [{ ...payload.new, image: payload.new.image_url }, ...prev];
                 });
             })
             .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'activities' }, (payload) => {
-                setItineraries(prev => prev.map(i => i.id === payload.new.id
+                setItineraries(prev => prev.map(i => String(i.id) === String(payload.new.id)
                     ? { ...payload.new, image: payload.new.image_url }
                     : i));
             })
             .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'activities' }, (payload) => {
-                setItineraries(prev => prev.filter(i => i.id !== payload.old.id));
+                setItineraries(prev => prev.filter(i => String(i.id) !== String(payload.old.id)));
             })
             .subscribe();
 
@@ -208,15 +224,15 @@ export function AppProvider({ children }) {
             .channel('realtime-profiles')
             .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'profiles' }, (payload) => {
                 setUsers(prev => {
-                    if (prev.find(u => u.id === payload.new.id)) return prev;
+                    if (prev.find(u => String(u.id) === String(payload.new.id))) return prev;
                     return [normalizeProfile(payload.new), ...prev];
                 });
             })
             .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'profiles' }, (payload) => {
-                setUsers(prev => prev.map(u => u.id === payload.new.id ? normalizeProfile(payload.new) : u));
+                setUsers(prev => prev.map(u => String(u.id) === String(payload.new.id) ? normalizeProfile(payload.new) : u));
             })
             .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'profiles' }, (payload) => {
-                setUsers(prev => prev.filter(u => u.id !== payload.old.id));
+                setUsers(prev => prev.filter(u => String(u.id) !== String(payload.old.id)));
             })
             .subscribe();
 
@@ -234,6 +250,7 @@ export function AppProvider({ children }) {
     // DESTINOS CRUD
     // ════════════════════════════════════════════════════════════════
     const addDestination = async (newDest) => {
+        await ensureSession();
         const { data, error } = await supabase
             .from('destinations')
             .insert([{
@@ -252,11 +269,19 @@ export function AppProvider({ children }) {
             .single();
 
         if (error) { showNotification('Error al crear destino', 'error'); console.error(error); return; }
-        setDestinations(prev => [{ ...data, isPremium: data.is_premium, isFavorite: false }, ...prev]);
+        setDestinations(prev => {
+            const exists = prev.find(d => String(d.id) === String(data.id));
+            if (exists) {
+                return prev.map(d => String(d.id) === String(data.id) ? { ...d, ...data, isPremium: data.is_premium, isFavorite: false } : d);
+            }
+            return [{ ...data, isPremium: data.is_premium, isFavorite: false }, ...prev];
+        });
         showNotification(`Destino "${data.title}" creado correctamente`);
+        await loadAll(true);
     };
 
     const updateDestination = async (id, updatedDest) => {
+        await ensureSession();
         const { data, error } = await supabase
             .from('destinations')
             .update({
@@ -274,13 +299,19 @@ export function AppProvider({ children }) {
             .single();
 
         if (error) { showNotification('Error al actualizar destino', 'error'); return; }
-        setDestinations(prev => prev.map(d => d.id === id
-            ? { ...data, isPremium: data.is_premium, isFavorite: false }
-            : d));
+        setDestinations(prev => {
+            const exists = prev.find(d => String(d.id) === String(id));
+            if (exists) {
+                return prev.map(d => String(d.id) === String(id) ? { ...d, ...data, isPremium: data.is_premium, isFavorite: false } : d);
+            }
+            return [{ ...data, isPremium: data.is_premium, isFavorite: false }, ...prev];
+        });
         showNotification('Destino actualizado correctamente');
+        await loadAll(true);
     };
 
     const deleteDestination = async (id) => {
+        await ensureSession();
         try {
             // 1. Eliminar excursiones (actividades) asociadas
             const { error: activError } = await supabase
@@ -318,10 +349,11 @@ export function AppProvider({ children }) {
             }
 
             // Actualizar estado local
-            setDestinations(prev => prev.filter(d => d.id !== id));
+            setDestinations(prev => prev.filter(d => String(d.id) !== String(id)));
             setItineraries(prev => prev.filter(i => String(i.destination_id) !== String(id)));
 
             showNotification('Destino y sus excursiones eliminados', 'info');
+            await loadAll(true);
         } catch (err) {
             console.error('Error en el proceso de eliminación:', err);
             showNotification('Error inesperado al eliminar el destino', 'error');
@@ -332,6 +364,7 @@ export function AppProvider({ children }) {
     // VENTAS / BOOKINGS CRUD
     // ════════════════════════════════════════════════════════════════
     const addSale = async (newSale) => {
+        await ensureSession();
         const dest = destinations.find(d => String(d.id) === String(newSale.destination_id));
         const prefix = dest ? dest.title.substring(0, 3).toUpperCase() : 'GEN';
         const timestamp = Date.now().toString().slice(-3);
@@ -371,11 +404,19 @@ export function AppProvider({ children }) {
             .single();
 
         if (error) { showNotification('Error al registrar venta', 'error'); console.error(error); return; }
-        setSales(prev => [normalizeBooking(data), ...prev]);
+        setSales(prev => {
+            const exists = prev.find(s => String(s.id) === String(data.id));
+            if (exists) {
+                return prev.map(s => String(s.id) === String(data.id) ? { ...s, ...normalizeBooking(data) } : s);
+            }
+            return [normalizeBooking(data), ...prev];
+        });
         showNotification('Venta registrada exitosamente');
+        await loadAll(true);
     };
 
     const updateSale = async (id, updatedFields) => {
+        await ensureSession();
         const { data, error } = await supabase
             .from('bookings')
             .update(updatedFields)
@@ -389,12 +430,20 @@ export function AppProvider({ children }) {
             return null;
         }
 
-        setSales(prev => prev.map(s => s.id === id ? normalizeBooking({ ...s, ...data }) : s));
+        setSales(prev => {
+            const exists = prev.find(s => String(s.id) === String(id));
+            if (exists) {
+                return prev.map(s => String(s.id) === String(id) ? normalizeBooking({ ...s, ...data }) : s);
+            }
+            return [normalizeBooking(data), ...prev];
+        });
         showNotification('Voucher guardado correctamente');
+        await loadAll(true);
         return data;
     };
 
     const deleteSale = async (id) => {
+        await ensureSession();
         const { data, error } = await supabase.from('bookings').delete().eq('id', id).select();
         if (error) {
             console.error('Error al eliminar venta:', error);
@@ -405,8 +454,9 @@ export function AppProvider({ children }) {
             showNotification('No se pudo eliminar la venta (Verifique permisos)', 'error');
             return;
         }
-        setSales(prev => prev.filter(s => s.id !== id));
+        setSales(prev => prev.filter(s => String(s.id) !== String(id)));
         showNotification('Venta eliminada', 'info');
+        await loadAll(true);
     };
 
     const getSaleDetails = (saleId) => {
@@ -469,6 +519,7 @@ export function AppProvider({ children }) {
             setUsers((profilesData || []).map(normalizeProfile));
 
             showNotification(`Usuario "${newUser.name}" creado correctamente`);
+            await loadAll(true);
         } catch (err) {
             console.error('Error creando usuario:', err);
             showNotification(`Error al crear usuario: ${err.message || 'Intenta de nuevo'}`, 'error');
@@ -533,7 +584,7 @@ export function AppProvider({ children }) {
                 .single();
 
             if (refreshed) {
-                setUsers(prev => prev.map(u => u.id === id ? normalizeProfile(refreshed) : u));
+                setUsers(prev => prev.map(u => String(u.id) === String(id) ? normalizeProfile(refreshed) : u));
             }
 
             showNotification(
@@ -541,6 +592,7 @@ export function AppProvider({ children }) {
                     ? 'Usuario y contraseña actualizados correctamente'
                     : 'Usuario actualizado correctamente'
             );
+            await loadAll(true);
         } catch (err) {
             console.error('Error actualizando usuario:', err);
             showNotification(`Error al actualizar usuario: ${err.message || 'Intenta de nuevo'}`, 'error');
@@ -548,6 +600,7 @@ export function AppProvider({ children }) {
     };
 
     const deleteUser = async (id) => {
+        await ensureSession();
         // Nota: Esto solo elimina el perfil, el usuario en auth.users requiere permisos de Admin API.
         const { data, error } = await supabase.from('profiles').delete().eq('id', id).select();
         if (error) {
@@ -564,14 +617,16 @@ export function AppProvider({ children }) {
             showNotification('No se pudo eliminar el usuario (Verifique permisos)', 'error');
             return;
         }
-        setUsers(prev => prev.filter(u => u.id !== id));
+        setUsers(prev => prev.filter(u => String(u.id) !== String(id)));
         showNotification('Usuario eliminado', 'info');
+        await loadAll(true);
     };
 
     // ════════════════════════════════════════════════════════════════
     // CLIENTES CRUD
     // ════════════════════════════════════════════════════════════════
     const addClient = async (newClient) => {
+        await ensureSession();
         const { data: { user } } = await supabase.auth.getUser();
 
         const { data, error } = await supabase
@@ -581,34 +636,42 @@ export function AppProvider({ children }) {
                 surname: newClient.surname,
                 phone: newClient.phone,
                 email: newClient.email,
-                address: newClient.address,
                 notes: newClient.notes,
-                booking_date: newClient.booking_date || null,
+                booking_date: newClient.registration_date || null,
                 created_by: user?.id || null,
             }])
             .select().single();
 
         if (error) { showNotification('Error al crear cliente', 'error'); console.error(error); return; }
 
-        if (newClient.passport || newClient.birthdate || newClient.nationality) {
-            await supabase.from('client_identity').insert([{
+        if (newClient.nationality) {
+            const { error: identityError } = await supabase.from('client_identity').insert([{
                 client_id: data.id,
-                passport_number: newClient.passport || null,
-                birthdate: newClient.birthdate || null,
                 nationality: newClient.nationality || null,
             }]);
+            if (identityError) {
+                console.error('Error insertando identidad (RLS):', identityError);
+                showNotification(`Cliente creado con alerta en identidad: ${identityError.message}`, 'error');
+            }
         }
 
-        setClients(prev => [{
-            ...data,
-            passport: newClient.passport || '',
-            nationality: newClient.nationality || '',
-            birthdate: newClient.birthdate || '',
-        }, ...prev]);
+        setClients(prev => {
+            const exists = prev.find(c => String(c.id) === String(data.id));
+            if (exists) {
+                return prev.map(c => String(c.id) === String(data.id) ? { ...c, ...data, nationality: newClient.nationality || c.nationality || '' } : c);
+            }
+            return [{
+                ...data,
+                nationality: newClient.nationality || '',
+                registration_date: newClient.registration_date || data.booking_date || '',
+            }, ...prev];
+        });
         showNotification(`Cliente "${data.name}" creado correctamente`);
+        await loadAll(true);
     };
 
     const updateClient = async (id, updatedClient) => {
+        await ensureSession();
         const { data, error } = await supabase
             .from('clients')
             .update({
@@ -616,33 +679,41 @@ export function AppProvider({ children }) {
                 surname: updatedClient.surname,
                 phone: updatedClient.phone,
                 email: updatedClient.email,
-                address: updatedClient.address,
                 notes: updatedClient.notes,
-                booking_date: updatedClient.booking_date || null,
+                booking_date: updatedClient.registration_date || null,
             })
             .eq('id', id).select().single();
 
         if (error) { showNotification('Error al actualizar cliente', 'error'); return; }
 
-        if (updatedClient.passport || updatedClient.birthdate || updatedClient.nationality) {
-            await supabase.from('client_identity').upsert([{
+        if (updatedClient.nationality) {
+            const { error: identityError } = await supabase.from('client_identity').upsert([{
                 client_id: id,
-                passport_number: updatedClient.passport || null,
-                birthdate: updatedClient.birthdate || null,
                 nationality: updatedClient.nationality || null,
             }], { onConflict: 'client_id' });
+            if (identityError) {
+                console.error('Error actualizando identidad (RLS):', identityError);
+                showNotification(`Identidad no actualizada por permisos: ${identityError.message}`, 'error');
+            }
         }
 
-        setClients(prev => prev.map(c => c.id === id ? {
-            ...data,
-            passport: updatedClient.passport || '',
-            nationality: updatedClient.nationality || '',
-            birthdate: updatedClient.birthdate || '',
-        } : c));
+        setClients(prev => {
+            const exists = prev.find(c => String(c.id) === String(data.id));
+            if (exists) {
+                return prev.map(c => String(c.id) === String(data.id) ? { ...c, ...data, nationality: updatedClient.nationality || c.nationality || '', registration_date: updatedClient.registration_date || data.booking_date || '' } : c);
+            }
+            return [{
+                ...data,
+                nationality: updatedClient.nationality || '',
+                registration_date: updatedClient.registration_date || data.booking_date || '',
+            }, ...prev];
+        });
         showNotification('Cliente actualizado correctamente');
+        await loadAll(true);
     };
 
     const deleteClient = async (id) => {
+        await ensureSession();
         const { data, error } = await supabase.from('clients').delete().eq('id', id).select();
         if (error) {
             console.error('Error al eliminar cliente:', error);
@@ -658,14 +729,16 @@ export function AppProvider({ children }) {
             showNotification('No se pudo eliminar el cliente (Verifique permisos)', 'error');
             return;
         }
-        setClients(prev => prev.filter(c => c.id !== id));
+        setClients(prev => prev.filter(c => String(c.id) !== String(id)));
         showNotification('Cliente eliminado', 'info');
+        await loadAll(true);
     };
 
     // ════════════════════════════════════════════════════════════════
     // ITINERARIOS / ACTIVIDADES CRUD
     // ════════════════════════════════════════════════════════════════
     const addItinerary = async (newItinerary) => {
+        await ensureSession();
         const dest = destinations.find(d => String(d.id) === String(newItinerary.destination_id));
         const { data, error } = await supabase
             .from('activities')
@@ -682,11 +755,19 @@ export function AppProvider({ children }) {
             .select().single();
 
         if (error) { showNotification('Error al crear excursión', 'error'); console.error(error); return; }
-        setItineraries(prev => [{ ...data, image: data.image_url }, ...prev]);
+        setItineraries(prev => {
+            const exists = prev.find(i => String(i.id) === String(data.id));
+            if (exists) {
+                return prev.map(i => String(i.id) === String(data.id) ? { ...i, ...data, image: data.image_url } : i);
+            }
+            return [{ ...data, image: data.image_url }, ...prev];
+        });
         showNotification('Excursión creada correctamente');
+        await loadAll(true);
     };
 
     const updateItinerary = async (id, updatedItinerary) => {
+        await ensureSession();
         const dest = destinations.find(d => String(d.id) === String(updatedItinerary.destination_id));
         const { data, error } = await supabase
             .from('activities')
@@ -702,11 +783,19 @@ export function AppProvider({ children }) {
             .eq('id', id).select().single();
 
         if (error) { showNotification('Error al actualizar excursión', 'error'); return; }
-        setItineraries(prev => prev.map(i => i.id === id ? { ...data, image: data.image_url } : i));
+        setItineraries(prev => {
+            const exists = prev.find(i => String(i.id) === String(id));
+            if (exists) {
+                return prev.map(i => String(i.id) === String(id) ? { ...i, ...data, image: data.image_url } : i);
+            }
+            return [{ ...data, image: data.image_url }, ...prev];
+        });
         showNotification('Excursión actualizada correctamente');
+        await loadAll(true);
     };
 
     const deleteItinerary = async (id) => {
+        await ensureSession();
         const { data, error } = await supabase.from('activities').delete().eq('id', id).select();
         if (error) {
             console.error('Error al eliminar excursión:', error);
@@ -717,14 +806,16 @@ export function AppProvider({ children }) {
             showNotification('No se pudo eliminar la excursión (Verifique permisos)', 'error');
             return;
         }
-        setItineraries(prev => prev.filter(i => i.id !== id));
+        setItineraries(prev => prev.filter(i => String(i.id) !== String(id)));
         showNotification('Excursión eliminada', 'info');
+        await loadAll(true);
     };
 
     // ════════════════════════════════════════════════════════════════
     // IMÁGENES DE DESTINOS
     // ════════════════════════════════════════════════════════════════
     const addDestinationImages = async (destinationId, urls) => {
+        await ensureSession();
         // urls: array de strings URL
         if (!urls || urls.length === 0) return [];
         const rows = urls.map((url, idx) => ({
@@ -747,6 +838,7 @@ export function AppProvider({ children }) {
     };
 
     const deleteDestinationImage = async (imageId, destinationId) => {
+        await ensureSession();
         const { error } = await supabase.from('destination_images').delete().eq('id', imageId);
         if (error) { showNotification('Error al eliminar imagen', 'error'); return; }
         setDestinations(prev => prev.map(d =>
@@ -754,6 +846,14 @@ export function AppProvider({ children }) {
                 ? { ...d, images: (d.images || []).filter(img => img.id !== imageId) }
                 : d
         ));
+    };
+
+    const updateSystemSetting = async (key, value) => {
+        await ensureSession();
+        const { error } = await supabase.from('settings').upsert({ key, value });
+        if (error) { showNotification('Error al guardar configuración', 'error'); throw error; }
+        setSystemSettings(prev => ({ ...prev, [key]: value }));
+        return true;
     };
 
 
@@ -767,13 +867,14 @@ export function AppProvider({ children }) {
 
     return (
         <AppContext.Provider value={{
-            destinations, sales, users, clients, itineraries, isLoading, stats,
+            destinations, sales, users, clients, itineraries, systemSettings, isLoading, stats,
             addDestination, updateDestination, deleteDestination,
             addDestinationImages, deleteDestinationImage,
             addSale, updateSale, deleteSale, getSaleDetails,
             addUser, updateUser, deleteUser,
             addClient, updateClient, deleteClient,
             addItinerary, updateItinerary, deleteItinerary,
+            updateSystemSetting,
             refetch: loadAll,
         }}>
             {children}
